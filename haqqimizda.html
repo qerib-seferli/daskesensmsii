@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Haqqımızda - Daşkəsən SMSİİ</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* Sənin əsas CSS dəyişənlərin və qlobal stillərin */
+    :root {
+      --primary: #0369a1;
+      --primary-dark: #024f7c;
+      --primary-light: #0ea5e9;
+      --accent: #06b6d4;
+      --accent2: #0891b2;
+      --bg: #f0f9ff;
+      --bg2: #e0f2fe;
+      --white: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #bae6fd;
+      --shadow: 0 4px 24px rgba(3,105,161,0.10);
+      --radius: 14px;
+      --header-h: 68px;
+      --font-main: 'Montserrat', sans-serif;
+      --font-body: 'Noto Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* Header & Navigation (Sənin dizaynınla eyni) */
+    header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; height: var(--header-h); background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 60%, var(--accent2) 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 2px 16px rgba(3,105,161,0.25); }
+    .header-left { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .header-logo { width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.7); }
+    .header-title { font-family: var(--font-main); font-weight: 700; font-size: 1rem; color: #fff; line-height: 1.2; }
+    .header-title span { display: block; font-size: 0.65rem; font-weight: 400; opacity: 0.85; }
+
+    nav { position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 999; background: var(--white); border-bottom: 2px solid var(--border); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .nav-inner { display: flex; justify-content: center; }
+    .nav-inner a { padding: 14px 18px; font-family: var(--font-main); font-size: 0.75rem; font-weight: 600; color: var(--primary-dark); text-transform: uppercase; text-decoration: none; border-bottom: 3px solid transparent; transition: 0.3s; }
+    .nav-inner a.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+
+    /* Haqqımızda Hero (Sənin ana səhifədəki Hero stilində) */
+    .about-hero { margin-top: calc(var(--header-h) + 48px); background: linear-gradient(rgba(3,105,161,0.8), rgba(3,105,161,0.8)), url('fotolar/idare-binasi.jpg'); background-size: cover; background-position: center; color: white; padding: 60px 20px; text-align: center; }
+    .about-hero h1 { font-family: var(--font-main); font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+
+    /* Məzmun Kartları */
+    .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+    .about-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+    .about-card { background: var(--white); border-radius: var(--radius); padding: 35px; border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 30px; }
+    .section-title { font-family: var(--font-main); font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .section-title i { color: var(--accent); }
+    
+    .feature-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start; }
+    .feature-icon { width: 45px; height: 45px; background: var(--bg2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0; }
+    
+    /* Footer (Sənin kodunla tam eyni) */
+    footer { background: var(--primary-dark); color: rgba(255,255,255,0.85); padding: 50px 20px 20px; margin-top: 60px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-logo { width: 50px; border-radius: 50%; margin-right: 15px; }
+    .footer-social { display: flex; gap: 12px; margin-top: 20px; }
+    .social-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: 0.3s; }
+    .social-icon:hover { background: var(--accent); transform: translateY(-3px); }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .about-hero h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="header-left">
+    <img src="fotolar/logo.jpg" alt="Logo" class="header-logo" />
+    <div class="header-title">Daşkəsən <span>Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span></div>
+  </a>
+  <div class="header-right">
+    <a href="https://wa.me/994505459085" style="color:white; text-decoration:none; background:rgba(255,255,255,0.15); padding:8px 16px; border-radius:50px; font-size:0.85rem; font-weight:600;">
+      <i class="fab fa-whatsapp"></i> Əlaqə
+    </a>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html"><i class="fas fa-home"></i> Ana Səhifə</a>
+    <a href="haqqimizda.html" class="active"><i class="fas fa-info-circle"></i> Haqqımızda</a>
+    <a href="sturuktur.html"><i class="fas fa-sitemap"></i> Struktur</a>
+    <a href="rehberlik.html"><i class="fas fa-user-tie"></i> Rəhbərlik</a>
+    <a href="elektron-muraciet.html"><i class="fas fa-envelope"></i> Elektron Müraciət</a>
+  </div>
+</nav>
+
+<section class="about-hero">
+  <div class="container">
+    <h1>Haqqımızda</h1>
+    <p>Gələcək nəsillər üçün su ehtiyatlarının qorunması və səmərəli idarə edilməsi.</p>
+  </div>
+</section>
+
+<main class="container">
+  <div class="about-grid">
+    <div class="about-main">
+      <div class="about-card">
+        <h2 class="section-title"><i class="fas fa-history"></i> Tariximiz və Fəaliyyətimiz</h2>
+        <p>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi, Azərbaycan Dövlət Su Ehtiyatları Agentliyinin tabeliyində fəaliyyət göstərən mühüm regional qurumlardan biridir. İdarəmiz illərdir ki, Daşkəsən rayonunun relyefinə uyğun olaraq suvarma və meliorasiya xidmətlərini yüksək səviyyədə təşkil edir.</p>
+        <br>
+        <p>Əsas fəaliyyət istiqamətlərimizə su kanallarının təmiri, torpaqların suvarma suyu ilə təminatı və müasir su qənaət texnologiyalarının tətbiqi daxildir.</p>
+      </div>
+
+      <div class="about-card">
+        <h2 class="section-title"><i class="fas fa-bullseye"></i> Missiyamız</h2>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-check"></i></div>
+          <div>
+            <strong>Davamlılıq:</strong> Su ehtiyatlarından qənaətlə istifadəni təmin etmək.
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-check"></i></div>
+          <div>
+            <strong>Modernizasiya:</strong> Meliorasiya sistemlərini rəqəmsal texnologiyalarla idarə etmək.
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-check"></i></div>
+          <div>
+            <strong>Xidmət:</strong> Fermerlərə və vətəndaşlara operativ elektron xidmətlər təqdim etmək.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-sidebar">
+      <div class="about-card" style="padding:20px; text-align:center; background:var(--bg2);">
+        <i class="fas fa-shield-alt" style="font-size:3rem; color:var(--primary); margin-bottom:15px;"></i>
+        <h4 style="color:var(--primary-dark);">Dövlət Zəmanəti</h4>
+        <p style="font-size:0.85rem; margin-top:10px;">Bütün xidmətlərimiz dövlət standartlarına uyğun həyata keçirilir.</p>
+      </div>
+      
+      <div class="about-card" style="padding:20px;">
+        <h4 style="margin-bottom:15px; font-size:1rem; border-bottom:1px solid var(--border); padding-bottom:10px;">Faydalı</h4>
+        <ul style="list-style:none; font-size:0.9rem;">
+          <li style="margin-bottom:10px;"><a href="elektron-muraciet.html" style="color:var(--primary); text-decoration:none;"><i class="fas fa-file-alt"></i> Onlayn Müraciət</a></li>
+          <li style="margin-bottom:10px;"><a href="index.html#payment" style="color:var(--primary); text-decoration:none;"><i class="fas fa-credit-card"></i> Ödəniş Portalı</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div style="display:flex; align-items:center; margin-bottom:15px;">
+          <img src="fotolar/logo.jpg" alt="Logo" class="footer-logo" />
+          <span style="font-weight:700; font-size:0.9rem; line-height:1.3;">Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span>
+        </div>
+        <p style="font-size:0.85rem; opacity:0.8;">Daşkəsən rayonunda su meliorasiya sistemlərinin idarə edilməsi sahəsində xidmət göstərən dövlət idarəsi.</p>
+        <div class="footer-social">
+          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/994505459085" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-col">
+        <h4 style="margin-bottom:20px; color:#fff; border-left:3px solid var(--accent); padding-left:10px;">Keçidlər</h4>
+        <ul style="list-style:none; font-size:0.85rem;">
+          <li style="margin-bottom:10px;"><a href="index.html" style="color:rgba(255,255,255,0.7); text-decoration:none;">Ana Səhifə</a></li>
+          <li style="margin-bottom:10px;"><a href="haqqimizda.html" style="color:var(--accent); text-decoration:none;">Haqqımızda</a></li>
+          <li style="margin-bottom:10px;"><a href="sturuktur.html" style="color:rgba(255,255,255,0.7); text-decoration:none;">Struktur</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 style="margin-bottom:20px; color:#fff; border-left:3px solid var(--accent); padding-left:10px;">Əlaqə</h4>
+        <ul style="list-style:none; font-size:0.85rem; color:rgba(255,255,255,0.7);">
+          <li style="margin-bottom:10px;"><i class="fas fa-phone"></i> (022) 215 50 49</li>
+          <li style="margin-bottom:10px;"><i class="fas fa-envelope"></i> Daskesensmsii@rsmx.gov.az</li>
+          <li><i class="fas fa-map-marker-alt"></i> Daşkəsən şəhəri</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; opacity:0.7;">
+      <p>© 2026 Daşkəsən SMSİİ. Bütün hüquqlar qorunur.</p>
+      <p>Full-stack Developer: <strong>Qərib Səfərli</strong></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sənin əsas kodundakı Supabase və PWA məntiqini buraya da daxil edə bilərsən
+  // Hazırda bu səhifə üçün əsas funksiyalar aktivdir.
+</script>
+
+</body>
+</html>

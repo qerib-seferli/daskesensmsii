@@ -1,161 +1,152 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Haqqımızda | Daşkəsən SMSİİ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haqqımızda - Daşkəsən SMSİİ</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0369a1;
+      --primary-dark: #021e3c;
+      --primary-light: #0ea5e9;
+      --accent: #f59e0b;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --bg: #f1f5f9;
+      --white: #ffffff;
+      --header-h: 70px;
+      --font-main: 'Inter', sans-serif;
+    }
 
-<style>
-body{font-family:sans-serif;margin:0;padding:0}
-header{background:#0077b6;color:#fff;padding:10px 20px}
-header .logo{font-weight:bold;font-size:1.3em;text-decoration:none;color:#fff}
-nav ul{list-style:none;display:flex;gap:15px;padding:0;margin:0}
-nav ul li a{text-decoration:none;color:#fff}
-nav ul li a.active{text-decoration:underline}
-.mobile-nav{display:none;flex-direction:column;background:#0077b6;padding:10px;position:absolute;top:50px;left:0;width:100%}
-.container{padding:20px}
-.about-section img{max-width:100%;margin-top:20px}
-.news-slider{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth}
-.news-card{min-width:300px;background:#f0f0f0;border-radius:5px;overflow:hidden}
-.news-card-img{width:100%;height:150px;object-fit:cover}
-.news-card-img-placeholder{width:100%;height:150px;background:#ccc;display:flex;align-items:center;justify-content:center;font-size:2em}
-.news-card-body{padding:10px}
-.slider-dots{display:flex;gap:5px;margin-top:10px}
-.slider-dot{width:10px;height:10px;border-radius:50%;background:#ccc;border:none;cursor:pointer}
-.slider-dot.active{background:#0077b6}
-.news-ticker{background:#e0e0e0;padding:5px;overflow:hidden;white-space:nowrap}
-.ticker-item{margin-right:20px;cursor:pointer}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:999}
-.modal.active{display:flex}
-.modal-content{background:#fff;padding:20px;max-width:500px;width:90%;position:relative}
-.modal-content .close{position:absolute;top:10px;right:10px;cursor:pointer;font-size:1.5em}
-.modal-main-img{width:100%;display:block;margin:10px 0}
-.modal-img-placeholder{width:100%;height:150px;background:#ccc;display:flex;align-items:center;justify-content:center;font-size:2em}
-.modal-gallery img{width:60px;height:60px;object-fit:cover;margin-right:5px;cursor:pointer}
-.all-news-grid{display:flex;flex-direction:column;gap:10px}
-#backToTop{position:fixed;bottom:20px;right:20px;display:none;background:#0077b6;color:#fff;border:none;padding:10px;border-radius:50%;cursor:pointer}
-#backToTop.visible{display:block}
-</style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-main); background: var(--bg); color: var(--text); line-height: 1.6; }
+    
+    /* HEADER STİLİ */
+    header {
+      height: var(--header-h); background: var(--white);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .header-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light); }
+    .header-left { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .header-title { font-weight: 800; font-size: 0.9rem; color: var(--primary-dark); line-height: 1.2; }
+    .header-title span { display: block; font-size: 0.7rem; font-weight: 500; color: var(--text-muted); }
+
+    /* NAVİQASİYA */
+    nav { background: var(--primary-dark); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; }
+    nav a {
+      color: #fff; padding: 15px 20px; font-size: 0.85rem; font-weight: 600;
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    nav a:hover, nav a.active { background: var(--primary); color: var(--accent); }
+
+    /* HAQQIMIZDA MƏZMUN */
+    .hero-sub {
+      background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+      color: #white; padding: 40px 20px; text-align: center; color: #fff;
+    }
+    .hero-sub h1 { font-size: 1.8rem; margin-bottom: 10px; }
+
+    .main-content { padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
+    .about-card {
+      background: var(--white); padding: 30px; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px;
+    }
+    .about-card h2 { color: var(--primary); margin-bottom: 20px; border-left: 5px solid var(--accent); padding-left: 15px; }
+    .about-card p { margin-bottom: 15px; color: var(--text-muted); text-align: justify; }
+
+    /* İKONLU STATİSTİKA */
+    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+    .stat-box {
+      background: var(--bg); padding: 20px; border-radius: 10px; text-align: center;
+      transition: 0.3s; border: 1px solid #ddd;
+    }
+    .stat-box:hover { transform: translateY(-5px); border-color: var(--primary-light); }
+    .stat-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; display: block; }
+    .stat-box strong { font-size: 1.5rem; color: var(--primary-dark); display: block; }
+    .stat-box span { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+
+    /* FOOTER */
+    footer { background: var(--primary-dark); color: #fff; padding: 40px 20px 20px; margin-top: 50px; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
+    .footer-bottom {
+      text-align: center; padding-top: 20px; margin-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem;
+    }
+  </style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="logo">Daşkəsən SMSİİ</a>
-    <nav>
-        <ul>
-            <li><a href="index.html">Əsas Səhifə</a></li>
-            <li><a href="haqqimizda.html" class="active">Haqqımızda</a></li>
-            <li><a href="#">Xəbərlər</a></li>
-            <li><a href="#">Əlaqə</a></li>
-        </ul>
-    </nav>
-    <button class="mobile-nav-toggle" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
+  <a href="index.html" class="header-left">
+    <img src="fotolar/logo.jpg" alt="Logo" class="header-logo">
+    <div class="header-title">Daşkəsən<span>Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span></div>
+  </a>
 </header>
 
-<div id="mobileNav" class="mobile-nav">
-    <a href="index.html">Əsas Səhifə</a>
-    <a href="haqqimizda.html" class="active">Haqqımızda</a>
-    <a href="#">Xəbərlər</a>
-    <a href="#">Əlaqə</a>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html"><i class="fas fa-home"></i> Ana Səhifə</a>
+    <a href="haqqimizda.html" class="active"><i class="fas fa-info-circle"></i> Haqqımızda</a>
+    <a href="sturuktur.html"><i class="fas fa-sitemap"></i> Struktur</a>
+    <a href="rehberlik.html"><i class="fas fa-user-tie"></i> Rəhbərlik</a>
+    <a href="elektron-muraciet.html"><i class="fas fa-envelope"></i> Müraciət</a>
+  </div>
+</nav>
+
+<div class="hero-sub">
+  <h1>İdarə Haqqında</h1>
+  <p>Su ehtiyatlarının səmərəli idarə olunması bizim hədəfimizdir.</p>
 </div>
 
-<main class="container">
-    <section class="about-section">
-        <h1>Haqqımızda</h1>
-        <p>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi kənd təsərrüfatında suvarma sistemlərini müasir standartlara uyğunlaşdırır.</p>
-        <img src="images/about.jpg" alt="Haqqımızda">
-    </section>
+<main class="main-content">
+  <div class="about-card">
+    <h2><i class="fas fa-history"></i> Fəaliyyət İstiqamətimiz</h2>
+    <p>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi, rayonun kənd təsərrüfatı sahələrinin suvarma suyu ilə təmin edilməsi və meliorasiya sistemlərinin texniki sazlığının qorunması üçün fəaliyyət göstərir.</p>
+    <p>Bizim işimiz su kanallarının təmizlənməsi, hidrotexniki qurğuların təmiri və su itkisinin minimuma endirilməsindən ibarətdir.</p>
 
-    <section class="news-section">
-        <h2>Ən Son Xəbərlər</h2>
-        <div id="newsSliderWrap">
-            <div id="newsSlider" class="news-slider"></div>
-        </div>
-        <div id="sliderDots" class="slider-dots"></div>
-    </section>
-
-    <section class="ticker-section">
-        <div id="tickerContent" class="news-ticker"></div>
-    </section>
+    <div class="stats-container">
+      <div class="stat-box">
+        <i class="fas fa-water"></i>
+        <strong>120+ km</strong>
+        <span>Su Kanalları</span>
+      </div>
+      <div class="stat-box">
+        <i class="fas fa-mountain"></i>
+        <strong>5400+ ha</strong>
+        <span>Xidmət Sahəsi</span>
+      </div>
+      <div class="stat-box">
+        <i class="fas fa-tools"></i>
+        <strong>45+</strong>
+        <span>Texnika və Avadanlıq</span>
+      </div>
+    </div>
+  </div>
 </main>
 
-<div id="newsModal" class="modal" onclick="closeNewsModalOutside(event)">
-    <div class="modal-content">
-        <span class="close" onclick="closeNewsModal()">&times;</span>
-        <h3 id="modalTitle"></h3>
-        <div id="modalDate"></div>
-        <img id="modalMainImg" class="modal-main-img" />
-        <div id="modalImgPlaceholder" class="modal-img-placeholder">📰</div>
-        <p id="modalText"></p>
-        <div id="modalGallery" class="modal-gallery"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h4 style="color:var(--accent); margin-bottom:15px;">DAŞKƏSƏN SMSİİ</h4>
+      <p style="font-size:0.85rem; opacity:0.8;">Su Meliorasiya Sistemlərinin İstismarı İdarəsi - Peşəkar su idarəçiliyi.</p>
     </div>
-</div>
-
-<button id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
-
-<script>
-let allNews = [];
-
-function loadNews(){
-    allNews = [
-        {id:1, title:'İdarəmizin yeni fəaliyyəti haqqında məlumat', content:'Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi öz fəaliyyətini davam etdirir.', images:[], created_at:new Date().toISOString()},
-        {id:2, title:'Suvarma sistemlərində yenilik', content:'Yeniliklər və texniki baxışlar barədə məlumat.', images:[], created_at:new Date().toISOString()}
-    ];
-    renderNewsSlider(allNews);
-    renderTicker(allNews);
-}
-
-function formatDate(iso){if(!iso) return '-'; const d=new Date(iso); return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;}
-
-function renderNewsSlider(items){
-    const slider = document.getElementById('newsSlider'); slider.innerHTML='';
-    if(!items || items.length===0){slider.innerHTML='<div class="news-card"><div class="news-card-img-placeholder">📰</div><div class="news-card-body"><div class="news-card-date">Xəbər yoxdur</div><div class="news-card-title">Hələ ki xəbər əlavə edilməyib</div></div></div>'; return;}
-    items.forEach((item,i)=>{
-        const imgSrc=item.images.length>0?item.images[0]:null;
-        slider.innerHTML+=`<div class="news-card">${imgSrc?`<img class="news-card-img" src="${imgSrc}" alt="${item.title}">`:`<div class="news-card-img-placeholder">📰</div>`}<div class="news-card-body"><div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.created_at)}</div><div class="news-card-title">${item.title}</div><button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button></div></div>`;
-    });
-    setupSlider();
-}
-
-function renderTicker(items){
-    const ticker = document.getElementById('tickerContent'); ticker.innerHTML='';
-    if(!items) return;
-    ticker.innerHTML = items.map((n,i)=>`<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.title}</span>`).join('');
-}
-
-// SLIDER
-let sliderPos=0, sliderDragging=false, sliderStartX=0, sliderScrollLeft=0, autoSlideTimer;
-function setupSlider(){
-    const wrap=document.getElementById('newsSliderWrap'), slider=document.getElementById('newsSlider'), cards=slider.querySelectorAll('.news-card'), dots=document.getElementById('sliderDots'); dots.innerHTML='';
-    const visCount=Math.floor(wrap.offsetWidth/318)||1; const maxSlide=Math.max(0,cards.length-visCount);
-    for(let i=0;i<=maxSlide;i++){const d=document.createElement('button'); d.className='slider-dot'+(i===0?' active':''); d.onclick=()=>goToSlide(i,maxSlide); dots.appendChild(d);}
-    wrap.addEventListener('mousedown',e=>{sliderDragging=true;sliderStartX=e.pageX-wrap.offsetLeft;sliderScrollLeft=wrap.scrollLeft;clearInterval(autoSlideTimer);});
-    wrap.addEventListener('mouseup',()=>{sliderDragging=false;startAutoSlide(maxSlide);});
-    wrap.addEventListener('mouseleave',()=>{sliderDragging=false;});
-    wrap.addEventListener('mousemove',e=>{if(!sliderDragging)return;e.preventDefault(); const x=e.pageX-wrap.offsetLeft; wrap.scrollLeft=sliderScrollLeft-(x-sliderStartX);});
-    wrap.addEventListener('touchstart',e=>{sliderDragging=true;sliderStartX=e.touches[0].pageX-wrap.offsetLeft;sliderScrollLeft=wrap.scrollLeft;clearInterval(autoSlideTimer);});
-    wrap.addEventListener('touchmove',e=>{if(!sliderDragging)return;const x=e.touches[0].pageX-wrap.offsetLeft;wrap.scrollLeft=sliderScrollLeft-(x-sliderStartX);});
-    wrap.addEventListener('touchend',()=>{sliderDragging=false;startAutoSlide(maxSlide);});
-    startAutoSlide(maxSlide);
-}
-
-function goToSlide(i,maxSlide){const wrap=document.getElementById('newsSliderWrap'); wrap.scrollTo({left:i*318,behavior:'smooth'});document.querySelectorAll('.slider-dot').forEach((d,j)=>d.classList.toggle('active',i===j));sliderPos=i;}
-function startAutoSlide(maxSlide){clearInterval(autoSlideTimer);autoSlideTimer=setInterval(()=>{sliderPos=(sliderPos>=maxSlide)?0:sliderPos+1;goToSlide(sliderPos,maxSlide);},3500);}
-
-// MODAL
-function openNewsModal(idx){const item=allNews[idx];if(!item)return; const modal=document.getElementById('newsModal'); document.getElementById('modalTitle').textContent=item.title; document.getElementById('modalDate').innerHTML=`<i class="far fa-calendar"></i> ${formatDate(item.created_at)}`; document.getElementById('modalText').textContent=item.content||'-'; const mainImg=document.getElementById('modalMainImg'), placeholder=document.getElementById('modalImgPlaceholder'), gallery=document.getElementById('modalGallery'); gallery.innerHTML=''; if(item.images.length>0){mainImg.src=item.images[0];mainImg.style.display='block';placeholder.style.display='none'; item.images.forEach((src,i)=>{const t=document.createElement('img');t.src=src;t.alt=`Şəkil ${i+1}`;t.className=i===0?'active':''; t.onclick=()=>{mainImg.src=src; gallery.querySelectorAll('img').forEach(x=>x.classList.remove('active')); t.classList.add('active');}; gallery.appendChild(t);});} else{mainImg.style.display='none';placeholder.style.display='flex';}modal.classList.add('active');document.body.style.overflow='hidden';}
-function closeNewsModal(){document.getElementById('newsModal').classList.remove('active');document.body.style.overflow='';}
-function closeNewsModalOutside(e){if(e.target===document.getElementById('newsModal')) closeNewsModal();}
-
-function toggleMobileNav(){const nav=document.getElementById('mobileNav');nav.style.display=nav.style.display==='flex'?'none':'flex';}
-
-window.addEventListener('scroll',()=>{const btn=document.getElementById('backToTop');btn.classList.toggle('visible',window.scrollY>350);});
-
-document.addEventListener('DOMContentLoaded',()=>{loadNews();});
-</script>
+    <div>
+      <h4 style="color:var(--accent); margin-bottom:15px;">Əlaqə</h4>
+      <p style="font-size:0.85rem; opacity:0.8;"><i class="fas fa-phone"></i> (022) 215 50 49</p>
+      <p style="font-size:0.85rem; opacity:0.8;"><i class="fas fa-envelope"></i> Daskesensmsii@rsmx.gov.az</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Bütün hüquqlar qorunur. Hazırladı: <strong style="color:var(--accent);">Qərib Səfərli</strong></p>
+  </div>
+</footer>
 
 </body>
 </html>

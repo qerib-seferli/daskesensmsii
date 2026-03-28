@@ -3,185 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haqqımızda - Daşkəsən SMSİİ</title>
+    <title>Haqqımızda | Daşkəsən Su Meliorasiya Sistemləri</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <style>
-        /* INDEX-DƏKİ BÜTÜN CSS DƏYİŞƏNLƏRİ VƏ ƏSAS STİLLƏR */
-        :root {
-            --primary: #0369a1;
-            --primary-dark: #021e3c;
-            --primary-light: #0ea5e9;
-            --accent: #f59e0b;
-            --text: #1e293b;
-            --text-muted: #64748b;
-            --bg: #f1f5f9;
-            --bg2: #e2e8f0;
-            --white: #ffffff;
-            --border: #cbd5e1;
-            --radius: 12px;
-            --header-h: 70px;
-            --font-main: 'Inter', sans-serif;
-        }
+    <!-- Styles (index.html ilə eyni olmalıdır) -->
+    <link rel="stylesheet" href="style.css">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-main); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
-        a { text-decoration: none; transition: 0.2s; }
-        ul { list-style: none; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-        /* HEADER (İndex ilə 1-ə-1 eyni) */
-        header {
-            height: var(--header-h); background: var(--white);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .header-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light); }
-        .header-title { font-weight: 800; font-size: 0.95rem; color: var(--primary-dark); line-height: 1.2; }
-        .header-title span { display: block; font-size: 0.72rem; font-weight: 500; color: var(--text-muted); }
-
-        /* NAV (İndex ilə 1-ə-1 eyni) */
-        nav { background: var(--primary-dark); position: sticky; top: var(--header-h); z-index: 999; }
-        .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; }
-        nav a {
-            color: rgba(255,255,255,0.85); padding: 15px 20px; font-size: 0.88rem;
-            font-weight: 600; display: flex; align-items: center; gap: 8px;
-        }
-        nav a:hover, nav a.active { background: rgba(255,255,255,0.1); color: var(--accent); }
-
-        /* HAQQIMIZDA ÖZƏL BÖLMƏLƏR */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-            padding: 50px 0; color: #fff; text-align: center;
-        }
-        .page-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
-        
-        .content-wrap { padding: 60px 0; background: var(--white); }
-        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
-        .about-text h2 { color: var(--primary-dark); font-size: 1.8rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .about-text h2 i { color: var(--accent); }
-        .about-text p { margin-bottom: 20px; font-size: 1rem; color: var(--text-muted); text-align: justify; }
-
-        /* STATİSTİKA (Gözəl görünüş üçün) */
-        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
-        .stat-item { background: var(--bg); padding: 20px; border-radius: var(--radius); text-align: center; border-bottom: 3px solid var(--accent); }
-        .stat-item i { font-size: 1.8rem; color: var(--primary); margin-bottom: 10px; }
-        .stat-item strong { display: block; font-size: 1.4rem; color: var(--primary-dark); }
-        .stat-item span { font-size: 0.85rem; color: var(--text-muted); }
-
-        /* FOOTER (İndex ilə 1-ə-1 eyni) */
-        footer { background: var(--primary-dark); color: rgba(255,255,255,0.85); padding: 40px 20px 20px; }
-        .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 30px; margin-bottom: 30px; }
-        .footer-col h4 { color: var(--accent); margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; }
-        .footer-col ul li { margin-bottom: 10px; }
-        .footer-col a { color: #fff; opacity: 0.8; font-size: 0.85rem; }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; }
-        .footer-dev { font-size: 0.8rem; }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .about-grid, .footer-top, .stats-row { grid-template-columns: 1fr; }
-            nav { display: none; } /* Mobil menyu js ilə idarə olunmalıdır (index-dəki kimi) */
-        }
-    </style>
 </head>
 <body>
 
+<!-- ================= HEADER ================= -->
 <header>
-    <a href="index.html" class="header-left">
-        <img src="fotolar/logo.jpg" alt="Logo" class="header-logo" />
-        <div class="header-title">Daşkəsən<span>Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span></div>
-    </a>
+    <div class="top-header">
+        <div class="contact-info">
+            <a href="tel:+994504620027"><i class="fas fa-phone"></i> +994 50 462 00 27</a>
+            <a href="tel:+994517415706"><i class="fas fa-phone"></i> +994 51 741 57 06</a>
+            <a href="https://wa.me/994705720209" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+    </div>
+    <nav class="main-nav">
+        <a href="index.html" class="logo">Daşkəsən SMSİİ</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Əsas Səhifə</a></li>
+            <li><a href="haqqimizda.html" class="active">Haqqımızda</a></li>
+            <li><a href="xeberler.html">Xəbərlər</a></li>
+            <li><a href="elaqe.html">Əlaqə</a></li>
+        </ul>
+        <button class="mobile-nav-toggle" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
+    </nav>
 </header>
 
-<nav>
-    <div class="nav-inner">
-        <a href="index.html"><i class="fas fa-home"></i> Ana Səhifə</a>
-        <a href="haqqimizda.html" class="active"><i class="fas fa-info-circle"></i> Haqqımızda</a>
-        <a href="sturuktur.html"><i class="fas fa-sitemap"></i> Struktur</a>
-        <a href="rehberlik.html"><i class="fas fa-user-tie"></i> Rəhbərlik</a>
-        <a href="elektron-muraciet.html"><i class="fas fa-envelope"></i> Elektron Müraciət</a>
-    </div>
-</nav>
+<!-- ================= MOBILE NAV ================= -->
+<div id="mobileNav" class="mobile-nav">
+    <a href="index.html">Əsas Səhifə</a>
+    <a href="haqqimizda.html" class="active">Haqqımızda</a>
+    <a href="xeberler.html">Xəbərlər</a>
+    <a href="elaqe.html">Əlaqə</a>
+</div>
 
-<main>
-    <section class="page-header">
-        <div class="container">
-            <h1>Haqqımızda</h1>
-            <p>Su ehtiyatlarının idarə edilməsində peşəkar yanaşma</p>
-        </div>
-    </section>
-
-    <section class="content-wrap">
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-text">
-                    <h2><i class="fas fa-tint"></i> İdarənin Tarixi və Fəaliyyəti</h2>
-                    <p>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi rayon ərazisində kənd təsərrüfatı torpaqlarının suvarılması və su təsərrüfatı obyektlərinin istismarı sahəsində xidmət göstərir.</p>
-                    <p>Əsas məqsədimiz su ehtiyatlarından səmərəli istifadəni təmin etmək, suvarma kanallarını daim işlək vəziyyətdə saxlamaq və fermerlərimizə keyfiyyətli xidmət təqdim etməkdir.</p>
-                    
-                    <div class="stats-row">
-                        <div class="stat-item">
-                            <i class="fas fa-route"></i>
-                            <strong>120+ km</strong>
-                            <span>Su Kanalları</span>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-seedling"></i>
-                            <strong>5400+ ha</strong>
-                            <span>Suvarılan Sahə</span>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-user-shield"></i>
-                            <strong>Peşəkar</strong>
-                            <span>Mütəxəssislər</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-image">
-                    <img src="fotolar/logo.jpg" alt="İdarə fəaliyyəti" style="width:100%; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                </div>
-            </div>
-        </div>
+<!-- ================= MAIN CONTENT ================= -->
+<main class="container">
+    <section class="about-section">
+        <h1>Haqqımızda</h1>
+        <p>
+            Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi ölkədə suvarma sistemlərinin effektiv idarə olunmasını təmin edir.
+            Bizim məqsədimiz kənd təsərrüfatı sahəsində suvarma sistemlərini müasir standartlara uyğunlaşdırmaq və vətəndaşlar üçün şəffaf xidmət göstərməkdir.
+        </p>
+        <p>
+            İdarəmiz texniki baxışlar, suvarma planlarının hazırlanması və su resurslarının səmərəli istifadəsi sahəsində fəaliyyət göstərir.
+            Biz daim yeniliklərə açığıq və admin panel vasitəsilə xəbərlərimizi ictimaiyyətə çatdırırıq.
+        </p>
+        <p>
+            Əlavə məlumat və xidmətlər üçün bizimlə əlaqə saxlaya bilərsiniz. Biz sizin suvarma ehtiyaclarınızı ən yaxşı şəkildə təmin etməyə çalışırıq.
+        </p>
+        <img src="images/about.jpg" alt="Haqqımızda" class="about-img">
     </section>
 </main>
 
+<!-- ================= BACK TO TOP ================= -->
+<button id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+    <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- ================= FOOTER ================= -->
 <footer>
-    <div class="container">
-        <div class="footer-top">
-            <div class="footer-col">
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                    <img src="fotolar/logo.jpg" style="width:40px; border-radius:50%;" />
-                    <span style="font-weight:700; color:#fff; font-size:0.9rem;">Daşkəsən SMSİİ</span>
-                </div>
-                <p style="font-size:0.8rem; line-height:1.6; opacity:0.7;">Rayon ərazisində su təsərrüfatı və meliorasiya sistemlərinin istismarını həyata keçirən dövlət müəssisəsi.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Səhifələr</h4>
-                <ul>
-                    <li><a href="index.html">Ana Səhifə</a></li>
-                    <li><a href="haqqimizda.html">Haqqımızda</a></li>
-                    <li><a href="elektron-muraciet.html">Müraciət</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Əlaqə</h4>
-                <ul style="font-size:0.85rem;">
-                    <li><i class="fas fa-phone"></i> (022) 215 50 49</li>
-                    <li><i class="fas fa-envelope"></i> Daskesensmsii@rsmx.gov.az</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p style="font-size:0.75rem;">© 2026 Daşkəsən SMSİİ. Bütün hüquqlar qorunur.</p>
-            <div class="footer-dev">Full-stack Developer: <strong style="color:var(--accent);">Qərib Səfərli</strong></div>
-        </div>
-    </div>
+    <p>&copy; 2026 Daşkəsən Su Meliorasiya Sistemləri. Bütün hüquqlar qorunur.</p>
 </footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="script.js"></script>
+<script>
+function toggleMobileNav() {
+    const nav = document.getElementById('mobileNav');
+    nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+}
+</script>
 
 </body>
 </html>

@@ -1,100 +1,138 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daşkəsən SMSİİ</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daşkəsən SMSİİ</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#eaf6ff;color:#333}
+
+/* HEADER */
+header{
+background:#ffffff;
+padding:10px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+position:sticky;top:0;z-index:1000
+}
+.logo-box{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-box img{width:55px;height:55px;border-radius:50%;border:2px solid #0077b6}
+.logo-box h1{font-size:1rem;color:#0077b6}
+.header-right a{margin-left:10px;text-decoration:none;font-size:20px}
+
+/* HERO */
+.hero{
+height:300px;
+background:linear-gradient(rgba(0,119,182,.7),rgba(0,119,182,.7)),url('fotolar/Fon.jpg') center/cover;
+display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;text-align:center;padding:20px
+}
+.hero h2{font-size:1.5rem;margin-bottom:10px}
+.weather-box{
+background:#ffffffcc;color:#000;padding:8px 15px;border-radius:20px;font-size:.9rem
+}
+
+/* NEWS */
+.section{padding:20px}
+.news-wrapper{overflow:hidden}
+.news-track{
+display:flex;gap:15px;animation:scroll 30s linear infinite
+}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.news-card{
+min-width:260px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.1)
+}
+.news-card img{width:100%;height:150px;object-fit:cover}
+.news-card h4{padding:10px;font-size:.9rem;color:#0077b6}
+.news-card button{
+margin:10px;background:#0077b6;color:#fff;border:none;padding:6px 12px;border-radius:6px
+}
+
+/* PAYMENT */
+.payment{text-align:center;padding:20px}
+.payment img{width:120px}
+.cards{display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:15px}
+.card{background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+
+/* FOOTER */
+footer{background:#0077b6;color:#fff;text-align:center;padding:20px;margin-top:30px}
+
+/* MOBILE */
+@media(max-width:768px){
+.hero{height:250px}
+.logo-box h1{font-size:.8rem}
+.news-card{min-width:220px}
+}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <div class="header-container">
-            <div class="logo-area" onclick="location.href='index.html'">
-                <img src="fotolar/logo.jpg" alt="Logo" class="round-logo">
-                <span>Daşkəsən SMSİİ</span>
-            </div>
-            
-            <div class="weather-widget" id="weather">
-                <span id="temp">--°C</span> <i class="fas fa-cloud-sun"></i>
-            </div>
+<header>
+<div class="logo-box" onclick="location.href='index.html'">
+<img src="fotolar/logo.jpg">
+<h1>Daşkəsən SMSİİ</h1>
+</div>
 
-            <div class="contact-icons">
-                <a href="https://wa.me/994505459085" target="_blank" class="icon-wa"><i class="fab fa-whatsapp"></i></a>
-                <a href="tel:0222155049" class="icon-phone"><i class="fas fa-phone"></i></a>
-            </div>
-        </div>
-    </header>
+<div class="header-right">
+<a href="https://wa.me/994505459085">📱</a>
+<a href="tel:(022)2155049">📞</a>
+</div>
+</header>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Ana Səhifə</a></li>
-            <li><a href="haqqimizda.html">Haqqımızda</a></li>
-            <li><a href="struktur.html">Struktur</a></li>
-            <li><a href="rehberlik.html">Rəhbərlik</a></li>
-            <li><a href="elektron-muraciet.html">Müraciət</a></li>
-        </ul>
-    </nav>
+<section class="hero">
+<h2>Daşkəsən Su Meliorasiya Sistemləri</h2>
+<div class="weather-box" id="weather">Yüklənir...</div>
+</section>
 
-    <section class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('fotolar/Fon.jpg');">
-        <h1>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi</h1>
-        <p>Su həyatdır, meliorasiya isə gələcəkdir.</p>
-    </section>
+<section class="section">
+<h3>Fəaliyyət Xəbərləri</h3>
+<div class="news-wrapper">
+<div class="news-track" id="news"></div>
+</div>
+</section>
 
-    <div class="news-ticker">
-        <div class="ticker-wrapper" id="ticker-content">
-            <span>Yüklənir...</span>
-        </div>
-    </div>
+<section class="payment">
+<img src="fotolar/million.az.png">
+<p>Rahat, sürətli və təhlükəsiz ödəniş</p>
+<div class="cards">
+<div class="card">💧 ADSEA</div>
+<div class="card">🌊 Meliorasiya</div>
+</div>
+</section>
 
-    <section class="payment-section">
-        <div class="payment-info">
-            <img src="fotolar/million.az.png" class="million-logo">
-            <span class="payment-text">Rahat, sürətli və təhlükəsiz ödəniş</span>
-        </div>
-        <div class="payment-cards">
-            <a href="https://million.az/services/communal/Azersu" target="_blank" class="payment-card">
-                <div class="payment-icon">💧</div>
-                <div class="payment-content">
-                    <h3>ADSEA (Azərsu)</h3>
-                    <p>İçməli su xidmətləri üzrə onlayn ödəniş</p>
-                </div>
-                <span class="payment-btn">Ödə</span>
-            </a>
-            <a href="https://million.az/services/communal/Meliorasiya" target="_blank" class="payment-card">
-                <div class="payment-icon">🌊</div>
-                <div class="payment-content">
-                    <h3>Meliorasiya</h3>
-                    <p>SİB.az su istifadəçiləri üçün ödəniş</p>
-                </div>
-                <span class="payment-btn">Ödə</span>
-            </a>
-        </div>
-    </section>
+<footer>
+<p>📍 Daşkəsən şəhəri</p>
+<p>📧 Daskesensmsii@rsmx.gov.az</p>
+<p>⏰ 09:00 - 18:00</p>
+<p>Full-stack Developer: Qərib Səfərli</p>
+</footer>
 
-    <section class="useful-links">
-        </section>
+<script>
+// WEATHER
+async function getWeather(){
+let res=await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.52&longitude=46.03&current_weather=true');
+let data=await res.json();
+document.getElementById('weather').innerText=data.current_weather.temperature+'°C';
+}
+getWeather();
 
-    <footer>
-        <div class="footer-info">
-            <p><i class="fas fa-map-marker-alt"></i> Daşkəsən şəhəri</p>
-            <p><i class="fas fa-envelope"></i> Daskesensmsii@rsmx.gov.az</p>
-            <p><i class="fas fa-clock"></i> Bazar ertəsi – Cümə (09:00 – 18:00)</p>
-        </div>
-        <div class="social-links">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-        </div>
-        <div class="signature">
-            Full-stack Developer: <strong>Qərib Səfərli</strong>
-        </div>
-    </footer>
+// DEMO NEWS
+let news=[
+{title:'Yeni layihə',img:'fotolar/Fon.jpg'},
+{title:'Su xətləri yenilənir',img:'fotolar/Fon.jpg'}
+];
 
-    <button id="backToTop"><i class="fas fa-arrow-up"></i></button>
+let box=document.getElementById('news');
+news.concat(news).forEach(n=>{
+box.innerHTML+=`<div class='news-card'><img src='${n.img}'><h4>${n.title}</h4><button>Ətraflı</button></div>`;
+});
+</script>
 
-    <script src="script.js"></script>
 </body>
 </html>

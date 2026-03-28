@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haqqımızda | Daşkəsən Su Meliorasiya Sistemləri</title>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haqqımızda | Daşkəsən Su Meliorasiya Sistemləri</title>
 
-    <!-- Styles (index.html ilə eyni olmalıdır) -->
-    <link rel="stylesheet" href="style.css">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+<!-- Styles -->
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -60,7 +59,42 @@
         </p>
         <img src="images/about.jpg" alt="Haqqımızda" class="about-img">
     </section>
+
+    <!-- ================= NEWS SLIDER ================= -->
+    <section class="news-section">
+        <h2>Ən Son Xəbərlər</h2>
+        <div id="newsSliderWrap">
+            <div id="newsSlider" class="news-slider"></div>
+        </div>
+        <div id="sliderDots" class="slider-dots"></div>
+    </section>
+
+    <!-- ================= NEWS TICKER ================= -->
+    <section class="ticker-section">
+        <div id="tickerContent" class="news-ticker"></div>
+    </section>
 </main>
+
+<!-- ================= NEWS MODAL ================= -->
+<div id="newsModal" class="modal" onclick="closeNewsModalOutside(event)">
+    <div class="modal-content">
+        <span class="close" onclick="closeNewsModal()">&times;</span>
+        <h3 id="modalTitle"></h3>
+        <div id="modalDate"></div>
+        <img id="modalMainImg" class="modal-main-img" />
+        <div id="modalImgPlaceholder" class="modal-img-placeholder">📰</div>
+        <p id="modalText"></p>
+        <div id="modalGallery" class="modal-gallery"></div>
+    </div>
+</div>
+
+<!-- ================= ALL NEWS MODAL ================= -->
+<div id="allNewsOverlay" class="modal" onclick="closeAllNewsOutside(event)">
+    <div class="modal-content">
+        <span class="close" onclick="closeAllNews()">&times;</span>
+        <div id="allNewsGrid" class="all-news-grid"></div>
+    </div>
+</div>
 
 <!-- ================= BACK TO TOP ================= -->
 <button id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">
@@ -73,12 +107,133 @@
 </footer>
 
 <!-- ================= SCRIPTS ================= -->
-<script src="script.js"></script>
 <script>
-function toggleMobileNav() {
-    const nav = document.getElementById('mobileNav');
-    nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+// ==============================
+// GLOBAL VARIABLES
+// ==============================
+let allNews = [];
+
+// ==============================
+// SAMPLE NEWS LOADER
+// ==============================
+function loadNews() {
+    allNews = getSampleNews();
+    renderNewsSlider(allNews);
+    renderTicker(allNews);
 }
+
+function getSampleNews() {
+    return [
+        {
+            id: 1,
+            title: 'İdarəmizin yeni fəaliyyəti haqqında məlumat',
+            content: 'Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi öz fəaliyyətini davam etdirir. Admin paneldən xəbər əlavə edin.',
+            images: [],
+            created_at: new Date().toISOString()
+        }
+    ];
+}
+
+function formatDate(iso) {
+    if(!iso) return '-';
+    const d = new Date(iso);
+    return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
+}
+
+// ==============================
+// NEWS SLIDER
+// ==============================
+function renderNewsSlider(items) {
+    const slider = document.getElementById('newsSlider');
+    slider.innerHTML = '';
+    if(!items || items.length === 0) {
+        slider.innerHTML = '<div class="news-card"><div class="news-card-img-placeholder">📰</div><div class="news-card-body"><div class="news-card-date">Xəbər yoxdur</div><div class="news-card-title">Hələ ki xəbər əlavə edilməyib</div></div></div>';
+        return;
+    }
+    items.forEach((item,i)=>{
+        const imgSrc = item.images && item.images.length > 0 ? item.images[0] : null;
+        slider.innerHTML += `
+            <div class="news-card">
+                ${imgSrc ? `<img class="news-card-img" src="${imgSrc}" alt="${item.title}" loading="lazy">` : `<div class="news-card-img-placeholder">📰</div>`}
+                <div class="news-card-body">
+                    <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.created_at)}</div>
+                    <div class="news-card-title">${item.title}</div>
+                    <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        `;
+    });
+    setupSlider();
+}
+
+// ==============================
+// NEWS TICKER
+// ==============================
+function renderTicker(items) {
+    const ticker = document.getElementById('tickerContent');
+    if(!items || items.length === 0) return;
+    const html = items.map((n,i)=> `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.title}</span>`).join('') + items.map((n,i)=> `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.title}</span>`).join('');
+    ticker.innerHTML = html;
+}
+
+// ==============================
+// SLIDER FUNCTIONS (TOUCH + AUTO)
+// ==============================
+let sliderPos = 0;
+let sliderDragging = false;
+let sliderStartX = 0;
+let sliderScrollLeft = 0;
+let autoSlideTimer;
+
+function setupSlider() {
+    const wrap = document.getElementById('newsSliderWrap');
+    const slider = document.getElementById('newsSlider');
+    const cards = slider.querySelectorAll('.news-card');
+    const dots = document.getElementById('sliderDots');
+    dots.innerHTML = '';
+    const visCount = Math.floor(wrap.offsetWidth / 318) || 1;
+    const maxSlide = Math.max(0, cards.length - visCount);
+    for(let i=0;i<=maxSlide;i++){
+        const d = document.createElement('button');
+        d.className='slider-dot'+(i===0?' active':'');
+        d.onclick=()=> goToSlide(i,maxSlide);
+        dots.appendChild(d);
+    }
+    wrap.addEventListener('touchstart', e=>{sliderDragging=true;sliderStartX=e.touches[0].pageX-wrap.offsetLeft;sliderScrollLeft=wrap.scrollLeft;clearInterval(autoSlideTimer);});
+    wrap.addEventListener('touchmove', e=>{if(!sliderDragging) return; const x=e.touches[0].pageX-wrap.offsetLeft; wrap.scrollLeft=sliderScrollLeft-(x-sliderStartX);});
+    wrap.addEventListener('touchend', ()=>{sliderDragging=false;startAutoSlide(maxSlide);});
+    wrap.addEventListener('mousedown', e=>{sliderDragging=true;sliderStartX=e.pageX-wrap.offsetLeft;sliderScrollLeft=wrap.scrollLeft;clearInterval(autoSlideTimer);});
+    wrap.addEventListener('mouseleave', ()=>{sliderDragging=false;});
+    wrap.addEventListener('mouseup', ()=>{sliderDragging=false;startAutoSlide(maxSlide);});
+    wrap.addEventListener('mousemove', e=>{if(!sliderDragging) return;e.preventDefault(); const x=e.pageX-wrap.offsetLeft; wrap.scrollLeft=sliderScrollLeft-(x-sliderStartX);});
+    wrap.style.overflowX='auto'; wrap.style.scrollbarWidth='none';
+    startAutoSlide(maxSlide);
+}
+
+function goToSlide(i,maxSlide){const wrap=document.getElementById('newsSliderWrap');const cardW=318;wrap.scrollTo({left:i*cardW,behavior:'smooth'});document.querySelectorAll('.slider-dot').forEach((d,j)=>d.classList.toggle('active',i===j));sliderPos=i;}
+function startAutoSlide(maxSlide){clearInterval(autoSlideTimer);autoSlideTimer=setInterval(()=>{sliderPos=(sliderPos>=maxSlide)?0:sliderPos+1;goToSlide(sliderPos,maxSlide);},3500);}
+
+// ==============================
+// NEWS MODAL FUNCTIONS
+// ==============================
+function openNewsModal(idx){const item=allNews[idx];if(!item) return;const modal=document.getElementById('newsModal');document.getElementById('modalTitle').textContent=item.title;document.getElementById('modalDate').innerHTML=`<i class="far fa-calendar"></i> ${formatDate(item.created_at)}`;document.getElementById('modalText').textContent=item.content||'-';const mainImg=document.getElementById('modalMainImg');const placeholder=document.getElementById('modalImgPlaceholder');const gallery=document.getElementById('modalGallery');gallery.innerHTML='';if(item.images&&item.images.length>0){mainImg.src=item.images[0];mainImg.style.display='block';placeholder.style.display='none';item.images.forEach((src,i)=>{const t=document.createElement('img');t.src=src;t.alt=`Şəkil ${i+1}`;t.className=i===0?'active':'';t.onclick=()=>{mainImg.src=src;gallery.querySelectorAll('img').forEach(x=>x.classList.remove('active'));t.classList.add('active');};gallery.appendChild(t);});}else{mainImg.style.display='none';placeholder.style.display='flex';}modal.classList.add('active');document.body.style.overflow='hidden';}
+function closeNewsModal(){document.getElementById('newsModal').classList.remove('active');document.body.style.overflow='';}
+function closeNewsModalOutside(e){if(e.target===document.getElementById('newsModal')) closeNewsModal();}
+
+// ==============================
+// MOBILE NAV
+// ==============================
+function toggleMobileNav(){const nav=document.getElementById('mobileNav');nav.style.display=nav.style.display==='flex'?'none':'flex';}
+
+// ==============================
+// BACK TO TOP
+// ==============================
+window.addEventListener('scroll',()=>{const btn=document.getElementById('backToTop');btn.classList.toggle('visible',window.scrollY>350);});
+
+// ==============================
+// INIT
+// ==============================
+document.addEventListener('DOMContentLoaded',()=>{loadNews();});
 </script>
 
 </body>

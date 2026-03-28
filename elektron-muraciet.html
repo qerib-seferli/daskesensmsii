@@ -1,1 +1,1580 @@
-1
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi - Daşkəsən rayonunda su meliorasiya xidmətləri, elektron müraciet, onlayn ödəniş." />
+  <meta name="keywords" content="Daşkəsən, Su Meliorasiya, SMSİİ, su idarəsi, meliorasiya, Daşkəsən su, elektron müraciet" />
+  <meta name="author" content="Daşkəsən SMSİİ" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Daşkəsən SMSİİ" />
+  <meta property="og:description" content="Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi rəsmi saytı" />
+  <meta property="og:image" content="fotolar/logo.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0369a1" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="fotolar/logo.jpg" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://daskesensmsii.az/" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --primary: #0369a1;
+      --primary-dark: #024f7c;
+      --primary-light: #0ea5e9;
+      --accent: #06b6d4;
+      --accent2: #0891b2;
+      --bg: #f0f9ff;
+      --bg2: #e0f2fe;
+      --white: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #bae6fd;
+      --shadow: 0 4px 24px rgba(3,105,161,0.10);
+      --radius: 14px;
+      --header-h: 68px;
+      --font-main: 'Montserrat', sans-serif;
+      --font-body: 'Noto Sans', sans-serif;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: var(--header-h);
+      background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 60%, var(--accent2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 16px rgba(3,105,161,0.25);
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .header-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid rgba(255,255,255,0.7);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+    .header-title {
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .header-title span {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 400;
+      opacity: 0.82;
+      letter-spacing: 0.5px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-contact-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50px;
+      padding: 7px 14px;
+      color: #fff;
+      font-size: 0.82rem;
+      font-family: var(--font-main);
+      font-weight: 500;
+      transition: background 0.2s;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .header-contact-btn:hover { background: rgba(255,255,255,0.22); }
+    .header-contact-btn i { font-size: 1rem; }
+    .header-contact-btn .btn-label { display: inline; }
+
+    /* Mobile hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 6px;
+    }
+    .hamburger span {
+      width: 24px; height: 2.5px;
+      background: #fff;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: var(--header-h);
+      left: 0; right: 0;
+      z-index: 999;
+      background: var(--white);
+      border-bottom: 2px solid var(--border);
+      box-shadow: 0 2px 12px rgba(3,105,161,0.08);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      max-width: 1100px;
+      margin: 0 auto;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-inner a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 13px 16px;
+      font-family: var(--font-main);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      text-transform: uppercase;
+    }
+    .nav-inner a:hover, .nav-inner a.active {
+      color: var(--primary-light);
+      border-bottom-color: var(--primary-light);
+    }
+    .nav-inner a i { font-size: 0.9rem; }
+
+    /* Mobile nav */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: var(--header-h);
+      left: 0; right: 0;
+      background: var(--white);
+      z-index: 998;
+      padding: 10px 0 16px;
+      box-shadow: 0 8px 24px rgba(3,105,161,0.15);
+      flex-direction: column;
+    }
+    .mobile-nav a {
+      padding: 13px 24px;
+      font-family: var(--font-main);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--bg2);
+    }
+    .mobile-nav a:hover { background: var(--bg2); }
+
+    /* ===== MAIN CONTENT ===== */
+    main { padding-top: calc(var(--header-h) + 46px); }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      position: relative;
+      min-height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('fotolar/Fon.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.55);
+      z-index: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(3,73,132,0.65) 0%, rgba(6,182,212,0.35) 100%);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      padding: 40px 20px;
+      max-width: 780px;
+    }
+    .hero-weather {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.16);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50px;
+      padding: 7px 18px;
+      font-size: 0.9rem;
+      font-family: var(--font-main);
+      font-weight: 600;
+      margin-bottom: 18px;
+      letter-spacing: 0.5px;
+      min-height: 38px;
+    }
+    .hero-weather .weather-icon { font-size: 1.3rem; }
+    .hero-title {
+      font-family: var(--font-main);
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .hero-subtitle {
+      font-size: 0.95rem;
+      opacity: 0.88;
+      margin-bottom: 24px;
+      font-weight: 400;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--primary-light));
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(6,182,212,0.4);
+      text-decoration: none;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(6,182,212,0.5); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.5);
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+    /* ===== NEWS TICKER ===== */
+    .news-ticker-wrap {
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+      color: #fff;
+      padding: 10px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker-label {
+      position: absolute;
+      left: 0;
+      top: 0; bottom: 0;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      z-index: 2;
+      white-space: nowrap;
+    }
+    .ticker-content {
+      display: flex;
+      animation: ticker-scroll 40s linear infinite;
+      padding-left: 160px;
+      gap: 60px;
+      white-space: nowrap;
+      align-items: center;
+    }
+    .ticker-content:hover { animation-play-state: paused; }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.83rem;
+      font-family: var(--font-main);
+      cursor: pointer;
+      opacity: 0.93;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+    .ticker-item:hover { opacity: 1; }
+    .ticker-item i { color: var(--accent); font-size: 0.75rem; }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ===== SECTION BASE ===== */
+    section { padding: 48px 20px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      font-family: var(--font-main);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary-light), transparent);
+      border-radius: 2px;
+    }
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      margin-bottom: 28px;
+    }
+
+    /* ===== NEWS SECTION ===== */
+    .news-section { background: var(--white); }
+    .news-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn-all-news {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 50px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 12px rgba(3,105,161,0.3);
+    }
+    .btn-all-news:hover { transform: translateY(-1px); }
+
+    /* News Slider */
+    .news-slider-wrap {
+      overflow: hidden;
+      touch-action: pan-y;
+      cursor: grab;
+      user-select: none;
+      border-radius: var(--radius);
+    }
+    .news-slider-wrap:active { cursor: grabbing; }
+    .news-slider {
+      display: flex;
+      gap: 18px;
+      transition: transform 0.5s ease;
+    }
+    .news-card {
+      min-width: 300px;
+      width: 300px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.25s, box-shadow 0.25s;
+      flex-shrink: 0;
+    }
+    .news-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(3,105,161,0.15); }
+    .news-card-img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      background: var(--bg2);
+    }
+    .news-card-img-placeholder {
+      width: 100%;
+      height: 170px;
+      background: linear-gradient(135deg, var(--bg2), var(--border));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: var(--primary-light);
+    }
+    .news-card-body { padding: 14px; }
+    .news-card-date {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-main);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .news-card-title {
+      font-family: var(--font-main);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .btn-detail {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 50px;
+      font-family: var(--font-main);
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-detail:hover { background: var(--primary-dark); }
+
+    /* Slider controls */
+    .slider-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .slider-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, width 0.2s;
+    }
+    .slider-dot.active { background: var(--primary); width: 22px; border-radius: 4px; }
+
+    /* ===== PAYMENT SECTION ===== */
+    .payment-section { background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%); }
+    .payment-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .million-logo {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+    .payment-text {
+      font-family: var(--font-main);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .payment-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .payment-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+    .payment-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(3,105,161,0.15); }
+    .payment-icon { font-size: 2rem; flex-shrink: 0; }
+    .payment-content h3 {
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+    .payment-content p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .payment-btn {
+      margin-left: auto;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(3,105,161,0.3);
+    }
+
+    /* ===== USEFUL LINKS ===== */
+    .useful-section { background: var(--white); }
+    .useful-links-grid {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .grid-3-cols { grid-template-columns: repeat(3, 1fr); }
+    .grid-4-cols { grid-template-columns: repeat(4, 1fr); }
+    .useful-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .useful-item:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(3,105,161,0.13); }
+    .gov-img {
+      height: 46px;
+      width: auto;
+      max-width: 80px;
+      object-fit: contain;
+    }
+    .useful-item p {
+      font-size: 0.72rem;
+      color: var(--text);
+      font-family: var(--font-main);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+    .useful-cat-title {
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: 1rem;
+      font-family: var(--font-main);
+      font-weight: 700;
+    }
+
+    /* ===== CONTACT SECTION ===== */
+    .contact-section { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); color: #fff; }
+    .contact-section .section-title { color: #fff; }
+    .contact-section .section-title::after { background: linear-gradient(90deg, rgba(255,255,255,0.4), transparent); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+    .contact-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius);
+      padding: 22px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .contact-icon {
+      width: 42px; height: 42px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .contact-info h4 {
+      font-family: var(--font-main);
+      font-size: 0.8rem;
+      font-weight: 600;
+      opacity: 0.75;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .contact-info p, .contact-info a {
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.5;
+    }
+
+    /* Map */
+    .map-wrap {
+      margin-top: 30px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    }
+    .map-wrap iframe {
+      width: 100%;
+      height: 280px;
+      border: none;
+      display: block;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--primary-dark);
+      color: rgba(255,255,255,0.85);
+      padding: 32px 20px 20px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 24px;
+    }
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer-logo {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .footer-brand-name {
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #fff;
+      line-height: 1.3;
+    }
+    .footer-desc {
+      font-size: 0.78rem;
+      line-height: 1.6;
+      opacity: 0.7;
+    }
+    .footer-social {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .social-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #fff;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .social-icon:hover { background: var(--accent); transform: translateY(-2px); }
+    .footer-col h4 {
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
+    }
+    .footer-col ul li {
+      margin-bottom: 8px;
+    }
+    .footer-col ul li a {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: opacity 0.2s;
+    }
+    .footer-col ul li a:hover { opacity: 1; color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .footer-bottom p {
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+    .footer-dev {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-dev i { color: var(--accent); }
+
+    /* ===== NEWS MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2,30,60,0.6);
+      z-index: 2000;
+      backdrop-filter: blur(4px);
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; align-items: flex-start; justify-content: center; }
+    .modal-box {
+      background: var(--white);
+      border-radius: 18px;
+      max-width: 680px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      margin: auto;
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--text);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: #fee2e2; color: #ef4444; }
+    .modal-img-wrap { position: relative; }
+    .modal-img-main {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+    }
+    .modal-img-placeholder {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, var(--bg2), var(--border));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      color: var(--primary-light);
+    }
+    .modal-gallery {
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px;
+      overflow-x: auto;
+      background: var(--bg);
+      scrollbar-width: thin;
+    }
+    .modal-gallery img {
+      height: 70px;
+      width: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+      border: 2px solid transparent;
+    }
+    .modal-gallery img:hover, .modal-gallery img.active { opacity: 1; border-color: var(--primary); }
+    .modal-body { padding: 20px 22px 24px; }
+    .modal-date {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: var(--font-main);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .modal-title {
+      font-family: var(--font-main);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 14px;
+      line-height: 1.35;
+    }
+    .modal-text {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: var(--text-muted);
+    }
+
+    /* ===== ALL NEWS MODAL ===== */
+    .all-news-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2,30,60,0.6);
+      z-index: 1999;
+      backdrop-filter: blur(4px);
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .all-news-overlay.active { display: flex; }
+    .all-news-box {
+      background: var(--bg);
+      border-radius: 18px;
+      max-width: 1000px;
+      width: 100%;
+      margin: auto;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: modalIn 0.3s ease;
+      position: relative;
+    }
+    .all-news-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .all-news-title {
+      font-family: var(--font-main);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+    .all-news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 20px;
+      width: 46px; height: 46px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(3,105,161,0.4);
+      z-index: 900;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.3s, transform 0.3s;
+      border: none;
+    }
+    .back-to-top.visible { opacity: 1; transform: translateY(0); }
+    .back-to-top:hover { box-shadow: 0 6px 22px rgba(3,105,161,0.55); transform: translateY(-2px); }
+
+    /* ===== PWA INSTALL BANNER ===== */
+    .pwa-banner {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #fff;
+      padding: 14px 20px;
+      z-index: 1500;
+      box-shadow: 0 -4px 24px rgba(3,105,161,0.3);
+      animation: slideUp 0.4s ease;
+    }
+    .pwa-banner.show { display: block; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .pwa-banner-inner {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .pwa-banner-logo {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    .pwa-banner-text { flex: 1; }
+    .pwa-banner-text strong {
+      display: block;
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .pwa-banner-text span {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+    .pwa-btns { display: flex; gap: 8px; }
+    .pwa-install-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 50px;
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .pwa-dismiss-btn {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 9px 14px;
+      border-radius: 50px;
+      font-family: var(--font-main);
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .header-contact-btn .btn-label { display: none; }
+      .header-contact-btn { padding: 7px 10px; }
+      .hamburger { display: flex; }
+      nav { display: none; }
+      main { padding-top: calc(var(--header-h) + 0px); }
+
+      .hero { min-height: 360px; }
+      .hero-title { font-size: 1.4rem; }
+
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .all-news-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-3-cols { grid-template-columns: repeat(2, 1fr); }
+      .grid-4-cols { grid-template-columns: repeat(2, 1fr); }
+      .payment-cards { grid-template-columns: 1fr; }
+      .news-card { min-width: 260px; width: 260px; }
+    }
+    @media (max-width: 480px) {
+      .all-news-grid { grid-template-columns: 1fr; }
+      .grid-3-cols { grid-template-columns: 1fr 1fr; }
+      .grid-4-cols { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .news-card { min-width: 240px; width: 240px; }
+      .hero-btns { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="top">
+  <a href="index.html" class="header-left" aria-label="Ana Səhifə">
+    <img src="fotolar/logo.jpg" alt="Daşkəsən SMSİİ Logo" class="header-logo" />
+    <div class="header-title">
+      Daşkəsən
+      <span>Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span>
+    </div>
+  </a>
+  <div class="header-right">
+    <a href="https://wa.me/994505459085" target="_blank" class="header-contact-btn" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+      <span class="btn-label">WhatsApp</span>
+    </a>
+    <a href="tel:+994222155049" class="header-contact-btn" aria-label="Zəng edin">
+      <i class="fas fa-phone-alt"></i>
+      <span class="btn-label">(022) 215 50 49</span>
+    </a>
+    <div class="hamburger" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menyu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<!-- Desktop Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html"><i class="fas fa-home"></i> Ana Səhifə</a>
+    <a href="haqqimizda.html"><i class="fas fa-info-circle"></i> Haqqımızda</a>
+    <a href="sturuktur.html"><i class="fas fa-sitemap"></i> Struktur</a>
+    <a href="rehberlik.html"><i class="fas fa-user-tie"></i> Rəhbərlik</a>
+    <a href="elektron-muraciet.html" class="active"><i class="fas fa-envelope"></i> Elektron Müraciət</a>
+    <a href="istifade-sertleri.html"><i class="fas fa-file-contract"></i> İstifadə Şərtləri</a>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html"><i class="fas fa-home"></i> Ana Səhifə</a>
+  <a href="haqqimizda.html"><i class="fas fa-info-circle"></i> Haqqımızda</a>
+  <a href="sturuktur.html"><i class="fas fa-sitemap"></i> Struktur</a>
+  <a href="rehberlik.html"><i class="fas fa-user-tie"></i> Rəhbərlik</a>
+  <a href="elektron-muraciet.html" class="active"><i class="fas fa-envelope"></i> Elektron Müraciət</a>
+  <a href="istifade-sertleri.html"><i class="fas fa-file-contract"></i> İstifadə Şərtləri</a>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main>
+
+
+
+
+
+
+  <!-- STURUKTUR ÜÇÜN GƏRƏKLİ OLAN KODLAR BU BÖLMƏYƏ YAZILACAQ -->
+
+
+
+
+
+
+  
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <img src="fotolar/logo.jpg" alt="Logo" class="footer-logo" />
+          <span class="footer-brand-name">Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span>
+        </div>
+        <p class="footer-desc">Daşkəsən rayonunda su meliorasiya sistemlərinin idarə edilməsi, saxlanılması və inkişafı sahəsində xidmət göstərən dövlət idarəsi.</p>
+        <div class="footer-social">
+          <a href="#" class="social-icon" aria-label="Facebook" id="fb-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram" id="ig-link"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="YouTube" id="yt-link"><i class="fab fa-youtube"></i></a>
+          <a href="https://wa.me/994505459085" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://t.me/" class="social-icon" aria-label="Telegram" id="tg-link"><i class="fab fa-telegram-plane"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Səhifələr</h4>
+        <ul>
+          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Ana Səhifə</a></li>
+          <li><a href="haqqimizda.html"><i class="fas fa-chevron-right"></i> Haqqımızda</a></li>
+          <li><a href="sturuktur.html"><i class="fas fa-chevron-right"></i> Struktur</a></li>
+          <li><a href="rehberlik.html"><i class="fas fa-chevron-right"></i> Rəhbərlik</a></li>
+          <li><a href="elektron-muraciet.html"><i class="fas fa-chevron-right"></i> Elektron Müraciet</a></li>
+          <li><a href="istifade-sertleri.html"><i class="fas fa-chevron-right"></i> İstifadə Şərtləri</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Əlaqə</h4>
+        <ul>
+          <li><a href="tel:+994222155049"><i class="fas fa-phone"></i> (022) 215 50 49</a></li>
+          <li><a href="https://wa.me/994505459085"><i class="fab fa-whatsapp"></i> +994 50 545 90 85</a></li>
+          <li><a href="mailto:Daskesensmsii@rsmx.gov.az"><i class="fas fa-envelope"></i> Daskesensmsii@rsmx.gov.az</a></li>
+          <li><a href="#"><i class="fas fa-map-marker-alt"></i> Daşkəsən şəhəri</a></li>
+          <li><a href="#"><i class="fas fa-clock"></i> B.ertəsi–Cümə: 09:00–18:00</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Daşkəsən SMSİİ. Bütün hüquqlar qorunur.</p>
+      <div class="footer-dev">
+        <i class="fas fa-code"></i>
+        Full-stack Developer: <strong style="color:var(--accent);margin-left:4px;">Qərib Səfərli</strong>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== NEWS MODAL ===== -->
+<div class="modal-overlay" id="newsModal" onclick="closeNewsModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-img-wrap" style="position:relative;">
+      <div id="modalImgPlaceholder" class="modal-img-placeholder">📰</div>
+      <img id="modalMainImg" class="modal-img-main" src="" alt="" style="display:none;">
+      <button class="modal-close" onclick="closeNewsModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="modalGallery" class="modal-gallery"></div>
+    <div class="modal-body">
+      <div class="modal-date" id="modalDate"><i class="far fa-calendar"></i> -</div>
+      <h2 class="modal-title" id="modalTitle">-</h2>
+      <p class="modal-text" id="modalText">-</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALL NEWS MODAL ===== -->
+<div class="all-news-overlay" id="allNewsOverlay" onclick="closeAllNewsOutside(event)">
+  <div class="all-news-box">
+    <div class="all-news-header">
+      <h2 class="all-news-title"><i class="fas fa-newspaper" style="margin-right:8px;color:var(--primary)"></i>Bütün Xəbərlər</h2>
+      <button class="modal-close" style="position:static;width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;" onclick="closeAllNews()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="all-news-grid" id="allNewsGrid">
+      <!-- Dynamically filled -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Yuxarı qayıt">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- ===== PWA INSTALL BANNER ===== -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-banner-inner">
+    <img src="fotolar/logo.jpg" class="pwa-banner-logo" alt="SMSİİ">
+    <div class="pwa-banner-text">
+      <strong>Daşkəsən SMSİİ</strong>
+      <span>Tətbiqi ana ekrana əlavə edin</span>
+    </div>
+    <div class="pwa-btns">
+      <button class="pwa-install-btn" id="pwaInstallBtn">Yüklə</button>
+      <button class="pwa-dismiss-btn" onclick="dismissPWA()">Sonra</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==============================
+// SUPABASE CONFIG
+// ==============================
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+let supabase;
+try {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch(e) { console.warn('Supabase not configured yet'); }
+
+// ==============================
+// WEATHER (OpenWeatherMap API)
+// ==============================
+async function loadWeather() {
+  const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY'; // openweathermap.org'dan əldə edin - pulsuz plan yetərlidir
+  const city = 'Dashkasan,AZ';
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric&lang=az`;
+  try {
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Weather fetch failed');
+    const data = await res.json();
+    const temp = Math.round(data.main.temp);
+    const desc = data.weather[0].description;
+    const id = data.weather[0].id;
+    let icon = '🌤️';
+    if(id >= 200 && id < 300) icon = '⛈️';
+    else if(id >= 300 && id < 400) icon = '🌧️';
+    else if(id >= 500 && id < 600) icon = '🌧️';
+    else if(id >= 600 && id < 700) icon = '❄️';
+    else if(id >= 700 && id < 800) icon = '🌫️';
+    else if(id === 800) {
+      const h = new Date().getHours();
+      icon = (h >= 20 || h < 6) ? '🌙' : '☀️';
+    }
+    else if(id >= 801 && id <= 803) icon = '⛅';
+    else if(id === 804) icon = '☁️';
+    document.querySelector('.weather-icon').textContent = icon;
+    const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+    document.getElementById('weatherText').textContent = `Daşkəsən: ${cap(desc)}, ${temp}°C`;
+  } catch(e) {
+    document.querySelector('.weather-icon').textContent = '🌡️';
+    document.getElementById('weatherText').textContent = 'Daşkəsən rayonu';
+  }
+}
+loadWeather();
+
+// ==============================
+// NEWS FROM SUPABASE
+// ==============================
+let allNews = [];
+
+async function loadNews() {
+  if(!supabase || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    allNews = getSampleNews();
+    renderNewsSlider(allNews.slice(0,5));
+    renderTicker(allNews.slice(0,5));
+    return;
+  }
+  try {
+    const { data, error } = await supabase
+      .from('news')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if(error) throw error;
+    allNews = data || [];
+    renderNewsSlider(allNews.slice(0,5));
+    renderTicker(allNews.slice(0,5));
+  } catch(e) {
+    console.warn('News load error:', e);
+    allNews = getSampleNews();
+    renderNewsSlider(allNews.slice(0,5));
+    renderTicker(allNews.slice(0,5));
+  }
+}
+
+function getSampleNews() {
+  return [
+    {
+      id: 1,
+      title: 'İdarəmizin yeni fəaliyyəti haqqında məlumat',
+      content: 'Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi öz fəaliyyətini davam etdirir. Admin paneldən xəbər əlavə edin.',
+      images: [],
+      created_at: new Date().toISOString()
+    }
+  ];
+}
+
+function formatDate(iso) {
+  if(!iso) return '-';
+  const d = new Date(iso);
+  return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
+}
+
+function renderNewsSlider(items) {
+  const slider = document.getElementById('newsSlider');
+  slider.innerHTML = '';
+  if(!items || items.length === 0) {
+    slider.innerHTML = '<div class="news-card"><div class="news-card-img-placeholder">📰</div><div class="news-card-body"><div class="news-card-date">Xəbər yoxdur</div><div class="news-card-title">Hələ ki xəbər əlavə edilməyib</div></div></div>';
+    return;
+  }
+  items.forEach((item, i) => {
+    const imgSrc = item.images && item.images.length > 0 ? item.images[0] : null;
+    slider.innerHTML += `
+      <div class="news-card">
+        ${imgSrc
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.title}" loading="lazy">`
+          : `<div class="news-card-img-placeholder">📰</div>`}
+        <div class="news-card-body">
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.created_at)}</div>
+          <div class="news-card-title">${item.title}</div>
+          <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>`;
+  });
+  setupSlider();
+}
+
+function renderTicker(items) {
+  const ticker = document.getElementById('tickerContent');
+  if(!items || items.length === 0) return;
+  const html = items.map((n,i) =>
+    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.title}</span>`
+  ).join('') + items.map((n,i) =>
+    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.title}</span>`
+  ).join('');
+  ticker.innerHTML = html;
+}
+
+// ==============================
+// SLIDER (touch + auto)
+// ==============================
+let sliderPos = 0;
+let sliderDragging = false;
+let sliderStartX = 0;
+let sliderScrollLeft = 0;
+let autoSlideTimer;
+
+function setupSlider() {
+  const wrap = document.getElementById('newsSliderWrap');
+  const slider = document.getElementById('newsSlider');
+  const cards = slider.querySelectorAll('.news-card');
+  const dots = document.getElementById('sliderDots');
+  dots.innerHTML = '';
+  const visCount = Math.floor(wrap.offsetWidth / 318) || 1;
+  const maxSlide = Math.max(0, cards.length - visCount);
+
+  for(let i=0; i<=maxSlide; i++) {
+    const d = document.createElement('button');
+    d.className = 'slider-dot' + (i===0?' active':'');
+    d.onclick = ()=> goToSlide(i, maxSlide);
+    dots.appendChild(d);
+  }
+
+  // Touch events
+  wrap.addEventListener('touchstart', e => {
+    sliderDragging = true;
+    sliderStartX = e.touches[0].pageX - wrap.offsetLeft;
+    sliderScrollLeft = wrap.scrollLeft;
+    clearInterval(autoSlideTimer);
+  });
+  wrap.addEventListener('touchmove', e => {
+    if(!sliderDragging) return;
+    const x = e.touches[0].pageX - wrap.offsetLeft;
+    wrap.scrollLeft = sliderScrollLeft - (x - sliderStartX);
+  });
+  wrap.addEventListener('touchend', () => { sliderDragging = false; startAutoSlide(maxSlide); });
+
+  // Mouse drag
+  wrap.addEventListener('mousedown', e => {
+    sliderDragging = true;
+    sliderStartX = e.pageX - wrap.offsetLeft;
+    sliderScrollLeft = wrap.scrollLeft;
+    clearInterval(autoSlideTimer);
+  });
+  wrap.addEventListener('mouseleave', () => { sliderDragging = false; });
+  wrap.addEventListener('mouseup', () => { sliderDragging = false; startAutoSlide(maxSlide); });
+  wrap.addEventListener('mousemove', e => {
+    if(!sliderDragging) return;
+    e.preventDefault();
+    const x = e.pageX - wrap.offsetLeft;
+    wrap.scrollLeft = sliderScrollLeft - (x - sliderStartX);
+  });
+
+  wrap.style.overflowX = 'auto';
+  wrap.style.scrollbarWidth = 'none';
+
+  startAutoSlide(maxSlide);
+}
+
+function goToSlide(i, maxSlide) {
+  const wrap = document.getElementById('newsSliderWrap');
+  const cardW = 318;
+  wrap.scrollTo({ left: i * cardW, behavior: 'smooth' });
+  document.querySelectorAll('.slider-dot').forEach((d,j) => d.classList.toggle('active', i===j));
+  sliderPos = i;
+}
+
+function startAutoSlide(maxSlide) {
+  clearInterval(autoSlideTimer);
+  autoSlideTimer = setInterval(() => {
+    sliderPos = (sliderPos >= maxSlide) ? 0 : sliderPos + 1;
+    goToSlide(sliderPos, maxSlide);
+  }, 3500);
+}
+
+// ==============================
+// NEWS MODAL
+// ==============================
+function openNewsModal(idx) {
+  const item = allNews[idx];
+  if(!item) return;
+  const modal = document.getElementById('newsModal');
+  document.getElementById('modalTitle').textContent = item.title;
+  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.created_at)}`;
+  document.getElementById('modalText').textContent = item.content || '-';
+
+  const mainImg = document.getElementById('modalMainImg');
+  const placeholder = document.getElementById('modalImgPlaceholder');
+  const gallery = document.getElementById('modalGallery');
+  gallery.innerHTML = '';
+
+  if(item.images && item.images.length > 0) {
+    mainImg.src = item.images[0];
+    mainImg.style.display = 'block';
+    placeholder.style.display = 'none';
+    item.images.forEach((src, i) => {
+      const t = document.createElement('img');
+      t.src = src;
+      t.alt = `Şəkil ${i+1}`;
+      t.className = i===0 ? 'active' : '';
+      t.onclick = () => {
+        mainImg.src = src;
+        gallery.querySelectorAll('img').forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+      };
+      gallery.appendChild(t);
+    });
+  } else {
+    mainImg.style.display = 'none';
+    placeholder.style.display = 'flex';
+  }
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+  document.getElementById('newsModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeNewsModalOutside(e) {
+  if(e.target === document.getElementById('newsModal')) closeNewsModal();
+}
+
+// ==============================
+// ALL NEWS MODAL
+// ==============================
+function openAllNews() {
+  const grid = document.getElementById('allNewsGrid');
+  grid.innerHTML = '';
+  allNews.forEach((item, i) => {
+    const imgSrc = item.images && item.images.length > 0 ? item.images[0] : null;
+    grid.innerHTML += `
+      <div class="news-card" style="min-width:unset;width:100%;">
+        ${imgSrc
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.title}" loading="lazy">`
+          : `<div class="news-card-img-placeholder">📰</div>`}
+        <div class="news-card-body">
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.created_at)}</div>
+          <div class="news-card-title">${item.title}</div>
+          <button class="btn-detail" onclick="openNewsModal(${i}); closeAllNews();">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>`;
+  });
+  document.getElementById('allNewsOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAllNews() {
+  document.getElementById('allNewsOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeAllNewsOutside(e) {
+  if(e.target === document.getElementById('allNewsOverlay')) closeAllNews();
+}
+
+// ==============================
+// MOBILE NAV
+// ==============================
+function toggleMobileNav() {
+  const nav = document.getElementById('mobileNav');
+  const isOpen = nav.style.display === 'flex';
+  nav.style.display = isOpen ? 'none' : 'flex';
+}
+
+// ==============================
+// BACK TO TOP
+// ==============================
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('backToTop');
+  btn.classList.toggle('visible', window.scrollY > 350);
+});
+
+// ==============================
+// PWA INSTALL
+// ==============================
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if(!localStorage.getItem('pwaDismissed')) {
+    setTimeout(() => document.getElementById('pwaBanner').classList.add('show'), 3000);
+  }
+});
+
+document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('pwaBanner').classList.remove('show');
+});
+
+function dismissPWA() {
+  document.getElementById('pwaBanner').classList.remove('show');
+  localStorage.setItem('pwaDismissed', '1');
+}
+
+// ==============================
+// INIT
+// ==============================
+document.addEventListener('DOMContentLoaded', () => {
+  loadNews();
+});
+</script>
+
+</body>
+</html>

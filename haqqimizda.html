@@ -1124,54 +1124,101 @@
 <!-- ===== MAIN ===== -->
 <main>
 
-<main style="padding: 50px 0; background: var(--bg);">
-  <div class="container">
-    
-    <div style="text-align: center; margin-bottom: 40px;">
-      <h2 style="color: var(--primary-dark); font-size: 2rem; font-weight: 800; margin-bottom: 10px;">
-        <i class="fas fa-info-circle" style="color: var(--accent);"></i> İdarəmiz Haqqında
-      </h2>
-      <p style="color: var(--text-muted); font-weight: 500;">Daşkəsən rayonunun su təsərrüfatı xidməti</p>
-    </div>
 
-    <div class="payment-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
-      
-      <div class="payment-card" style="cursor: default; background: var(--white); display: flex; align-items: center; padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border);">
-        <div class="payment-icon" style="font-size: 2.5rem; margin-right: 20px;">📜</div>
-        <div class="payment-content">
-          <h3 style="color: var(--primary-dark); margin-bottom: 5px;">Tariximiz</h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">İdarəmiz Daşkəsən rayonunun relyefinə uyğun su kanallarının istismarı üçün yaradılmışdır.</p>
+
+
+
+
+  
+
+
+  
+<main style="padding: 40px 0; background: var(--bg); flex: 1 0 auto;">
+    <div class="container">
+        
+        <section style="background: var(--white); padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 35px; border-left: 8px solid var(--primary);">
+            <h2 style="color: var(--primary-dark); font-family: var(--font-main); margin-bottom: 25px; font-size: 1.8rem;">
+                <i class="fas fa-university" style="color: var(--primary); margin-right: 15px;"></i> İdarə haqqında ümumi məlumat
+            </h2>
+            <div style="color: var(--text-muted); line-height: 1.9; font-size: 1.1rem; text-align: justify;">
+                <p style="margin-bottom: 20px;">
+                    <strong>Bərdə Su Meliorasiya Sistemlərinin İstismarı İdarəsi</strong> regionun kənd təsərrüfatı və infrastrukturunun onurğa sütununu təşkil edən su təsərrüfatı və meliorasiya sahəsində fəaliyyət göstərən strateji əhəmiyyətli dövlət qurumudur. İdarənin əsas missiyası regionda suvarma sistemlərinin, su ehtiyatlarının və meliorativ qurğuların dayanıqlı, səmərəli və fasiləsiz istismarını təmin etməkdir. Biz kənd təsərrüfatı sahələrinin su təminatını optimallaşdırmaqla bərabər, mövcud su infrastrukturunun müasir standartlara uyğun qorunması və inkişaf etdirilməsi istiqamətində genişmiqyaslı funksiyaları icra edirik.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    Fəaliyyətimiz yalnız aqrar sahə ilə məhdudlaşmır; idarə həmçinin region əhalisinin <strong>içməli su təminatının</strong> əhəmiyyətli dərəcədə yaxşılaşdırılması prosesində aparıcı rol oynayır. Vətəndaşlarımızın keyfiyyətli, təhlükəsiz və gigiyenik standartlara cavab verən içməli suya əlçatanlığını təmin etmək məqsədilə su mənbələrinin mühafizəsi, xam suyun təmizlənməsi və mərkəzləşdirilmiş paylanma şəbəkələrinin müasirləşdirilməsi idarənin gündəlik fəaliyyətinin ayrılmaz hissəsidir. Su itkilərinin minimuma endirilməsi və suyun keyfiyyətinə laborator nəzarətin gücləndirilməsi bizim ən yüksək prioritetlərimizdir.
+                </p>
+                <p>
+                    Gələcək nəsillərə daha sağlam su ekosistemi qoymaq üçün əhalinin su ehtiyatlarından qənaətlə istifadə etməsi və düzgün su istehlakı vərdişlərinin aşılanması məqsədilə mütəmadi maarifləndirici tədbirlər həyata keçiririk. Bu kompleks yanaşma regionda uzunmüddətli su təhlükəsizliyinin təmin olunmasına birbaşa xidmət edir.
+                </p>
+            </div>
+        </section>
+
+        <section style="margin-bottom: 40px;">
+            <h2 style="color: var(--primary-dark); text-align: center; margin-bottom: 30px; font-weight: 800;">Fəaliyyət istiqamətlərimiz</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                
+                <div style="background: var(--white); padding: 25px; border-radius: var(--radius); border-top: 4px solid var(--accent); box-shadow: var(--shadow);">
+                    <ul style="list-style: none; color: var(--text-muted); font-size: 1rem; line-height: 2;">
+                        <li><i class="fas fa-water" style="color: var(--primary); width: 25px;"></i> Suvarma kanallarının təmizlənməsi</li>
+                        <li><i class="fas fa-tools" style="color: var(--primary); width: 25px;"></i> Nasos stansiyalarının təmiri</li>
+                        <li><i class="fas fa-pipeline" style="color: var(--primary); width: 25px;"></i> Boru xətlərinin yenilənməsi</li>
+                        <li><i class="fas fa-borehole" style="color: var(--primary); width: 25px;"></i> Subartezian quyularının istismarı</li>
+                        <li><i class="fas fa-vial" style="color: var(--primary); width: 25px;"></i> Laborator analizlərin aparılması</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--white); padding: 25px; border-radius: var(--radius); border-top: 4px solid var(--accent); box-shadow: var(--shadow);">
+                    <ul style="list-style: none; color: var(--text-muted); font-size: 1rem; line-height: 2;">
+                        <li><i class="fas fa-shield-alt" style="color: var(--primary); width: 25px;"></i> Su mənbələrinin mühafizəsi</li>
+                        <li><i class="fas fa-network-wired" style="color: var(--primary); width: 25px;"></i> Paylayıcı şəbəkələrin təkmilləşdirilməsi</li>
+                        <li><i class="fas fa-chart-line" style="color: var(--primary); width: 25px;"></i> Su itkilərinin azaldılması</li>
+                        <li><i class="fas fa-faucet" style="color: var(--primary); width: 25px;"></i> Texniki xidmət və təmir işləri</li>
+                        <li><i class="fas fa-seedling" style="color: var(--primary); width: 25px;"></i> Meliorativ tədbirlərin icrası</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            
+            <div style="background: var(--bg2); padding: 35px; border-radius: var(--radius); border: 1px solid var(--border);">
+                <h3 style="color: var(--primary-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 2rem;">🎯</span> Məqsədimiz
+                </h3>
+                <p style="color: var(--text-muted); line-height: 1.7;">
+                    Əsas hədəfimiz regionun su ehtiyatlarından maksimum səmərə ilə istifadəni təşkil etmək, aqrar sektorun fasiləsiz su təminatını zəmanət altına almaq və əhalinin ekoloji təmiz, təhlükəsiz içməli su ilə dayanıqlı təchizatını təmin etməkdir. Biz suyun hər damlasına qənaət edərək gələcək nəsillər üçün dayanıqlı su ehtiyatları formalaşdırırıq.
+                </p>
+            </div>
+
+            <div style="background: var(--bg2); padding: 35px; border-radius: var(--radius); border: 1px solid var(--border);">
+                <h3 style="color: var(--primary-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 2rem;">✅</span> Vəzifələrimiz
+                </h3>
+                <ul style="list-style: none; color: var(--text-muted); line-height: 1.8;">
+                    <li style="margin-bottom: 10px;"><i class="fas fa-arrow-right" style="color: var(--primary); margin-right: 10px;"></i> Su təsərrüfatı obyektlərinin təhlükəsiz istismarı.</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-arrow-right" style="color: var(--primary); margin-right: 10px;"></i> İnfrastrukturun mütəmadi təkmilləşdirilməsi.</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-arrow-right" style="color: var(--primary); margin-right: 10px;"></i> Suvarma xidmətlərində keyfiyyət və şəffaflıq.</li>
+                    <li><i class="fas fa-arrow-right" style="color: var(--primary); margin-right: 10px;"></i> Vətəndaş müraciətlərinin vaxtında və dolğun həlli.</li>
+                </ul>
+            </div>
+
         </div>
-      </div>
-
-      <div class="payment-card" style="cursor: default; background: var(--white); display: flex; align-items: center; padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border);">
-        <div class="payment-icon" style="font-size: 2.5rem; margin-right: 20px;">🛡️</div>
-        <div class="payment-content">
-          <h3 style="color: var(--primary-dark); margin-bottom: 5px;">Vəzifəmiz</h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Suvarma sistemlərinin sazlığını qorumaq və fermerləri vaxtında su ilə təmin etmək.</p>
-        </div>
-      </div>
-
-      <div class="payment-card" style="cursor: default; background: var(--white); display: flex; align-items: center; padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border);">
-        <div class="payment-icon" style="font-size: 2.5rem; margin-right: 20px;">🏗️</div>
-        <div class="payment-content">
-          <h3 style="color: var(--primary-dark); margin-bottom: 5px;">Texniki Baza</h3>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Müasir texnika və peşəkar mütəxəssis heyəti ilə rayonun su ehtiyatlarını idarə edirik.</p>
-        </div>
-      </div>
 
     </div>
-
-    <div style="margin-top: 50px; background: var(--white); padding: 35px; border-radius: var(--radius); box-shadow: var(--shadow); border-top: 5px solid var(--primary);">
-      <h3 style="color: var(--primary-dark); margin-bottom: 20px;">Ətraflı Məlumat</h3>
-      <p style="color: var(--text-muted); line-height: 1.8; text-align: justify;">
-        Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi olaraq əsas hədəfimiz kənd təsərrüfatı torpaqlarının suvarılmasını təşkil etməkdir. Rayonun dağlıq relyefi suyun paylanmasında xüsusi diqqət tələb edir. İdarəmiz hər il kilometrlərlə su kanalını təmizləyərək su itkisinin qarşısını alır. Biz həm də su istifadəçiləri (SİB-lər) ilə sıx əməkdaşlıq edərək suyun ədalətli paylanmasına nəzarət edirik.
-      </p>
-    </div>
-
-  </div>
 </main>
 
+
+
+
+
+
+
+
+
+
+
+  
 <!-- ===== FOOTER ===== -->
 <footer>
   <div class="footer-inner">

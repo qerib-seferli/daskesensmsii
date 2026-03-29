@@ -80,7 +80,6 @@
             </div>
         </div>
         <button class="btn-save" id="save-btn" onclick="saveNews()">SİSTEMƏ YADDA SAXLA</button>
-        <button onclick="clearForm()" style="margin-top: 10px; background: #6c757d; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; transition: 0.3s;">FORMU TƏMİZLƏ</button>
     </div>
 
     <h3>Mövcud Xəbərlər</h3>
@@ -223,25 +222,7 @@
                 const paths = imgs.map(u => u.split('xeber-media/')[1]);
                 await _supabase.storage.from('xeber-media').remove(paths);
             }
-            await _supabase.from('xeberler').delete().eq('id', id);
-
-    function clearForm() {
-    // ID-ləri tap və təmizlə
-    document.getElementById('edit-id').value = "";
-    document.getElementById('title').value = "";
-    document.getElementById('desc').value = "";
-    document.getElementById('news-date').value = "";
-    document.getElementById('news-files').value = ""; // Seçilmiş şəkilləri silir
-
-    // Yazıları və düyməni əvvəlki vəziyyətinə qaytar
-    document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Xəbər Əlavə Et';
-    const saveBtn = document.getElementById('save-btn');
-    saveBtn.innerText = "SİSTEMƏ YADDA SAXLA";
-    saveBtn.style.background = "#28a745"; // Yaşıl rəngə qaytarır
-    
-    console.log("Form təmizləndi.");
-    }
-            
+            await _supabase.from('xeberler').delete().eq('id', id);            
             loadNews();
         } catch (err) { alert(err.message); }
     }

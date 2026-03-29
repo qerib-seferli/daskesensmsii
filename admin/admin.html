@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --bg: #f0f2f5; --danger: #dc3545; --success: #28a745; }
+        :root { --main: #003366; --bg: #f0f2f5; --danger: #dc3545; --success: #28a745; --gray: #6c757d; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; }
         .sidebar { width: 260px; background: var(--main); color: white; min-height: 100vh; padding: 25px; position: fixed; }
         .main { margin-left: 290px; padding: 40px; width: calc(100% - 310px); }
@@ -17,23 +17,23 @@
         textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 
         .btn-save { background: var(--success); color: white; border: none; padding: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; transition: 0.3s; font-size: 16px; }
-        .btn-save:hover { opacity: 0.9; }
+        .btn-clear { background: var(--gray); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
+        .btn-save:hover, .btn-clear:hover { opacity: 0.9; }
 
-        /* Sətir tipli xəbər siyahısı */
         .news-list-container { display: flex; flex-direction: column; gap: 15px; }
         .news-row { 
             display: flex; background: white; border-radius: 10px; overflow: hidden; border: 1px solid #eee; 
-            height: 160px; /* Sabit hündürlük */
+            height: 150px; 
         }
         
-        /* Balaca şəkil konteyneri */
+        /* Şəkil 5x4 nisbətində və bir az böyük */
         .img-box { 
-            width: 130px; /* Şəkil ölçüsü kiçildildi */
+            width: 180px; 
             height: 100%; position: relative; flex-shrink: 0; background: #eee; 
+            aspect-ratio: 5 / 4;
         }
         .img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* Karusel düymələri */
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.5); color: white; border: none; width: 25px; height: 25px;
@@ -75,11 +75,12 @@
                 <input type="date" id="news-date">
             </div>
             <div style="flex:2">
-                <label>Şəkillər:</label>
+                <label>Şəkillər (5x4 tövsiyə edilir):</label>
                 <input type="file" id="news-files" multiple accept="image/*">
             </div>
         </div>
         <button class="btn-save" id="save-btn" onclick="saveNews()">SİSTEMƏ YADDA SAXLA</button>
+        <button class="btn-clear" onclick="clearForm()"><i class="fas fa-eraser"></i> FORMU TƏMİZLƏ</button>
     </div>
 
     <h3>Mövcud Xəbərlər</h3>
@@ -132,17 +133,8 @@
             if (error) throw error;
 
             alert("Uğurla tamamlandı!");
-            
-            // FORMU TƏMİZLƏ
-            document.getElementById('edit-id').value = "";
-            titleInput.value = "";
-            descInput.value = "";
-            dateInput.value = "";
-            fileInput.value = "";
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Xəbər Əlavə Et';
-            btn.innerText = "SİSTEMƏ YADDA SAXLA";
-            
-            ();
+            clearForm(); // Formu təmizləyir
+            loadNews(); // Siyahını yeniləyir
 
         } catch (err) {
             alert("Xəta: " + err.message);
@@ -163,12 +155,11 @@
                 const div = document.createElement('div');
                 div.className = 'news-row';
                 
-                // Karusel məntiqi üçün HTML
-                let imgHtml = `<img src="${images[0] || 'https://via.placeholder.com/130x160?text=Yoxdur'}" id="img-${n.id}">`;
+                let imgHtml = `<img src="${images[0] || 'https://via.placeholder.com/180x150?text=Yoxdur'}" id="img-${n.id}">`;
                 if(images.length > 1) {
                     imgHtml += `
-                        <button class="nav-btn prev-btn" onclick="changeImg(${n.id}, ${JSON.stringify(images).replace(/"/g, '&quot;')}, -1)"><i class="fas fa-chevron-left"></i></button>
-                        <button class="nav-btn next-btn" onclick="changeImg(${n.id}, ${JSON.stringify(images).replace(/"/g, '&quot;')}, 1)"><i class="fas fa-chevron-right"></i></button>
+                        <button class="nav-btn prev-btn" onclick="event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images).replace(/"/g, '&quot;')}, -1)"><i class="fas fa-chevron-left"></i></button>
+                        <button class="nav-btn next-btn" onclick="event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images).replace(/"/g, '&quot;')}, 1)"><i class="fas fa-chevron-right"></i></button>
                     `;
                 }
 
@@ -193,7 +184,6 @@
         } catch (err) { console.log(err); }
     }
 
-    // Şəkil Dəyişmə Funksiyası
     window.changeImg = (id, imgs, dir) => {
         const imgTag = document.getElementById(`img-${id}`);
         const box = imgTag.parentElement;
@@ -215,20 +205,29 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
+    function clearForm() {
+        document.getElementById('edit-id').value = "";
+        document.getElementById('title').value = "";
+        document.getElementById('desc').value = "";
+        document.getElementById('news-date').value = "";
+        document.getElementById('news-files').value = "";
+        document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Xəbər Əlavə Et';
+        document.getElementById('save-btn').innerText = "SİSTEMƏ YADDA SAXLA";
+    }
+
     async function deleteNews(id, imgs) {
-        if (!confirm("Silinsin?")) return;
+        if (!confirm("Bu xəbəri silmək istədiyinizə əminsiniz?")) return;
         try {
             if(imgs && imgs.length > 0) {
                 const paths = imgs.map(u => u.split('xeber-media/')[1]);
                 await _supabase.storage.from('xeber-media').remove(paths);
             }
-            await _supabase.from('xeberler').delete().eq('id', id);            
+            await _supabase.from('xeberler').delete().eq('id', id);             
             loadNews();
         } catch (err) { alert(err.message); }
     }
 
-    ();
-    
+    loadNews(); // Səhifə açılanda xəbərləri yükləyir
 </script>
 </body>
 </html>

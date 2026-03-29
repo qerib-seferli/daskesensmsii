@@ -224,13 +224,7 @@
                 await _supabase.storage.from('xeber-media').remove(paths);
             }
             await _supabase.from('xeberler').delete().eq('id', id);
-            loadNews();
-        } catch (err) { alert(err.message); }
-    }
 
-    ();
-
-    
     function clearForm() {
     // ID-ləri tap və təmizlə
     document.getElementById('edit-id').value = "";
@@ -247,7 +241,12 @@
     
     console.log("Form təmizləndi.");
     }
+            
+            loadNews();
+        } catch (err) { alert(err.message); }
+    }
 
+    ();
     
 </script>
 </body>

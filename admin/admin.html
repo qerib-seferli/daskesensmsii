@@ -3,54 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xəbər İdarəetmə | Daşkəsən SMSİİ</title>
+    <title>Admin Panel | Daşkəsən SMSİİ</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --bg: #f0f2f5; }
-        body { font-family: sans-serif; margin: 0; background: var(--bg); display: flex; }
+        :root { --main: #003366; --bg: #f0f2f5; --danger: #dc3545; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; }
         .sidebar { width: 260px; background: var(--main); color: white; min-height: 100vh; padding: 25px; position: fixed; }
         .main { margin-left: 310px; padding: 40px; width: calc(100% - 350px); }
-        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 30px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        .btn-save { background: #28a745; color: white; border: none; padding: 12px 25px; cursor: pointer; border-radius: 6px; font-weight: bold; width: 100%; }
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .news-card { background: white; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; }
-        .news-card img { width: 100%; height: 180px; object-fit: cover; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        
+        /* Textarea düzəlişi */
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        textarea { resize: vertical; min-height: 120px; } /* Yalnız yuxarı-aşağı genişlənir */
+
+        .btn-save { background: #28a745; color: white; border: none; padding: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-save:hover { background: #218838; }
+
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .news-card { background: white; border-radius: 10px; overflow: hidden; border: 1px solid #eee; transition: 0.3s; }
+        
+        /* Şəkil 4x5 nisbəti */
+        .img-container { width: 100%; aspect-ratio: 4 / 5; overflow: hidden; background: #eee; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+
         .news-content { padding: 15px; }
-        .actions { display: flex; justify-content: space-between; margin-top: 10px; }
-        .btn-edit { background: #ffc107; border: none; padding: 5px 15px; cursor: pointer; border-radius: 4px; }
-        .btn-delete { background: #dc3545; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 4px; }
+        .news-content h4 { margin: 0 0 10px 0; font-size: 16px; color: var(--main); }
+        .actions { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-edit { flex: 1; background: #ffc107; border: none; padding: 8px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        .btn-delete { flex: 1; background: var(--danger); color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>SMSİİ Admin</h2>
-    <hr>
-    <p><i class="fas fa-newspaper"></i> Xəbərlər</p>
-    <button onclick="_supabase.auth.signOut().then(()=>location.reload())" style="margin-top:50px; background:rgba(255,255,255,0.2); color:white; border:none; padding:10px; width:100%; cursor:pointer; border-radius:5px;">Çıxış Et</button>
+    <h2>Daşkəsən SMSİİ Admin</h2>
+    <hr opacity="0.2">
+    <p><i class="fas fa-newspaper"></i> Xəbər İdarəetmə</p>
+    <button onclick="_supabase.auth.signOut().then(()=>location.reload())" style="margin-top:50px; background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); padding:10px; width:100%; cursor:pointer; border-radius:5px;">Çıxış</button>
 </div>
 
 <div class="main">
     <div class="card">
-        <h3><i class="fas fa-plus"></i> Xəbər Əlavə Et / Redaktə</h3>
+        <h3><i class="fas fa-plus-circle"></i> Xəbər Əlavə Et / Yenilə</h3>
         <input type="hidden" id="edit-id">
         <input type="text" id="title" placeholder="Xəbər başlığı">
-        <textarea id="desc" rows="5" placeholder="Ətraflı xəbər mətni..."></textarea>
-        <input type="date" id="news-date">
-        <label>Şəkillər seçin (Birinci şəkil əsas olacaq):</label>
-        <input type="file" id="news-files" multiple accept="image/*">
+        <textarea id="desc" placeholder="Xəbərin geniş mətni bura yazılır..."></textarea>
+        <div style="display:flex; gap:15px; align-items:center;">
+            <div style="flex:1">
+                <label>Tarix:</label>
+                <input type="date" id="news-date">
+            </div>
+            <div style="flex:2">
+                <label>Şəkillər (4x5 tövsiyə olunur):</label>
+                <input type="file" id="news-files" multiple accept="image/*">
+            </div>
+        </div>
         <button class="btn-save" id="save-btn" onclick="saveNews()">YADDA SAXLA</button>
     </div>
 
-    <h3>Bütün Xəbərlər (Sonuncudan başlayaraq)</h3>
+    <h3>Mövcud Xəbərlər</h3>
     <div id="news-list" class="news-grid"></div>
 </div>
 
 <script src="supabase-config.js"></script>
 <script>
-    checkAuth(); // Təhlükəsizlik yoxlaması
+    checkAuth();
 
     async function saveNews() {
         const btn = document.getElementById('save-btn');
@@ -59,72 +77,76 @@
         const desc = document.getElementById('desc').value;
         const date = document.getElementById('news-date').value;
         const files = document.getElementById('news-files').files;
-        
-        if(!title || !desc) return alert("Başlıq və mətn mütləqdir!");
-        
+
+        if(!title || !desc) return alert("Başlıq və mətn boş ola bilməz!");
+
         btn.disabled = true;
-        btn.innerText = "Yüklənir...";
+        btn.innerText = "Gözləyin, yüklənir...";
 
         let imageUrls = [];
-
-        // Şəkilləri Storage-ə yükləyirik
         for (const file of files) {
             const path = `uploads/${Date.now()}_${file.name}`;
-            const { data, error } = await _supabase.storage.from('xeber-media').upload(path, file);
+            const { error } = await _supabase.storage.from('xeber-media').upload(path, file);
             if (!error) {
-                const { data: urlData } = _supabase.storage.from('xeber-media').getPublicUrl(path);
-                imageUrls.push(urlData.publicUrl);
+                const { data } = _supabase.storage.from('xeber-media').getPublicUrl(path);
+                imageUrls.push(data.publicUrl);
             }
         }
 
         const newsData = { basliq: title, aciqlama: desc, tarix: date };
         if(imageUrls.length > 0) newsData.sekiller = imageUrls;
 
-        if (id) {
-            await _supabase.from('xeberler').update(newsData).eq('id', id);
-        } else {
+        const { error } = id ? 
+            await _supabase.from('xeberler').update(newsData).eq('id', id) : 
             await _supabase.from('xeberler').insert([newsData]);
-        }
 
-        location.reload();
+        if(error) alert("Xəta baş verdi!");
+        else location.reload();
     }
 
     async function loadNews() {
-        const { data, error } = await _supabase.from('xeberler').select('*').order('id', { ascending: false });
-        if (error) return;
-
+        const { data } = await _supabase.from('xeberler').select('*').order('id', { ascending: false });
         const list = document.getElementById('news-list');
-        list.innerHTML = data.map(n => `
-            <div class="news-card">
-                <img src="${n.sekiller && n.sekiller[0] ? n.sekiller[0] : 'https://via.placeholder.com/300x180'}">
+        list.innerHTML = "";
+        
+        data.forEach(n => {
+            const div = document.createElement('div');
+            div.className = 'news-card';
+            div.innerHTML = `
+                <div class="img-container">
+                    <img src="${n.sekiller?.[0] || 'https://via.placeholder.com/400x500?text=No+Image'}">
+                </div>
                 <div class="news-content">
                     <h4>${n.basliq}</h4>
-                    <p style="color:#666; font-size:13px;"><i class="fas fa-calendar"></i> ${n.tarix}</p>
+                    <small>${n.tarix}</small>
                     <div class="actions">
-                        <button class="btn-edit" onclick='editNews(${JSON.stringify(n)})'>Düzəlt</button>
-                        <button class="btn-delete" onclick="deleteNews(${n.id}, ${JSON.stringify(n.sekiller)})">Sil</button>
+                        <button class="btn-edit" id="eb-${n.id}">Düzəlt</button>
+                        <button class="btn-delete" id="db-${n.id}">Sil</button>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+            list.appendChild(div);
+
+            // Təhlükəsiz Event Listener (Səhvsiz işləməsi üçün)
+            div.querySelector(`#eb-${n.id}`).onclick = () => {
+                document.getElementById('edit-id').value = n.id;
+                document.getElementById('title').value = n.basliq;
+                document.getElementById('desc').value = n.aciqlama;
+                document.getElementById('news-date').value = n.tarix;
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            };
+            div.querySelector(`#db-${n.id}`).onclick = () => deleteNews(n.id, n.sekiller);
+        });
     }
 
     async function deleteNews(id, imgs) {
         if (!confirm("Bu xəbəri silmək istəyirsiz?")) return;
-        if(imgs) {
+        if(imgs && imgs.length > 0) {
             const paths = imgs.map(u => u.split('xeber-media/')[1]);
             await _supabase.storage.from('xeber-media').remove(paths);
         }
         await _supabase.from('xeberler').delete().eq('id', id);
         loadNews();
-    }
-
-    function editNews(n) {
-        document.getElementById('edit-id').value = n.id;
-        document.getElementById('title').value = n.basliq;
-        document.getElementById('desc').value = n.aciqlama;
-        document.getElementById('news-date').value = n.tarix;
-        window.scrollTo(0,0);
     }
 
     loadNews();

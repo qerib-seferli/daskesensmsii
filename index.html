@@ -1391,224 +1391,171 @@ loadWeather();
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
+  
 
 
-// ==============================
-// XƏBƏR SİSTEMİ VƏ SLIDER (TAM VERSİYA)
-// ==============================
-<script>
-let allNews = [];
-let sliderPos = 0;
-let autoSlideTimer;
+          <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+          <script src="supabase-config.js"></script>
 
-// 1. Məlumatları Supabase-dən çəkən funksiya
-async function loadNews() {
-  try {
-    // _supabase obyekti supabase-config.js-dən gəlir
-    const { data, error } = await _supabase
-      .from('xeberler')
-      .select('*')
-      .order('id', { ascending: false });
+  <script>
+    // 1. GLOBAL DƏYİŞƏNLƏR
+    let allNews = [];
+    let sliderPos = 0;
+    let autoSlideTimer;
 
-    if (error) throw error;
+    // 2. MƏLUMATLARI SUPABASE-DƏN ÇƏKMƏK
+    async function loadNews() {
+      try {
+        // _supabase obyekti supabase-config.js-dən gəlir
+        const { data, error } = await _supabase
+          .from('xeberler')
+          .select('*')
+          .order('id', { ascending: false });
 
-    if (data && data.length > 0) {
-      allNews = data;
-      renderNewsSlider(allNews.slice(0, 8)); // İlk 8 xəbər sliderə
-      renderTicker(allNews.slice(0, 5));     // İlk 5 xəbər akan yazıya
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          allNews = data;
+          renderNewsSlider(allNews.slice(0, 8)); // Sliderə ilk 8 xəbər
+          renderTicker(allNews.slice(0, 5));     // Tickerə 5 xəbər
+        } else {
+          console.log("Bazada xəbər tapılmadı.");
+        }
+      } catch (e) {
+        console.error('Xəbər yüklənərkən xəta:', e.message);
+      }
     }
-  } catch (e) {
-    console.error('Xəta baş verdi:', e.message);
-  }
-}
 
-// 2. Slideri ekrana çıxaran funksiya
-function renderNewsSlider(items) {
-  const slider = document.getElementById('newsSlider');
-  if(!slider) return;
-  slider.innerHTML = '';
-  
-  items.forEach((item, i) => {
-    // Şəkil yoxdursa placeholder qoyur
-    const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : 'fotolar/logo.jpg';
-    
-    slider.innerHTML += `
-      <div class="news-card">
-        <img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" onerror="this.src='fotolar/logo.jpg'">
-        <div class="news-card-body">
-          <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>
-          <div class="news-card-title">${item.basliq}</div>
-          <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
-        </div>
-      </div>`;
-  });
-  setupSlider();
-}
+    // 3. SLIDERİ EKRANA ÇIXARMAQ
+    function renderNewsSlider(items) {
+      const slider = document.getElementById('newsSlider');
+      if(!slider) return;
+      slider.innerHTML = '';
+      
+      items.forEach((item, i) => {
+        const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : 'fotolar/logo.jpg';
+        
+        slider.innerHTML += `
+          <div class="news-card">
+            <img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" onerror="this.src='fotolar/logo.jpg'">
+            <div class="news-card-body">
+              <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>
+              <div class="news-card-title">${item.basliq}</div>
+              <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>`;
+      });
+      setupSlider();
+    }
 
-// 3. Akan yazını quran funksiya
-function renderTicker(items) {
-  const ticker = document.getElementById('tickerContent');
-  if(!ticker) return;
-  const html = items.map((n, i) =>
-    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
-  ).join('');
-  ticker.innerHTML = html + html;
-}
+    // 4. AKAN YAZI (TICKER)
+    function renderTicker(items) {
+      const ticker = document.getElementById('tickerContent');
+      if(!ticker) return;
+      const html = items.map((n, i) =>
+        `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
+      ).join('');
+      ticker.innerHTML = html + html;
+    }
 
-// 4. Slider mexanizmi (Sürüşmə)
-function setupSlider() {
-  const wrap = document.getElementById('newsSliderWrap');
-  const dots = document.getElementById('sliderDots');
-  if(!dots) return;
-  dots.innerHTML = '';
-  const cardWidth = 318;
-  const visCount = Math.floor(wrap.offsetWidth / cardWidth) || 1;
-  const maxSlide = Math.max(0, allNews.slice(0, 8).length - visCount);
+    // 5. SLIDER MEXANİZMİ
+    function setupSlider() {
+      const wrap = document.getElementById('newsSliderWrap');
+      const dots = document.getElementById('sliderDots');
+      if(!dots || !wrap) return;
+      dots.innerHTML = '';
+      const cardWidth = 318;
+      const visCount = Math.floor(wrap.offsetWidth / cardWidth) || 1;
+      const maxSlide = Math.max(0, allNews.slice(0, 8).length - visCount);
 
-  for(let i=0; i<=maxSlide; i++) {
-    const d = document.createElement('button');
-    d.className = 'slider-dot' + (i===0?' active':'');
-    d.onclick = ()=> goToSlide(i);
-    dots.appendChild(d);
-  }
-  startAutoSlide(maxSlide);
-}
+      for(let i=0; i<=maxSlide; i++) {
+        const d = document.createElement('button');
+        d.className = 'slider-dot' + (i===0?' active':'');
+        d.onclick = ()=> goToSlide(i);
+        dots.appendChild(d);
+      }
+      startAutoSlide(maxSlide);
+    }
 
-function goToSlide(i) {
-  const wrap = document.getElementById('newsSliderWrap');
-  if(wrap) wrap.scrollTo({ left: i * 318, behavior: 'smooth' });
-  document.querySelectorAll('.slider-dot').forEach((d,j) => d.classList.toggle('active', i===j));
-  sliderPos = i;
-}
+    function goToSlide(i) {
+      const wrap = document.getElementById('newsSliderWrap');
+      if(wrap) wrap.scrollTo({ left: i * 318, behavior: 'smooth' });
+      document.querySelectorAll('.slider-dot').forEach((d,j) => d.classList.toggle('active', i===j));
+      sliderPos = i;
+    }
 
-function startAutoSlide(maxSlide) {
-  clearInterval(autoSlideTimer);
-  if(maxSlide > 0) {
-    autoSlideTimer = setInterval(() => {
-      sliderPos = (sliderPos >= maxSlide) ? 0 : sliderPos + 1;
-      goToSlide(sliderPos);
-    }, 4000);
-  }
-}
+    function startAutoSlide(maxSlide) {
+      clearInterval(autoSlideTimer);
+      if(maxSlide > 0) {
+        autoSlideTimer = setInterval(() => {
+          sliderPos = (sliderPos >= maxSlide) ? 0 : sliderPos + 1;
+          goToSlide(sliderPos);
+        }, 4000);
+      }
+    }
 
-// 5. Xəbərə klikləyəndə açılan Modal
-function openNewsModal(idx) {
-  const item = allNews[idx];
-  if(!item) return;
-  
-  const modal = document.getElementById('newsModal');
-  document.getElementById('modalTitle').textContent = item.basliq;
-  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
-  document.getElementById('modalText').textContent = item.aciqlama;
+    // 6. MODAL (XƏBƏR PƏNCƏRƏSİ)
+    function openNewsModal(idx) {
+      const item = allNews[idx];
+      if(!item) return;
+      
+      const modal = document.getElementById('newsModal');
+      document.getElementById('modalTitle').textContent = item.basliq;
+      document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
+      document.getElementById('modalText').textContent = item.aciqlama;
 
-  const mainImg = document.getElementById('modalMainImg');
-  if(item.sekiller && item.sekiller.length > 0) {
-    mainImg.src = item.sekiller[0];
-    mainImg.style.display = 'block';
-  } else {
-    mainImg.style.display = 'none';
-  }
-  
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
+      const mainImg = document.getElementById('modalMainImg');
+      if(item.sekiller && item.sekiller.length > 0) {
+        mainImg.src = item.sekiller[0];
+        mainImg.style.display = 'block';
+      } else {
+        mainImg.style.display = 'none';
+      }
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
 
-function closeNewsModal() {
-  document.getElementById('newsModal').classList.remove('active');
-  document.body.style.overflow = '';
-}
+    function closeNewsModal() {
+      document.getElementById('newsModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
 
-// 6. DİGƏR FUNKSİYALAR (Menyu, Scroll, PWA)
-function toggleMobileNav() {
-  const nav = document.getElementById('mobileNav');
-  nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
-}
+    // 7. MOBİL MENYU VƏ DİGƏR NAVİQASİYA
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobileNav');
+      const current = nav.style.display;
+      nav.style.display = (current === 'flex') ? 'none' : 'flex';
+    }
 
-window.addEventListener('scroll', () => {
-  const btn = document.getElementById('backToTop');
-  if(btn) btn.classList.toggle('visible', window.scrollY > 350);
-});
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('backToTop');
+      if(btn) btn.classList.toggle('visible', window.scrollY > 350);
+    });
 
-// PWA hissəsi
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  if(!localStorage.getItem('pwaDismissed')) {
-    setTimeout(() => {
+    // 8. PWA QURAŞDIRILMASI
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if(!localStorage.getItem('pwaDismissed')) {
+        setTimeout(() => {
+          const banner = document.getElementById('pwaBanner');
+          if(banner) banner.classList.add('show');
+        }, 3000);
+      }
+    });
+
+    function dismissPWA() {
       const banner = document.getElementById('pwaBanner');
-      if(banner) banner.classList.add('show');
-    }, 3000);
-  }
-});
+      if(banner) banner.classList.remove('show');
+      localStorage.setItem('pwaDismissed', '1');
+    }
 
-function dismissPWA() {
-  document.getElementById('pwaBanner').classList.remove('show');
-  localStorage.setItem('pwaDismissed', '1');
-}
-
-// 7. SAYT AÇILANDA İŞƏ SAL (INIT)
-document.addEventListener('DOMContentLoaded', () => {
-  loadNews(); 
-});
-
-
-
-
-  
-  
-// ==============================
-// MOBILE NAV
-// ==============================
-function toggleMobileNav() {
-  const nav = document.getElementById('mobileNav');
-  const isOpen = nav.style.display === 'flex';
-  nav.style.display = isOpen ? 'none' : 'flex';
-}
-
-// ==============================
-// BACK TO TOP
-// ==============================
-window.addEventListener('scroll', () => {
-  const btn = document.getElementById('backToTop');
-  btn.classList.toggle('visible', window.scrollY > 350);
-});
-
-// ==============================
-// PWA INSTALL
-// ==============================
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  if(!localStorage.getItem('pwaDismissed')) {
-    setTimeout(() => document.getElementById('pwaBanner').classList.add('show'), 3000);
-  }
-});
-
-document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  document.getElementById('pwaBanner').classList.remove('show');
-});
-
-function dismissPWA() {
-  document.getElementById('pwaBanner').classList.remove('show');
-  localStorage.setItem('pwaDismissed', '1');
-}
-
-// ==============================
-// INIT (İşə salma)
-// ==============================
-document.addEventListener('DOMContentLoaded', () => {
-  loadNews(); // Sayt açılan kimi xəbərləri bazadan çəkir
-});
-
-</script>
-    
+    // 9. SƏHİFƏ YÜKLƏNƏNDƏ İŞƏ SAL (INIT)
+    document.addEventListener('DOMContentLoaded', () => {
+      loadNews(); 
+    });
+  </script>
 </body>
 </html>

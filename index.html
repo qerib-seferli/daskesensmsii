@@ -1398,15 +1398,12 @@ loadWeather();
           <script src="supabase-config.js"></script>
 
   <script>
-    // 1. GLOBAL DƏYİŞƏNLƏR
     let allNews = [];
     let sliderPos = 0;
     let autoSlideTimer;
 
-    // 2. MƏLUMATLARI SUPABASE-DƏN ÇƏKMƏK
     async function loadNews() {
       try {
-        // _supabase obyekti supabase-config.js-dən gəlir
         const { data, error } = await _supabase
           .from('xeberler')
           .select('*')
@@ -1416,39 +1413,33 @@ loadWeather();
 
         if (data && data.length > 0) {
           allNews = data;
-          renderNewsSlider(allNews.slice(0, 8)); // Sliderə ilk 8 xəbər
-          renderTicker(allNews.slice(0, 5));     // Tickerə 5 xəbər
-        } else {
-          console.log("Bazada xəbər tapılmadı.");
+          renderNewsSlider(allNews.slice(0, 8));
+          renderTicker(allNews.slice(0, 5));
         }
       } catch (e) {
-        console.error('Xəbər yüklənərkən xəta:', e.message);
+        console.error('Supabase xətası:', e.message);
       }
     }
 
-    // 3. SLIDERİ EKRANA ÇIXARMAQ
     function renderNewsSlider(items) {
       const slider = document.getElementById('newsSlider');
       if(!slider) return;
       slider.innerHTML = '';
-      
       items.forEach((item, i) => {
         const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : 'fotolar/logo.jpg';
-        
         slider.innerHTML += `
           <div class="news-card">
             <img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" onerror="this.src='fotolar/logo.jpg'">
             <div class="news-card-body">
               <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>
               <div class="news-card-title">${item.basliq}</div>
-              <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax</button>
             </div>
           </div>`;
       });
       setupSlider();
     }
 
-    // 4. AKAN YAZI (TICKER)
     function renderTicker(items) {
       const ticker = document.getElementById('tickerContent');
       if(!ticker) return;
@@ -1458,16 +1449,12 @@ loadWeather();
       ticker.innerHTML = html + html;
     }
 
-    // 5. SLIDER MEXANİZMİ
     function setupSlider() {
       const wrap = document.getElementById('newsSliderWrap');
       const dots = document.getElementById('sliderDots');
       if(!dots || !wrap) return;
       dots.innerHTML = '';
-      const cardWidth = 318;
-      const visCount = Math.floor(wrap.offsetWidth / cardWidth) || 1;
-      const maxSlide = Math.max(0, allNews.slice(0, 8).length - visCount);
-
+      const maxSlide = Math.max(0, allNews.slice(0, 8).length - (Math.floor(wrap.offsetWidth / 318) || 1));
       for(let i=0; i<=maxSlide; i++) {
         const d = document.createElement('button');
         d.className = 'slider-dot' + (i===0?' active':'');
@@ -1494,24 +1481,16 @@ loadWeather();
       }
     }
 
-    // 6. MODAL (XƏBƏR PƏNCƏRƏSİ)
     function openNewsModal(idx) {
       const item = allNews[idx];
       if(!item) return;
-      
       const modal = document.getElementById('newsModal');
       document.getElementById('modalTitle').textContent = item.basliq;
       document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
       document.getElementById('modalText').textContent = item.aciqlama;
-
       const mainImg = document.getElementById('modalMainImg');
-      if(item.sekiller && item.sekiller.length > 0) {
-        mainImg.src = item.sekiller[0];
-        mainImg.style.display = 'block';
-      } else {
-        mainImg.style.display = 'none';
-      }
-      
+      mainImg.src = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : '';
+      mainImg.style.display = mainImg.src ? 'block' : 'none';
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -1521,11 +1500,9 @@ loadWeather();
       document.body.style.overflow = '';
     }
 
-    // 7. MOBİL MENYU VƏ DİGƏR NAVİQASİYA
     function toggleMobileNav() {
       const nav = document.getElementById('mobileNav');
-      const current = nav.style.display;
-      nav.style.display = (current === 'flex') ? 'none' : 'flex';
+      nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
     }
 
     window.addEventListener('scroll', () => {
@@ -1533,29 +1510,7 @@ loadWeather();
       if(btn) btn.classList.toggle('visible', window.scrollY > 350);
     });
 
-    // 8. PWA QURAŞDIRILMASI
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      if(!localStorage.getItem('pwaDismissed')) {
-        setTimeout(() => {
-          const banner = document.getElementById('pwaBanner');
-          if(banner) banner.classList.add('show');
-        }, 3000);
-      }
-    });
-
-    function dismissPWA() {
-      const banner = document.getElementById('pwaBanner');
-      if(banner) banner.classList.remove('show');
-      localStorage.setItem('pwaDismissed', '1');
-    }
-
-    // 9. SƏHİFƏ YÜKLƏNƏNDƏ İŞƏ SAL (INIT)
-    document.addEventListener('DOMContentLoaded', () => {
-      loadNews(); 
-    });
+    document.addEventListener('DOMContentLoaded', loadNews);
   </script>
 </body>
 </html>

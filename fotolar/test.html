@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daşkəsən SMSİİ</title>
+
+  <meta name="description" content="Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi - Daşkəsən rayonunda su meliorasiya xidmətləri, elektron müraciet, onlayn ödəniş." />
+  <meta name="keywords" content="Daşkəsən, Su Meliorasiya, SMSİİ, su idarəsi, meliorasiya, Daşkəsən su, elektron müraciet" />
+  <meta name="author" content="Daşkəsən SMSİİ" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Daşkəsən SMSİİ" />
+  <meta property="og:description" content="Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi rəsmi saytı" />
+  <meta property="og:image" content="fotolar/logo.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0369a1" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="fotolar/logo.jpg" />
+
+  <link rel="canonical" href="https://daskesensmsii.az/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --primary: #0369a1;
+      --primary-dark: #024f7c;
+      --primary-light: #0ea5e9;
+      --accent: #06b6d4;
+      --accent2: #0891b2;
+      --bg: #f0f9ff;
+      --bg2: #e0f2fe;
+      --white: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #bae6fd;
+      --shadow: 0 4px 24px rgba(3,105,161,0.10);
+      --radius: 14px;
+      --header-h: 68px;
+      --font-main: 'Montserrat', sans-serif;
+      --font-body: 'Noto Sans', sans-serif;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: var(--header-h);
+      background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 60%, var(--accent2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 16px rgba(3,105,161,0.25);
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .header-logo {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid rgba(255,255,255,0.7);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .header-title {
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .header-title span {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 400;
+      opacity: 0.82;
+    }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header-contact-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50px;
+      padding: 7px 14px;
+      color: #fff;
+      font-size: 0.82rem;
+      font-family: var(--font-main);
+      cursor: pointer;
+    }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px;
+    }
+    .hamburger span { width: 24px; height: 2.5px; background: #fff; border-radius: 2px; }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed; top: var(--header-h); left: 0; right: 0;
+      z-index: 999; background: var(--white); border-bottom: 2px solid var(--border);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: center;
+      max-width: 1100px; margin: 0 auto; overflow-x: auto;
+    }
+    .nav-inner a {
+      padding: 13px 16px; font-family: var(--font-main); font-size: 0.78rem;
+      font-weight: 600; color: var(--primary-dark); text-transform: uppercase;
+      border-bottom: 3px solid transparent; transition: 0.2s;
+    }
+    .nav-inner a:hover, .nav-inner a.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+
+    /* Mobile nav */
+    .mobile-nav {
+      display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
+      background: var(--white); z-index: 1001; flex-direction: column;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .mobile-nav.active { display: flex; }
+    .mobile-nav a {
+      padding: 15px 25px; border-bottom: 1px solid var(--bg2);
+      font-family: var(--font-main); font-weight: 600;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main { padding-top: calc(var(--header-h) + 46px); }
+
+    /* ===== HERO ===== */
+    .hero { position: relative; min-height: 480px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background-image: url('fotolar/Fon.jpg'); background-size: cover; background-position: center; filter: brightness(0.55); }
+    .hero-content { position: relative; z-index: 2; text-align: center; color: #fff; padding: 20px; max-width: 800px; }
+    .hero-title { font-family: var(--font-main); font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+
+    /* ===== NEWS TICKER ===== */
+    .news-ticker-wrap {
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+      color: #fff; padding: 12px 0; overflow: hidden; position: relative;
+    }
+    .ticker-label {
+      position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent);
+      padding: 0 15px; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; z-index: 5;
+    }
+    .ticker-container { overflow: hidden; white-space: nowrap; width: 100%; padding-left: 100px; }
+    .ticker-content { display: inline-block; animation: ticker-scroll 30s linear infinite; }
+    .ticker-item { margin-right: 50px; font-size: 0.85rem; font-family: var(--font-main); cursor: pointer; }
+    @keyframes ticker-scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+    /* ===== NEWS SECTION ===== */
+    .news-section { background: var(--white); padding: 50px 20px; }
+    .news-slider-container { position: relative; max-width: 1100px; margin: 0 auto; overflow: hidden; }
+    .news-slider { display: flex; transition: transform 0.5s ease-in-out; gap: 20px; }
+    .news-card {
+      min-width: calc(33.333% - 14px);
+      background: var(--bg); border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border); box-shadow: var(--shadow); transition: 0.3s;
+    }
+    .news-card:hover { transform: translateY(-5px); }
+    .news-card-img { width: 100%; height: 200px; object-fit: cover; }
+    .news-card-body { padding: 15px; }
+    .news-card-title { font-weight: 700; font-size: 0.95rem; margin: 10px 0; height: 45px; overflow: hidden; }
+    .news-card-date { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      z-index: 2000; padding: 20px; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #fff; width: 100%; max-width: 800px; border-radius: 20px;
+      overflow: hidden; position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-close { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; z-index: 10; background: #fff; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; }
+    .modal-slider { position: relative; height: 350px; background: #000; }
+    .modal-img { width: 100%; height: 100%; object-fit: contain; }
+    .modal-nav { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; transform: translateY(-50%); padding: 0 10px; }
+    .modal-nav button { background: rgba(255,255,255,0.5); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+    .modal-content { padding: 25px; }
+    .modal-title { font-size: 1.4rem; color: var(--primary-dark); margin-bottom: 10px; font-family: var(--font-main); font-weight: 800; }
+    .modal-text { line-height: 1.8; color: var(--text-muted); white-space: pre-line; }
+
+    /* ===== PAYMENT & OTHERS ===== */
+    .payment-section { background: var(--bg2); padding: 50px 20px; }
+    .payment-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; }
+    .payment-card { background: #fff; padding: 20px; border-radius: 15px; display: flex; align-items: center; gap: 15px; border: 1px solid var(--border); }
+    .payment-btn { margin-left: auto; background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 20px; font-weight: 700; }
+
+    .useful-section { padding: 50px 20px; background: #fff; }
+    .useful-links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; max-width: 1100px; margin: 0 auto; }
+    .useful-item { background: var(--bg); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border); transition: 0.2s; }
+    .useful-item:hover { transform: scale(1.05); }
+    .gov-img { height: 50px; margin-bottom: 8px; object-fit: contain; }
+
+    .contact-section { background: var(--primary-dark); color: #fff; padding: 50px 20px; }
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+    .contact-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; display: flex; gap: 15px; }
+
+    footer { background: #012a4a; color: #fff; padding: 40px 20px; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 20px; text-align: center; font-size: 0.8rem; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 992px) {
+      .news-card { min-width: calc(50% - 10px); }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      nav { display: none; }
+      .news-card { min-width: 100%; }
+      .payment-cards { grid-template-columns: 1fr; }
+      .hero-title { font-size: 1.4rem; }
+      .header-title span { display: none; }
+      .header-contact-btn span { display: none; }
+      main { padding-top: var(--header-h); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="header-left">
+    <img src="fotolar/logo.jpg" alt="Logo" class="header-logo" />
+    <div class="header-title">Daşkəsən<span>Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span></div>
+  </a>
+  <div class="header-right">
+    <a href="https://wa.me/994505459085" target="_blank" class="header-contact-btn"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></a>
+    <a href="tel:+994222155049" class="header-contact-btn"><i class="fas fa-phone-alt"></i><span>(022) 215 50 49</span></a>
+    <div class="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="active">Ana Səhifə</a>
+    <a href="haqqimizda.html">Haqqımızda</a>
+    <a href="sturuktur.html">Struktur</a>
+    <a href="rehberlik.html">Rəhbərlik</a>
+    <a href="elektron-muraciet.html">Elektron Müraciət</a>
+    <a href="istifade-sertleri.html">İstifadə Şərtləri</a>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">Ana Səhifə</a>
+  <a href="haqqimizda.html">Haqqımızda</a>
+  <a href="sturuktur.html">Struktur</a>
+  <a href="rehberlik.html">Rəhbərlik</a>
+  <a href="elektron-muraciet.html">Elektron Müraciət</a>
+  <a href="istifade-sertleri.html">İstifadə Şərtləri</a>
+</div>
+
+<main>
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <h3 class="hero-title">Azərbaycan Dövlət Su Ehtiyatları Agentliyinin Regional Su Meliorasiya QSC</h3>
+      <p>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi</p>
+      <div class="hero-btns">
+        <a href="elektron-muraciet.html" class="btn-primary" style="background: var(--accent); padding: 12px 25px; border-radius: 50px; font-weight: 700;">Elektron Müraciət</a>
+        <a href="#payment" class="btn-secondary" style="border: 2px solid #fff; padding: 10px 25px; border-radius: 50px;">Onlayn Ödəniş</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="news-ticker-wrap">
+    <div class="ticker-label">SON XƏBƏRLƏR</div>
+    <div class="ticker-container">
+      <div class="ticker-content" id="tickerContent">Yüklənir...</div>
+    </div>
+  </div>
+
+  <section class="news-section">
+    <div class="container">
+      <h2 style="color: var(--primary-dark); margin-bottom: 25px; display: flex; align-items: center; gap: 10px;"><i class="fas fa-newspaper"></i> Son Xəbərlər</h2>
+      <div class="news-slider-container">
+        <div class="news-slider" id="newsSlider">
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="payment-section" id="payment">
+    <div class="container">
+      <h2 style="text-align: center; margin-bottom: 30px;">Onlayn Ödəniş</h2>
+      <div class="payment-cards">
+        <a href="https://million.az/services/communal/Azersu" target="_blank" class="payment-card">
+          <span style="font-size: 2rem;">💧</span>
+          <div><h3>ADSEA (Azərsu)</h3><p>İçməli su ödənişi</p></div>
+          <span class="payment-btn">Ödə</span>
+        </a>
+        <a href="https://million.az/services/communal/Meliorasiya" target="_blank" class="payment-card">
+          <span style="font-size: 2rem;">🌊</span>
+          <div><h3>Meliorasiya</h3><p>Su istifadəçiləri üçün</p></div>
+          <span class="payment-btn">Ödə</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="useful-section">
+    <div class="container">
+      <h3 style="text-align: center; margin-bottom: 25px; color: var(--primary);">Faydalı Keçidlər</h3>
+      <div class="useful-links-grid">
+        <a href="https://president.az" target="_blank" class="useful-item">
+          <img src="https://rsmx.gov.az/storage/430/01KB3F2AZ6RM6B082VT74EA6SH.png" class="gov-img" alt="">
+          <p style="font-size: 0.7rem;">AR Prezidenti</p>
+        </a>
+        <a href="https://asan.gov.az" target="_blank" class="useful-item">
+          <img src="https://rsmx.gov.az/storage/20/asan.jpg" class="gov-img" alt="">
+          <p style="font-size: 0.7rem;">ASAN Xidmət</p>
+        </a>
+        <a href="https://e-gov.az" target="_blank" class="useful-item">
+          <img src="https://rsmx.gov.az/storage/88/01JTRBF4FPFPMDATXBYX9R9GJ3.jpg" class="gov-img" alt="">
+          <p style="font-size: 0.7rem;">e-Gov Portalı</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-card"><i class="fas fa-map-marker-alt"></i><div><h4>Ünvan</h4><p>Daşkəsən şəhəri</p></div></div>
+        <div class="contact-card"><i class="fas fa-phone-alt"></i><div><h4>Telefon</h4><p>(022) 215 50 49</p></div></div>
+        <div class="contact-card"><i class="fas fa-envelope"></i><div><h4>E-Poçt</h4><p>daskesen@rsmx.az</p></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Daşkəsən SMSİİ. Bütün hüquqlar qorunur.</p>
+    <div class="footer-bottom">Full-stack Developer: <strong>Qərib Səfərli</strong></div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="newsModal">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeNewsModal()">&times;</div>
+    <div class="modal-slider">
+      <img id="modalImg" class="modal-img" src="" alt="">
+      <div class="modal-nav" id="modalNav">
+        <button onclick="changeModalImg(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button onclick="changeModalImg(1)"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="modal-content">
+      <div id="modalDate" class="news-card-date"></div>
+      <h2 id="modalTitle" class="modal-title"></h2>
+      <p id="modalText" class="modal-text"></p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+  let allNews = [];
+  let currentNewsIdx = 0;
+  let currentImgIdx = 0;
+
+  async function fetchNews() {
+    try {
+      const { data, error } = await _supabase.from('xeberler').select('*').order('id', { ascending: false });
+      if (error) throw error;
+      allNews = data;
+      renderTicker();
+      renderSlider();
+      startAutoSlide();
+    } catch (err) { console.error("Xəta:", err); }
+  }
+
+  function renderTicker() {
+    const ticker = document.getElementById('tickerContent');
+    ticker.innerHTML = allNews.map(n => `<span class="ticker-item" onclick="openNewsModalById(${n.id})">${n.basliq}</span>`).join('');
+  }
+
+  function renderSlider() {
+    const slider = document.getElementById('newsSlider');
+    slider.innerHTML = allNews.map((n, i) => `
+      <div class="news-card">
+        <img src="${n.sekiller[0] || 'fotolar/logo.jpg'}" class="news-card-img">
+        <div class="news-card-body">
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${n.tarix}</div>
+          <h3 class="news-card-title">${n.basliq}</h3>
+          <button onclick="openNewsModal(${i})" class="payment-btn" style="width:100%; cursor:pointer;">Ətraflı bax</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  let slideIndex = 0;
+  function startAutoSlide() {
+    setInterval(() => {
+      const slider = document.getElementById('newsSlider');
+      const cards = document.querySelectorAll('.news-card');
+      if (cards.length === 0) return;
+      
+      slideIndex++;
+      let perView = window.innerWidth > 992 ? 3 : (window.innerWidth > 768 ? 2 : 1);
+      if (slideIndex > allNews.length - perView) slideIndex = 0;
+      
+      const move = slideIndex * (cards[0].offsetWidth + 20);
+      slider.style.transform = `translateX(-${move}px)`;
+    }, 3000);
+  }
+
+  function openNewsModal(idx) {
+    const n = allNews[idx];
+    currentNewsIdx = idx;
+    currentImgIdx = 0;
+    
+    document.getElementById('modalTitle').innerText = n.basliq;
+    document.getElementById('modalText').innerText = n.aciqlama;
+    document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${n.tarix}`;
+    
+    updateModalImg();
+    document.getElementById('newsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openNewsModalById(id) {
+    const idx = allNews.findIndex(n => n.id === id);
+    if(idx !== -1) openNewsModal(idx);
+  }
+
+  function updateModalImg() {
+    const n = allNews[currentNewsIdx];
+    const imgElement = document.getElementById('modalImg');
+    const nav = document.getElementById('modalNav');
+    
+    if (n.sekiller && n.sekiller.length > 0) {
+      imgElement.src = n.sekiller[currentImgIdx];
+      nav.style.display = n.sekiller.length > 1 ? 'flex' : 'none';
+    } else {
+      imgElement.src = 'fotolar/logo.jpg';
+      nav.style.display = 'none';
+    }
+  }
+
+  function changeModalImg(dir) {
+    const n = allNews[currentNewsIdx];
+    currentImgIdx += dir;
+    if (currentImgIdx < 0) currentImgIdx = n.sekiller.length - 1;
+    if (currentImgIdx >= n.sekiller.length) currentImgIdx = 0;
+    updateModalImg();
+  }
+
+  function closeNewsModal() {
+    document.getElementById('newsModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  function toggleMobileNav() {
+    document.getElementById('mobileNav').classList.toggle('active');
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('newsModal');
+    if (event.target == modal) closeNewsModal();
+  }
+
+  document.addEventListener('DOMContentLoaded', fetchNews);
+</script>
+
+</body>
+</html>

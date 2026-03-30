@@ -1335,6 +1335,21 @@
 
 
 
+  
+
+
+<section class="news-section">
+  <div class="section-header">
+    <h2 class="section-title"><i class="fas fa-newspaper"></i> Son Xəbərlər</h2>
+    <button onclick="openAllNews()" class="view-all-btn">Hamısına bax</button>
+  </div>
+  
+  <div class="news-container" id="newsSlider">
+    <div class="skeleton-loader"></div>
+    <div class="skeleton-loader"></div>
+    <div class="skeleton-loader"></div>
+  </div>
+</section>
 
 
 
@@ -1406,9 +1421,100 @@ loadWeather();
 
 
 
+  
+
+
+// 1. Məlumatları təmiz saxlamaq üçün obyekt
+let newsData = [];
+
+// 2. Supabase-dən xəbərləri gətirən funksiya (Modern variant)
+async function fetchNews() {
+  const newsSlider = document.getElementById('newsSlider');
+  
+  try {
+    const { data, error } = await _supabase
+      .from('xeberler')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      newsData = data;
+      renderNews(newsData.slice(0, 6)); // Ana səhifəyə ilk 6 xəbər
+    } else {
+      newsSlider.innerHTML = "<p>Hazırda xəbər tapılmadı.</p>";
+    }
+  } catch (err) {
+    console.error("Xəbər yüklənmə xətası:", err.message);
+    newsSlider.innerHTML = "<p>Məlumat yüklənərkən xəta baş verdi.</p>";
+  }
+}
+
+// 3. Xəbərləri ekrana çıxaran funksiya (UI)
+function renderNews(items) {
+  const container = document.getElementById('newsSlider');
+  container.innerHTML = ''; // Skeleton-u təmizləyirik
+
+  items.forEach((item, index) => {
+    const mainImage = (item.sekiller && item.sekiller.length > 0) 
+                      ? item.sekiller[0] 
+                      : 'fotolar/placeholder.jpg'; // Şəkil yoxdursa standart şəkil
+
+    container.innerHTML += `
+      <div class="news-card" onclick="showNewsDetail(${index})">
+        <div class="card-img-wrap">
+          <img src="${mainImage}" alt="${item.basliq}" loading="lazy">
+          <div class="card-date">${item.tarix}</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">${item.basliq}</h3>
+          <p class="card-desc">${item.aciqlama.substring(0, 80)}...</p>
+          <span class="read-more">Ətraflı oxu <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// 4. Detallı modalın açılması (UX)
+function showNewsDetail(index) {
+  const news = newsData[index];
+  if(!news) return;
+
+  const modal = document.getElementById('newsModal');
+  document.getElementById('modalTitle').innerText = news.basliq;
+  document.getElementById('modalText').innerText = news.aciqlama;
+  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${news.tarix}`;
+
+  const mainImg = document.getElementById('modalMainImg');
+  const gallery = document.getElementById('modalGallery');
+  gallery.innerHTML = '';
+
+  if(news.sekiller && news.sekiller.length > 0) {
+    mainImg.src = news.sekiller[0];
+    mainImg.style.display = 'block';
+    
+    // Əgər çox şəkil varsa qalereya yarat
+    news.sekiller.forEach(imgUrl => {
+      const thumb = document.createElement('img');
+      thumb.src = imgUrl;
+      thumb.onclick = () => mainImg.src = imgUrl;
+      gallery.appendChild(thumb);
+    });
+  }
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden'; // Arxa fonu dondur
+}
+
+// Səhifə yüklənəndə işə sal
+document.addEventListener('DOMContentLoaded', fetchNews);
 
 
 
+
+  
 
   
 
@@ -1550,6 +1656,9 @@ function dismissPWA() {
 
 
 
+  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 
 
 

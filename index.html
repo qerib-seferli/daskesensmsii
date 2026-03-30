@@ -1394,15 +1394,21 @@ loadWeather();
   
 
 
-          <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-          <script src="admin/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="admin/supabase-config.js"></script>
 
   <script>
     let allNews = [];
     let sliderPos = 0;
     let autoSlideTimer;
 
+    // Səhifə yüklənəndə işə düşən funksiya
     async function loadNews() {
+      if (typeof _supabase === 'undefined') {
+        console.error('Supabase tapılmadı! admin/supabase-config.js yolunu yoxlayın.');
+        return;
+      }
+
       try {
         const { data, error } = await _supabase
           .from('xeberler')
@@ -1417,14 +1423,15 @@ loadWeather();
           renderTicker(allNews.slice(0, 5));
         }
       } catch (e) {
-        console.error('Supabase xətası:', e.message);
+        console.error('Məlumat çəkilərkən xəta:', e.message);
       }
     }
 
     function renderNewsSlider(items) {
       const slider = document.getElementById('newsSlider');
-      if(!slider) return;
+      if (!slider) return;
       slider.innerHTML = '';
+      
       items.forEach((item, i) => {
         const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : 'fotolar/logo.jpg';
         slider.innerHTML += `
@@ -1442,7 +1449,7 @@ loadWeather();
 
     function renderTicker(items) {
       const ticker = document.getElementById('tickerContent');
-      if(!ticker) return;
+      if (!ticker) return;
       const html = items.map((n, i) =>
         `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
       ).join('');
@@ -1452,13 +1459,17 @@ loadWeather();
     function setupSlider() {
       const wrap = document.getElementById('newsSliderWrap');
       const dots = document.getElementById('sliderDots');
-      if(!dots || !wrap) return;
+      if (!dots || !wrap) return;
+      
       dots.innerHTML = '';
-      const maxSlide = Math.max(0, allNews.slice(0, 8).length - (Math.floor(wrap.offsetWidth / 318) || 1));
-      for(let i=0; i<=maxSlide; i++) {
+      const cardWidth = 318;
+      const visCount = Math.floor(wrap.offsetWidth / cardWidth) || 1;
+      const maxSlide = Math.max(0, Math.min(allNews.length, 8) - visCount);
+
+      for (let i = 0; i <= maxSlide; i++) {
         const d = document.createElement('button');
-        d.className = 'slider-dot' + (i===0?' active':'');
-        d.onclick = ()=> goToSlide(i);
+        d.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        d.onclick = () => goToSlide(i);
         dots.appendChild(d);
       }
       startAutoSlide(maxSlide);
@@ -1466,14 +1477,16 @@ loadWeather();
 
     function goToSlide(i) {
       const wrap = document.getElementById('newsSliderWrap');
-      if(wrap) wrap.scrollTo({ left: i * 318, behavior: 'smooth' });
-      document.querySelectorAll('.slider-dot').forEach((d,j) => d.classList.toggle('active', i===j));
+      if (wrap) wrap.scrollTo({ left: i * 318, behavior: 'smooth' });
+      
+      const allDots = document.querySelectorAll('.slider-dot');
+      allDots.forEach((d, j) => d.classList.toggle('active', i === j));
       sliderPos = i;
     }
 
     function startAutoSlide(maxSlide) {
       clearInterval(autoSlideTimer);
-      if(maxSlide > 0) {
+      if (maxSlide > 0) {
         autoSlideTimer = setInterval(() => {
           sliderPos = (sliderPos >= maxSlide) ? 0 : sliderPos + 1;
           goToSlide(sliderPos);
@@ -1483,14 +1496,21 @@ loadWeather();
 
     function openNewsModal(idx) {
       const item = allNews[idx];
-      if(!item) return;
+      if (!item) return;
+
       const modal = document.getElementById('newsModal');
       document.getElementById('modalTitle').textContent = item.basliq;
       document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
       document.getElementById('modalText').textContent = item.aciqlama;
+
       const mainImg = document.getElementById('modalMainImg');
-      mainImg.src = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : '';
-      mainImg.style.display = mainImg.src ? 'block' : 'none';
+      if (item.sekiller && item.sekiller.length > 0) {
+        mainImg.src = item.sekiller[0];
+        mainImg.style.display = 'block';
+      } else {
+        mainImg.style.display = 'none';
+      }
+
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -1502,12 +1522,14 @@ loadWeather();
 
     function toggleMobileNav() {
       const nav = document.getElementById('mobileNav');
-      nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
+      if (!nav) return;
+      const isOpen = nav.style.display === 'flex';
+      nav.style.display = isOpen ? 'none' : 'flex';
     }
 
     window.addEventListener('scroll', () => {
       const btn = document.getElementById('backToTop');
-      if(btn) btn.classList.toggle('visible', window.scrollY > 350);
+      if (btn) btn.classList.toggle('visible', window.scrollY > 350);
     });
 
     document.addEventListener('DOMContentLoaded', loadNews);

@@ -1347,10 +1347,7 @@
 
   
 
-<!-- ===== BACK TO TOP ===== -->
-<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Yuxarı qayıt">
-  <i class="fas fa-chevron-up"></i>
-</button>
+
 
 <!-- ===== PWA INSTALL BANNER ===== -->
 <div class="pwa-banner" id="pwaBanner">
@@ -1429,14 +1426,21 @@ loadWeather();
 
 
   
-// 1. Məlumatları təmiz saxlamaq üçün obyekt
-let newsData = [];
+// ==============================
+// GLOBAL DATA & INIT
+// ==============================
+let allNews = []; // Bütün xəbərləri yadda saxlayacaq massiv
 
-// 2. Supabase-dən xəbərləri gətirən funksiya (Modern variant)
-async function fetchNews() {
-  const newsSlider = document.getElementById('newsSlider');
-  
+document.addEventListener('DOMContentLoaded', () => {
+  loadNews(); // Səhifə açılan kimi xəbərləri gətir
+});
+
+// ==============================
+// SUPABASE DATA FETCH
+// ==============================
+async function loadNews() {
   try {
+    // _supabase obyekti supabase-config.js-dən gəlir
     const { data, error } = await _supabase
       .from('xeberler')
       .select('*')
@@ -1445,76 +1449,113 @@ async function fetchNews() {
     if (error) throw error;
 
     if (data && data.length > 0) {
-      newsData = data;
-      renderNews(newsData.slice(0, 6)); // Ana səhifəyə ilk 6 xəbər
+      allNews = data;
+      renderNewsSlider(allNews.slice(0, 8)); // Sliderə ilk 8-ni qoy
+      renderTicker(allNews.slice(0, 5));     // Tickerə 5-ni qoy
     } else {
-      newsSlider.innerHTML = "<p>Hazırda xəbər tapılmadı.</p>";
+      console.log("Bazada xəbər tapılmadı.");
     }
-  } catch (err) {
-    console.error("Xəbər yüklənmə xətası:", err.message);
-    newsSlider.innerHTML = "<p>Məlumat yüklənərkən xəta baş verdi.</p>";
+  } catch (e) {
+    console.error('Xəbərlər yüklənərkən xəta:', e.message);
   }
 }
 
-// 3. Xəbərləri ekrana çıxaran funksiya (UI)
-function renderNews(items) {
-  const container = document.getElementById('newsSlider');
-  container.innerHTML = ''; // Skeleton-u təmizləyirik
+// ==============================
+// UI RENDERING (Slider & Ticker)
+// ==============================
+function renderNewsSlider(items) {
+  const slider = document.getElementById('newsSlider');
+  if (!slider) return;
+  slider.innerHTML = '';
 
-  items.forEach((item, index) => {
-    const mainImage = (item.sekiller && item.sekiller.length > 0) 
-                      ? item.sekiller[0] 
-                      : 'fotolar/placeholder.jpg'; // Şəkil yoxdursa standart şəkil
+  items.forEach((item, i) => {
+    // Admin panelindəki kimi "sekiller" massivini yoxlayırıq
+    const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : null;
 
-    container.innerHTML += `
-      <div class="news-card" onclick="showNewsDetail(${index})">
-        <div class="card-img-wrap">
-          <img src="${mainImage}" alt="${item.basliq}" loading="lazy">
-          <div class="card-date">${item.tarix}</div>
+    slider.innerHTML += `
+      <div class="news-card">
+        ${imgSrc 
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy">` 
+          : `<div class="news-card-img-placeholder">📰</div>`}
+        <div class="news-card-body">
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>
+          <div class="news-card-title">${item.basliq}</div>
+          <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
         </div>
-        <div class="card-content">
-          <h3 class="card-title">${item.basliq}</h3>
-          <p class="card-desc">${item.aciqlama.substring(0, 80)}...</p>
-          <span class="read-more">Ətraflı oxu <i class="fas fa-arrow-right"></i></span>
-        </div>
-      </div>
-    `;
+      </div>`;
   });
+  setupSlider(); // Sliderin sürüşmə məntiqini işə sal
 }
 
-// 4. Detallı modalın açılması (UX)
-function showNewsDetail(index) {
-  const news = newsData[index];
-  if(!news) return;
+function renderTicker(items) {
+  const ticker = document.getElementById('tickerContent');
+  if (!ticker || !items) return;
+  const html = items.map((n, i) =>
+    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
+  ).join('');
+  ticker.innerHTML = html + html; // Sonsuz döngü üçün ikiqat
+}
+
+// ==============================
+// MODAL MANAGEMENT
+// ==============================
+function openNewsModal(idx) {
+  const item = allNews[idx];
+  if (!item) return;
 
   const modal = document.getElementById('newsModal');
-  document.getElementById('modalTitle').innerText = news.basliq;
-  document.getElementById('modalText').innerText = news.aciqlama;
-  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${news.tarix}`;
+  document.getElementById('modalTitle').textContent = item.basliq;
+  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
+  document.getElementById('modalText').textContent = item.aciqlama;
 
   const mainImg = document.getElementById('modalMainImg');
   const gallery = document.getElementById('modalGallery');
   gallery.innerHTML = '';
 
-  if(news.sekiller && news.sekiller.length > 0) {
-    mainImg.src = news.sekiller[0];
+  if (item.sekiller && item.sekiller.length > 0) {
+    mainImg.src = item.sekiller[0];
     mainImg.style.display = 'block';
     
-    // Əgər çox şəkil varsa qalereya yarat
-    news.sekiller.forEach(imgUrl => {
-      const thumb = document.createElement('img');
-      thumb.src = imgUrl;
-      thumb.onclick = () => mainImg.src = imgUrl;
-      gallery.appendChild(thumb);
+    item.sekiller.forEach((src, i) => {
+      const t = document.createElement('img');
+      t.src = src;
+      t.className = i === 0 ? 'active' : '';
+      t.onclick = () => {
+        mainImg.src = src;
+        gallery.querySelectorAll('img').forEach(img => img.classList.remove('active'));
+        t.classList.add('active');
+      };
+      gallery.appendChild(t);
     });
+  } else {
+    mainImg.style.display = 'none';
   }
 
   modal.classList.add('active');
-  document.body.style.overflow = 'hidden'; // Arxa fonu dondur
+  document.body.style.overflow = 'hidden';
 }
 
-// Səhifə yüklənəndə işə sal
-document.addEventListener('DOMContentLoaded', fetchNews);
+function closeNewsModal() {
+  document.getElementById('newsModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Bütün xəbərlər pəncərəsi
+function openAllNews() {
+  const grid = document.getElementById('allNewsGrid');
+  if(!grid) return;
+  grid.innerHTML = allNews.map((item, i) => `
+    <div class="news-card" style="min-width:unset; width:100%;">
+      <img class="news-card-img" src="${item.sekiller[0] || ''}" style="height:150px; object-fit:cover;">
+      <div class="news-card-body">
+        <div class="news-card-title">${item.basliq}</div>
+        <button class="btn-detail" onclick="openNewsModal(${i}); closeAllNews();">Bax</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('allNewsOverlay').classList.add('active');
+}
+function closeAllNews() { document.getElementById('allNewsOverlay').classList.remove('active'); }
 
 
 

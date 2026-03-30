@@ -1338,92 +1338,6 @@
   
 
 
-<section class="news-section">
-  <div class="section-header">
-    <h2 class="section-title"><i class="fas fa-newspaper"></i> Son Xəbərlər</h2>
-    <button onclick="openAllNews()" class="view-all-btn">Hamısına bax</button>
-  </div>
-  
-  <div class="news-container" id="newsSlider">
-    <div class="skeleton-loader"></div>
-    <div class="skeleton-loader"></div>
-    <div class="skeleton-loader"></div>
-  </div>
-</section>
-
-
-
-
-
-
-  
-
-<!-- ===== BACK TO TOP ===== -->
-<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Yuxarı qayıt">
-  <i class="fas fa-chevron-up"></i>
-</button>
-
-<!-- ===== PWA INSTALL BANNER ===== -->
-<div class="pwa-banner" id="pwaBanner">
-  <div class="pwa-banner-inner">
-    <img src="fotolar/logo.jpg" class="pwa-banner-logo" alt="SMSİİ">
-    <div class="pwa-banner-text">
-      <strong>Daşkəsən SMSİİ</strong>
-      <span>Tətbiqi ana ekrana əlavə edin</span>
-    </div>
-    <div class="pwa-btns">
-      <button class="pwa-install-btn" id="pwaInstallBtn">Yüklə</button>
-      <button class="pwa-dismiss-btn" onclick="dismissPWA()">Sonra</button>
-    </div>
-  </div>
-</div>
-
-<script>
-
-// ==============================
-// WEATHER (OpenWeatherMap API)
-// ==============================
-async function loadWeather() {
-  const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY'; // openweathermap.org'dan əldə edin - pulsuz plan yetərlidir
-  const city = 'Dashkasan,AZ';
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric&lang=az`;
-  try {
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('Weather fetch failed');
-    const data = await res.json();
-    const temp = Math.round(data.main.temp);
-    const desc = data.weather[0].description;
-    const id = data.weather[0].id;
-    let icon = '🌤️';
-    if(id >= 200 && id < 300) icon = '⛈️';
-    else if(id >= 300 && id < 400) icon = '🌧️';
-    else if(id >= 500 && id < 600) icon = '🌧️';
-    else if(id >= 600 && id < 700) icon = '❄️';
-    else if(id >= 700 && id < 800) icon = '🌫️';
-    else if(id === 800) {
-      const h = new Date().getHours();
-      icon = (h >= 20 || h < 6) ? '🌙' : '☀️';
-    }
-    else if(id >= 801 && id <= 803) icon = '⛅';
-    else if(id === 804) icon = '☁️';
-    document.querySelector('.weather-icon').textContent = icon;
-    const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
-    document.getElementById('weatherText').textContent = `Daşkəsən: ${cap(desc)}, ${temp}°C`;
-  } catch(e) {
-    document.querySelector('.weather-icon').textContent = '🌡️';
-    document.getElementById('weatherText').textContent = 'Daşkəsən rayonu';
-  }
-}
-loadWeather();
-
-
-
-
-
-
-  
-
-
 // 1. Məlumatları təmiz saxlamaq üçün obyekt
 let newsData = [];
 
@@ -1510,6 +1424,81 @@ function showNewsDetail(index) {
 
 // Səhifə yüklənəndə işə sal
 document.addEventListener('DOMContentLoaded', fetchNews);
+
+
+
+
+
+
+  
+
+<!-- ===== BACK TO TOP ===== -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Yuxarı qayıt">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- ===== PWA INSTALL BANNER ===== -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-banner-inner">
+    <img src="fotolar/logo.jpg" class="pwa-banner-logo" alt="SMSİİ">
+    <div class="pwa-banner-text">
+      <strong>Daşkəsən SMSİİ</strong>
+      <span>Tətbiqi ana ekrana əlavə edin</span>
+    </div>
+    <div class="pwa-btns">
+      <button class="pwa-install-btn" id="pwaInstallBtn">Yüklə</button>
+      <button class="pwa-dismiss-btn" onclick="dismissPWA()">Sonra</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ==============================
+// WEATHER (OpenWeatherMap API)
+// ==============================
+async function loadWeather() {
+  const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY'; // openweathermap.org'dan əldə edin - pulsuz plan yetərlidir
+  const city = 'Dashkasan,AZ';
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric&lang=az`;
+  try {
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Weather fetch failed');
+    const data = await res.json();
+    const temp = Math.round(data.main.temp);
+    const desc = data.weather[0].description;
+    const id = data.weather[0].id;
+    let icon = '🌤️';
+    if(id >= 200 && id < 300) icon = '⛈️';
+    else if(id >= 300 && id < 400) icon = '🌧️';
+    else if(id >= 500 && id < 600) icon = '🌧️';
+    else if(id >= 600 && id < 700) icon = '❄️';
+    else if(id >= 700 && id < 800) icon = '🌫️';
+    else if(id === 800) {
+      const h = new Date().getHours();
+      icon = (h >= 20 || h < 6) ? '🌙' : '☀️';
+    }
+    else if(id >= 801 && id <= 803) icon = '⛅';
+    else if(id === 804) icon = '☁️';
+    document.querySelector('.weather-icon').textContent = icon;
+    const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+    document.getElementById('weatherText').textContent = `Daşkəsən: ${cap(desc)}, ${temp}°C`;
+  } catch(e) {
+    document.querySelector('.weather-icon').textContent = '🌡️';
+    document.getElementById('weatherText').textContent = 'Daşkəsən rayonu';
+  }
+}
+loadWeather();
+
+
+
+
+
+
+  
+
+
+
 
 
 
@@ -1603,7 +1592,18 @@ function startAutoSlide(maxSlide) {
 
 
 
-
+<section class="news-section">
+  <div class="section-header">
+    <h2 class="section-title"><i class="fas fa-newspaper"></i> Son Xəbərlər</h2>
+    <button onclick="openAllNews()" class="view-all-btn">Hamısına bax</button>
+  </div>
+  
+  <div class="news-container" id="newsSlider">
+    <div class="skeleton-loader"></div>
+    <div class="skeleton-loader"></div>
+    <div class="skeleton-loader"></div>
+  </div>
+</section>
 
 
 

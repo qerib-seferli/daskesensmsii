@@ -1479,15 +1479,20 @@ loadWeather();
 
   
   
-  <script>
-    
+ <script>
 // ==============================
-// NEWS FROM SUPABASE (REWRITTEN BY GEMINI)
+// NEWS FROM SUPABASE
 // ==============================
 let allNews = [];
 
 async function loadNews() {
-  // Sənin admin panelində işlətdiyin dəyişən "_supabase" adlanır
+  // GÖZLƏMƏ MEXANİZMİ: Supabase yüklənənə qədər bir neçə saniyə gözləyir
+  let retry = 0;
+  while (typeof _supabase === 'undefined' && retry < 20) {
+    await new Promise(res => setTimeout(res, 200));
+    retry++;
+  }
+
   if(typeof _supabase === 'undefined') {
     console.error('Supabase tapılmadı! admin/supabase-config.js yolunu yoxlayın.');
     return;
@@ -1495,7 +1500,7 @@ async function loadNews() {
 
   try {
     const { data, error } = await _supabase
-      .from('xeberler') // Sənin cədvəlinin adı
+      .from('xeberler') 
       .select('*')
       .order('id', { ascending: false });
 
@@ -1506,7 +1511,6 @@ async function loadNews() {
     renderTicker(allNews.slice(0, 5));
   } catch(e) {
     console.warn('Xəbər yükləmə xətası:', e.message);
-    // Xəta olarsa boş göstərməsin deyə nümunə:
     allNews = [];
     renderNewsSlider([]);
   }
@@ -1529,7 +1533,6 @@ function renderNewsSlider(items) {
   }
 
   items.forEach((item, i) => {
-    // Sənin bazanda "sekiller" sütunudur
     const imgSrc = item.sekiller && item.sekiller.length > 0 ? item.sekiller[0] : null;
     
     slider.innerHTML += `
@@ -1699,7 +1702,6 @@ window.addEventListener('scroll', () => {
 // INIT
 // ==============================
 document.addEventListener('DOMContentLoaded', loadNews);
-    
 </script>
 
   

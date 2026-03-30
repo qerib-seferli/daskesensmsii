@@ -1464,9 +1464,9 @@ loadWeather();
 // ==============================
 let allNews = [];
 
+// Köhnəni tap və bununla əvəz et:
 async function loadNews() {
   try {
-    // DİQQƏT: _supabase (alt xətt ilə) istifadə edirik!
     const { data, error } = await _supabase
       .from('xeberler')
       .select('*')
@@ -1475,19 +1475,12 @@ async function loadNews() {
     if (error) throw error;
 
     if (data && data.length > 0) {
-      allNews = data; // Bazadan gələn real xəbərlər
+      allNews = data; 
       renderNewsSlider(allNews.slice(0, 5));
       renderTicker(allNews.slice(0, 5));
-    } else {
-      console.log("Bazada xəbər tapılmadı.");
-      allNews = []; 
     }
   } catch (e) {
-    console.error('Supabase xətası:', e.message);
-    // Əgər baza işləməsə, onda nümunəni göstərsin:
-    allNews = getSampleNews();
-    renderNewsSlider(allNews);
-    renderTicker(allNews);
+    console.warn('Supabase xətası:', e.message);
   }
 }
 
@@ -1537,9 +1530,11 @@ function renderTicker(items) {
   const ticker = document.getElementById('tickerContent');
   if(!items || items.length === 0) return;
   const html = items.map((n,i) =>
-    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.title}</span>`
+    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
   ).join('') + items.map((n,i) =>
-    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.title}</span>`
+    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
+  ).join('');
+  `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
   ).join('');
   ticker.innerHTML = html;
 }
@@ -1624,10 +1619,9 @@ function startAutoSlide(maxSlide) {
 // ==============================
 // NEWS MODAL
 // ==============================
-// 1. Supabase-dən xəbərləri çəkən funksiya
+// Köhnəni tap və bununla əvəz et:
 async function loadNews() {
   try {
-    // _supabase (alt xətt ilə) admin.html-də olduğu kimi:
     const { data, error } = await _supabase
       .from('xeberler')
       .select('*')
@@ -1636,20 +1630,12 @@ async function loadNews() {
     if (error) throw error;
 
     if (data && data.length > 0) {
-      allNews = data; // Bazadan gələn real məlumatı bura doldururuq
+      allNews = data; 
       renderNewsSlider(allNews.slice(0, 5));
       renderTicker(allNews.slice(0, 5));
-    } else {
-      // Əgər baza boşdursa, nümunə göstərsin
-      allNews = getSampleNews();
-      renderNewsSlider(allNews);
-      renderTicker(allNews);
     }
   } catch (e) {
-    console.warn('Supabase-dən məlumat alınmadı:', e.message);
-    allNews = getSampleNews();
-    renderNewsSlider(allNews);
-    renderTicker(allNews);
+    console.warn('Supabase xətası:', e.message);
   }
 }
 

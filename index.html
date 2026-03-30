@@ -1627,20 +1627,78 @@ function startAutoSlide(maxSlide) {
 // ==============================
 // NEWS MODAL
 // ==============================
+// 1. Supabase-dən xəbərləri çəkən funksiya
+async function loadNews() {
+  try {
+    // _supabase (alt xətt ilə) admin.html-də olduğu kimi:
+    const { data, error } = await _supabase
+      .from('xeberler')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      allNews = data; // Bazadan gələn real məlumatı bura doldururuq
+      renderNewsSlider(allNews.slice(0, 5));
+      renderTicker(allNews.slice(0, 5));
+    } else {
+      // Əgər baza boşdursa, nümunə göstərsin
+      allNews = getSampleNews();
+      renderNewsSlider(allNews);
+      renderTicker(allNews);
+    }
+  } catch (e) {
+    console.warn('Supabase-dən məlumat alınmadı:', e.message);
+    allNews = getSampleNews();
+    renderNewsSlider(allNews);
+    renderTicker(allNews);
+  }
+}
+
+// 2. Slideri dolduran funksiya (Adları düzəltdim)
+function renderNewsSlider(items) {
+  const slider = document.getElementById('newsSlider');
+  if(!slider) return;
+  slider.innerHTML = '';
+  
+  items.forEach((item, i) => {
+    // Admin panelindəki kimi "sekiller" və "basliq" istifadə edirik
+    const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : null;
+    
+    slider.innerHTML += `
+      <div class="news-card">
+        ${imgSrc 
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy">` 
+          : `<div class="news-card-img-placeholder">📰</div>`}
+        <div class="news-card-body">
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>
+          <div class="news-card-title">${item.basliq}</div>
+          <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>`;
+  });
+  setupSlider();
+}
+
+// 3. Modalı (Pəncərəni) dolduran funksiya
 function openNewsModal(idx) {
   const item = allNews[idx];
   if(!item) return;
   
   const modal = document.getElementById('newsModal');
-  document.getElementById('modalTitle').textContent = item.basliq; // title -> basliq
+  // Köhnə "title" əvəzinə "basliq"
+  document.getElementById('modalTitle').textContent = item.basliq;
   document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
-  document.getElementById('modalText').textContent = item.metn || item.content || '-'; // metn -> admin panelə görə
+  // Köhnə "content" əvəzinə "aciqlama"
+  document.getElementById('modalText').textContent = item.aciqlama;
 
   const mainImg = document.getElementById('modalMainImg');
   const placeholder = document.getElementById('modalImgPlaceholder');
   const gallery = document.getElementById('modalGallery');
   gallery.innerHTML = '';
 
+  // Şəkillər "sekiller" massivindədir
   if(item.sekiller && item.sekiller.length > 0) {
     mainImg.src = item.sekiller[0];
     mainImg.style.display = 'block';
@@ -1651,7 +1709,7 @@ function openNewsModal(idx) {
       t.className = i===0 ? 'active' : '';
       t.onclick = () => {
         mainImg.src = src;
-        gallery.querySelectorAll('img').forEach(x=>x.classList.remove('active'));
+        gallery.querySelectorAll('img').forEach(img => img.classList.remove('active'));
         t.classList.add('active');
       };
       gallery.appendChild(t);

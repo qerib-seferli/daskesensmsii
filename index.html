@@ -1468,23 +1468,27 @@ loadWeather();
 let allNews = [];
 
 async function loadNews() {
-  // Əgər supabase-config.js-də dəyişən adı _supabase-dirsə, onu istifadə et
-  const client = typeof _supabase !== 'undefined' ? _supabase : supabase;
-  
   try {
-    const { data, error } = await client
-      .from('xeberler') // Cədvəl adın
+    // DİQQƏT: _supabase (alt xətt ilə) istifadə edirik!
+    const { data, error } = await _supabase
+      .from('xeberler')
       .select('*')
       .order('id', { ascending: false });
 
     if (error) throw error;
-    
-    allNews = data || [];
-    renderNewsSlider(allNews.slice(0, 5));
-    renderTicker(allNews.slice(0, 5));
+
+    if (data && data.length > 0) {
+      allNews = data; // Bazadan gələn real xəbərlər
+      renderNewsSlider(allNews.slice(0, 5));
+      renderTicker(allNews.slice(0, 5));
+    } else {
+      console.log("Bazada xəbər tapılmadı.");
+      allNews = []; 
+    }
   } catch (e) {
-    console.warn('Xəbərlər yüklənərkən xəta:', e);
-    allNews = getSampleNews(); // Xəta olarsa nümunə xəbər göstər
+    console.error('Supabase xətası:', e.message);
+    // Əgər baza işləməsə, onda nümunəni göstərsin:
+    allNews = getSampleNews();
     renderNewsSlider(allNews);
     renderTicker(allNews);
   }
@@ -1510,16 +1514,17 @@ function formatDate(iso) {
 
 function renderNewsSlider(items) {
   const slider = document.getElementById('newsSlider');
+  if(!slider) return;
   slider.innerHTML = '';
   
   items.forEach((item, i) => {
-    // Şəkillər "sekiller" massivindədir
-    const imgSrc = item.sekiller && item.sekiller.length > 0 ? item.sekiller[0] : null;
+    // images yox, sekiller olmalıdır:
+    const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : null;
     
     slider.innerHTML += `
       <div class="news-card">
-        ${imgSrc
-          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy">`
+        ${imgSrc 
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy">` 
           : `<div class="news-card-img-placeholder">📰</div>`}
         <div class="news-card-body">
           <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>

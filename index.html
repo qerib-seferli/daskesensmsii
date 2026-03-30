@@ -1589,9 +1589,18 @@ loadWeather();
   
   
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 // ==============================
-// 1. SUPABASE BAĞLANTISI (BİRBAŞA)
+// MOBILE MENU
+// ==============================
+function toggleMobileNav() {
+  const nav = document.getElementById("mobileNav");
+  nav.style.display = (nav.style.display === "flex") ? "none" : "flex";
+}
+
+// ==============================
+// SUPABASE
 // ==============================
 const _supabaseUrl = "https://xbxraksptsqfpdvqtfyb.supabase.co";
 const _supabaseKey = "sb_publishable_WCZZZFpg-vBYKKbgVkSNPw_ivUiGs6O";
@@ -1600,73 +1609,90 @@ const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 let allNews = [];
 
 // ==============================
-// 2. XƏBƏRLƏRİ YÜKLƏMƏ
+// NEWS LOAD
 // ==============================
 async function loadNews() {
     try {
-        console.log("Məlumat bazasına sorğu göndərilir...");
         const { data, error } = await _supabase
             .from('xeberler')
             .select('*')
             .order('id', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+            console.error("Xəta:", error.message);
+            return;
+        }
 
         allNews = data || [];
-        console.log("Yüklənən xəbər sayı:", allNews.length);
 
         renderNewsSlider(allNews.slice(0, 8));
         renderTicker(allNews.slice(0, 5));
+
     } catch (e) {
-        console.error('Xəbər yükləmə xətası:', e.message);
+        console.error("Problem:", e.message);
     }
 }
 
-// Tarixi formatlama (məs: 30.03.2026)
+// ==============================
+// DATE FORMAT
+// ==============================
 function formatDate(iso) {
     if (!iso) return '-';
     const d = new Date(iso);
-    return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}.${d.getFullYear()}`;
+    return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
 }
 
 // ==============================
-// 3. EKRANA ÇIXARMA (RENDER)
+// RENDER SLIDER
 // ==============================
 function renderNewsSlider(items) {
     const slider = document.getElementById('newsSlider');
     if (!slider) return;
+
     slider.innerHTML = '';
 
     if (items.length === 0) {
-        slider.innerHTML = '<p style="padding:20px;">Hələ ki xəbər yoxdur.</p>';
+        slider.innerHTML = '<p style="padding:20px;">Xəbər yoxdur</p>';
         return;
     }
 
     items.forEach((item, i) => {
-        const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : './fotolar/logo.jpg';
-        slider.innerHTML += `
-            <div class="news-card">
-                <img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" onerror="this.src='./fotolar/logo.jpg'">
-                <div class="news-card-body">
-                    <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.tarix)}</div>
-                    <div class="news-card-title">${item.basliq}</div>
-                    <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax</button>
-                </div>
-            </div>`;
-    });
-    // Slider funksiyasını işə sal
-    if (typeof setupSlider === 'function') setupSlider();
-}
+        const imgSrc = Array.isArray(item.sekiller) && item.sekiller.length > 0
+            ? item.sekiller[0]
+            : './fotolar/logo.jpg';
 
-function renderTicker(items) {
-    const ticker = document.getElementById('tickerContent');
-    if (!ticker || items.length === 0) return;
-    const content = items.map(n => `<span class="ticker-item"><i class="fas fa-circle"></i> ${n.basliq}</span>`).join('');
-    ticker.innerHTML = content + content; // Sonsuz döngü üçün ikiqat
+        slider.innerHTML += `
+        <div class="news-card">
+            <img class="news-card-img" src="${imgSrc}" onerror="this.src='./fotolar/logo.jpg'">
+            <div class="news-card-body">
+                <div class="news-card-date">
+                    <i class="far fa-calendar"></i> ${formatDate(item.tarix)}
+                </div>
+                <div class="news-card-title">${item.basliq}</div>
+                <button class="btn-detail" onclick="openNewsModal(${i})">
+                    Ətraflı bax
+                </button>
+            </div>
+        </div>`;
+    });
 }
 
 // ==============================
-// 4. MODAL İDARƏETMƏSİ
+// TICKER
+// ==============================
+function renderTicker(items) {
+    const ticker = document.getElementById('tickerContent');
+    if (!ticker) return;
+
+    const content = items.map(n =>
+        `<span class="ticker-item"><i class="fas fa-circle"></i> ${n.basliq}</span>`
+    ).join('');
+
+    ticker.innerHTML = content + content;
+}
+
+// ==============================
+// MODAL
 // ==============================
 function openNewsModal(idx) {
     const item = allNews[idx];
@@ -1674,13 +1700,15 @@ function openNewsModal(idx) {
 
     document.getElementById('modalTitle').textContent = item.basliq;
     document.getElementById('modalText').textContent = item.aciqlama || '-';
-    document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
+    document.getElementById('modalDate').innerHTML =
+        `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
 
     const mainImg = document.getElementById('modalMainImg');
-    if (item.sekiller && item.sekiller.length > 0) {
+
+    if (Array.isArray(item.sekiller) && item.sekiller.length > 0) {
         mainImg.src = item.sekiller[0];
         mainImg.style.display = 'block';
-        if(document.getElementById('modalImgPlaceholder')) document.getElementById('modalImgPlaceholder').style.display = 'none';
+        document.getElementById('modalImgPlaceholder').style.display = 'none';
     }
 
     document.getElementById('newsModal').classList.add('active');
@@ -1692,8 +1720,36 @@ function closeNewsModal() {
     document.body.style.overflow = '';
 }
 
-// Səhifə yüklənəndə işə sal
-document.addEventListener('DOMContentLoaded', loadNews);
+// ==============================
+// WEATHER
+// ==============================
+async function loadWeather() {
+  const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
+  const city = 'Dashkasan,AZ';
+
+  try {
+    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=az`);
+    const data = await res.json();
+
+    const temp = Math.round(data.main.temp);
+    const desc = data.weather[0].description;
+
+    document.getElementById('weatherText').textContent =
+      `Daşkəsən: ${desc}, ${temp}°C`;
+
+  } catch {
+    document.getElementById('weatherText').textContent =
+      'Daşkəsən rayonu';
+  }
+}
+
+// ==============================
+// INIT
+// ==============================
+document.addEventListener('DOMContentLoaded', () => {
+    loadNews();
+    loadWeather();
+});
 </script>
 
   

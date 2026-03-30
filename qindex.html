@@ -1,330 +1,275 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daşkəsən SMSİİ | Rəsmi İnternet Səhifəsi</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sayt Başlığı</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+  /* ============ Ümumi Stil ============ */
+  * { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif;}
+  body {scroll-behavior:smooth;}
+  a {text-decoration:none; color:inherit;}
+  header {position:fixed; top:0; left:0; width:100%; background:#1c1c1c; color:#fff; z-index:1000; display:flex; justify-content:space-between; align-items:center; padding:10px 20px;}
+  header .logo {font-weight:bold; font-size:1.3em;}
+  nav ul {display:flex; list-style:none;}
+  nav ul li {margin-left:20px;}
+  nav ul li a:hover {color:#ffd700;}
+  .hamburger {display:none; cursor:pointer; font-size:1.5em;}
+  /* Mobil menu */
+  @media(max-width:768px){
+    nav ul {position:fixed; top:60px; right:-100%; flex-direction:column; background:#1c1c1c; width:200px; height:calc(100% - 60px); padding:20px; transition:0.3s;}
+    nav ul.active {right:0;}
+    nav ul li {margin:15px 0;}
+    .hamburger {display:block;}
+  }
 
-    <style>
-        :root {
-            --primary: #003366;
-            --accent: #00a8ff;
-            --light: #f8f9fa;
-            --white: #ffffff;
-            --dark: #1a1a1a;
-            --transition: all 0.3s ease;
-        }
+  /* ============ Hero Bölmə (Fon üstü) ============ */
+  .hero {height:80vh; background:url('./fotolar/hero.jpg') center/cover no-repeat; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#fff; text-align:center;}
+  .hero h1 {font-size:3em; margin-bottom:20px;}
+  .hero .hero-links {display:flex; gap:20px; flex-wrap:wrap;}
+  .hero .hero-links a {background:rgba(0,0,0,0.5); padding:10px 20px; border-radius:5px; color:#fff; transition:0.3s;}
+  .hero .hero-links a:hover {background:#ffd700; color:#000;}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--light); color: var(--dark); overflow-x: hidden; }
+  /* ============ Bölmələr ============ */
+  section {padding:100px 20px; min-height:80vh;}
+  section h2 {margin-bottom:20px; color:#1c1c1c;}
 
-        /* HEADER & NAVIGATION */
-        header {
-            position: absolute;
-            top: 0; left: 0; width: 100%;
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-        }
+  /* ============ Xəbərlər Slider ============ */
+  #newsSlider {display:flex; overflow-x:auto; gap:20px; scroll-behavior:smooth;}
+  .news-card {min-width:250px; background:#f5f5f5; border-radius:8px; overflow:hidden; flex-shrink:0;}
+  .news-card-img {width:100%; height:150px; object-fit:cover;}
+  .news-card-body {padding:10px;}
+  .news-card-title {font-weight:bold; margin:10px 0;}
+  .btn-detail {background:#1c1c1c; color:#fff; padding:5px 10px; border:none; cursor:pointer; border-radius:4px;}
+  .btn-detail:hover {background:#ffd700; color:#000;}
 
-        .logo-area { display: flex; align-items: center; gap: 15px; text-decoration: none; }
-        .logo-area img { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--white); object-fit: cover; }
-        .logo-area h1 { color: var(--white); font-size: 1.1rem; max-width: 280px; line-height: 1.3; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+  /* ============ Ticker ============ */
+  #ticker {background:#1c1c1c; color:#fff; padding:5px 20px; overflow:hidden; white-space:nowrap;}
+  #tickerContent {display:inline-block; animation:scroll 20s linear infinite;}
+  .ticker-item {margin-right:50px;}
+  @keyframes scroll {0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
-        /* Kompüter menyusu (Desktop) */
-        .nav-links { display: flex; list-style: none; gap: 20px; align-items: center; }
-        .nav-links li a { 
-            color: var(--white); 
-            text-decoration: none; 
-            font-weight: 500; 
-            font-size: 0.95rem; 
-            transition: var(--transition);
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
-        .nav-links li a:hover { background: rgba(255,255,255,0.2); color: var(--accent); }
+  /* ============ Modal ============ */
+  #newsModal {position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; justify-content:center; align-items:center; z-index:2000;}
+  #newsModal.active {display:flex;}
+  #newsModal .modal-content {background:#fff; padding:20px; border-radius:8px; max-width:600px; width:90%; position:relative;}
+  #newsModal img {width:100%; margin-bottom:10px;}
+  #newsModal .close {position:absolute; top:10px; right:10px; cursor:pointer; font-size:1.5em;}
 
-        .menu-btn { display: none; color: var(--white); font-size: 1.8rem; cursor: pointer; }
-
-        /* HERO SECTION (FON ŞƏKLİ) */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(rgba(0,51,102,0.5), rgba(0,51,102,0.5)), url('fotolar/Fon.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: var(--white);
-            padding: 0 20px;
-        }
-
-        .hero-content h2 { font-size: 3.5rem; margin-bottom: 20px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
-        .hero-content p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 30px; opacity: 0.9; }
-
-        /* HAVA DURUMU VİDCETİ */
-        .weather-widget {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            padding: 25px 40px;
-            border-radius: 50px;
-            display: inline-flex;
-            align-items: center;
-            gap: 25px;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .weather-icon { font-size: 3.5rem; color: #fbc02d; text-shadow: 0 0 20px rgba(251,192,45,0.5); }
-        .temp { font-size: 3rem; font-weight: bold; }
-        .weather-info { text-align: left; }
-        .weather-info .city-name { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
-        .weather-info .condition { font-size: 1.1rem; font-weight: 500; }
-
-        /* SECTIONS */
-        .container { max-width: 1200px; margin: auto; padding: 80px 20px; }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-title { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; position: relative; padding-bottom: 15px; }
-        .section-title::after { content: ''; width: 60px; height: 4px; background: var(--accent); position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
-
-        /* XƏBƏRLƏR (SUPABASE İNTEQRASİYASI) */
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-        .news-card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: var(--transition); border: 1px solid #eee; }
-        .news-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
-        .news-img { width: 100%; height: 220px; object-fit: cover; }
-        .news-content { padding: 25px; }
-        .news-date { color: var(--accent); font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 10px; }
-        .news-content h3 { color: var(--primary); margin-bottom: 12px; line-height: 1.4; font-size: 1.25rem; }
-        .news-content p { color: #555; font-size: 0.95rem; line-height: 1.6; }
-
-        /* ÖDƏNİŞ BÖLMƏSİ */
-        .payment-section { background: #eef2f7; padding: 80px 0; }
-        .payment-flex { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-top: 40px; }
-        .payment-card { 
-            background: var(--white); width: 380px; padding: 30px; border-radius: 20px; 
-            text-decoration: none; color: inherit; display: flex; align-items: center; 
-            gap: 20px; transition: 0.3s; border-bottom: 4px solid transparent;
-        }
-        .payment-card:hover { transform: scale(1.03); border-color: var(--accent); }
-        .pay-icon { font-size: 2.5rem; color: var(--primary); }
-        .million-logo { height: 35px; display: block; margin: 0 auto 20px; }
-
-        /* FOOTER */
-        footer { background: var(--primary); color: var(--white); padding: 70px 5% 30px; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; margin-bottom: 50px; }
-        .footer-about img { width: 80px; margin-bottom: 20px; border-radius: 50%; }
-        .footer-col h4 { font-size: 1.2rem; margin-bottom: 25px; color: var(--accent); position: relative; }
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 12px; }
-        .footer-col ul li a { color: rgba(255,255,255,0.7); text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .footer-col ul li a:hover { color: var(--white); transform: translateX(5px); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-
-        /* MOBİL UYUMLULUQ (Responsive) */
-        @media (max-width: 992px) {
-            .menu-btn { display: block; }
-            .nav-links { 
-                position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; 
-                background: var(--primary); flex-direction: column; padding: 100px 30px; 
-                transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.3);
-            }
-            .nav-links.active { right: 0; }
-            .hero-content h2 { font-size: 2.2rem; }
-            .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
-            .footer-col ul li a { justify-content: center; }
-            .footer-bottom { justify-content: center; text-align: center; }
-        }
-    </style>
+  /* ============ Weather ============ */
+  .weather {margin:20px; display:flex; align-items:center; gap:10px;}
+</style>
 </head>
 <body>
 
-    <header>
-        <a href="index.html" class="logo-area">
-            <img src="fotolar/logo.jpg" alt="Logo">
-            <h1>Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi</h1>
-        </a>
-        
-        <div class="menu-btn" id="menuToggle"><i class="fas fa-bars"></i></div>
-        
-        <ul class="nav-links" id="navMenu">
-            <li><a href="index.html">Ana Səhifə</a></li>
-            <li><a href="haqqimizda.html">Haqqımızda</a></li>
-            <li><a href="struktur.html">Struktur</a></li>
-            <li><a href="rehberlik.html">Rəhbərlik</a></li>
-            <li><a href="elektron-muraciet.html">Elektron Müraciət</a></li>
-            <li><a href="#contact">Əlaqə</a></li>
-        </ul>
-    </header>
+<!-- HEADER -->
+<header>
+  <div class="logo">Mənim Saytım</div>
+  <div class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+  <nav>
+    <ul id="mainMenu">
+      <li><a href="#anasəhifə">Ana Səhifə</a></li>
+      <li><a href="#haqqimizda">Haqqımızda</a></li>
+      <li><a href="#struktur">Struktur</a></li>
+      <li><a href="#rehberlik">Rəhbərlik</a></li>
+      <li><a href="#elektronmuraciet">Elektron Müraciət</a></li>
+      <li><a href="#istifadeshertleri">İstifadə Şərtləri</a></li>
+    </ul>
+  </nav>
+</header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h2>Su Həyatdır, Meliorasiya Gələcəkdir</h2>
-            <p>Daşkəsən rayonunun su və torpaq ehtiyatlarının idarə olunması üzrə rəsmi elektron portal</p>
-            
-            <div class="weather-widget">
-                <div class="weather-icon" id="weatherIcon"><i class="fas fa-spinner fa-spin"></i></div>
-                <div class="weather-info">
-                    <p class="city-name">Daşkəsən Rayonu</p>
-                    <div class="temp" id="tempDisplay">--°C</div>
-                    <p class="condition" id="conditionDisplay">Yüklənir...</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- HERO / Fon üstü -->
+<section class="hero" id="anasəhifə">
+  <h1>Xoş Gəlmisiniz</h1>
+  <div class="hero-links">
+    <a href="#elektronmuraciet">Elektron Müraciət</a>
+    <a href="#onlaynode">Onlayn Ödəniş</a>
+    <a href="#faydalikecidler">Faydalı Keçidlər</a>
+    <a href="#dovletqurumlari">Dövlət Qurumları</a>
+    <a href="#elektronxidmetler">Elektron Xidmətlər və Portallar</a>
+    <a href="#bizimleelaqe">Bizimlə Əlaqə</a>
+  </div>
+</section>
 
-    <section class="container" id="news">
-        <div class="section-header">
-            <h2 class="section-title">Son Xəbərlər və Yeniliklər</h2>
-            <p>İdarəmizin fəaliyyəti haqqında ən son məlumatlar</p>
-        </div>
-        <div class="news-grid" id="newsContainer">
-            <p style="text-align:center; grid-column: 1/-1;">Xəbərlər hazırlanır...</p>
-        </div>
-    </section>
+<!-- XƏBƏRLƏR SLIDER -->
+<section id="xeberler">
+  <h2>Xəbərlər</h2>
+  <div id="newsSlider"></div>
+  <div id="ticker"><div id="tickerContent"></div></div>
+</section>
 
-    <section class="payment-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Onlayn Ödəniş</h2>
-                <img src="fotolar/million.az.png" class="million-logo" alt="million.az">
-            </div>
-            <div class="payment-flex">
-                <a href="https://million.az/services/communal/Azersu" target="_blank" class="payment-card">
-                    <div class="pay-icon"><i class="fas fa-tint"></i></div>
-                    <div>
-                        <h3 style="color:var(--primary)">ADSEA (Azərsu)</h3>
-                        <p style="font-size:0.9rem; color:#666;">İçməli su xidməti üzrə ödəniş</p>
-                    </div>
-                </a>
-                <a href="https://million.az/services/communal/Meliorasiya" target="_blank" class="payment-card">
-                    <div class="pay-icon"><i class="fas fa-water"></i></div>
-                    <div>
-                        <h3 style="color:var(--primary)">Meliorasiya</h3>
-                        <p style="font-size:0.9rem; color:#666;">SİB.az su istifadəçiləri üçün</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
+<!-- Haqqımızda -->
+<section id="haqqimizda">
+  <h2>Haqqımızda</h2>
+  <!-- Buraya mətin əlavə et -->
+</section>
 
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-about">
-                <img src="fotolar/logo.jpg" alt="Logo">
-                <h3 style="margin-bottom:15px; color:var(--accent);">Daşkəsən SMSİİ</h3>
-                <p style="font-size:0.9rem; line-height:1.6; opacity:0.8;">Azərbaycan Meliorasiya və Su Təsərrüfatı ASC-nin tabeliyində fəaliyyət göstərən Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsi.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Faydalı Keçidlər</h4>
-                <ul>
-                    <li><a href="index.html">Ana Səhifə</a></li>
-                    <li><a href="haqqimizda.html">Haqqımızda</a></li>
-                    <li><a href="admin/login.html">Admin Girişi</a></li>
-                </ul>
-            </div>
-            <div class="footer-col" id="contact">
-                <h4>Əlaqə Məlumatları</h4>
-                <ul>
-                    <li><a href="tel:+994222155049"><i class="fas fa-phone"></i> (022) 215 50 49</a></li>
-                    <li><a href="https://wa.me/994505459085" target="_blank"><i class="fab fa-whatsapp"></i> +994 50 545 90 85</a></li>
-                    <li><a href="mailto:Daskesensmsii@rsmx.gov.az"><i class="fas fa-envelope"></i> Daskesensmsii@rsmx.gov.az</a></li>
-                    <li><a><i class="fas fa-map-marker-alt"></i> Daşkəsən şəhəri</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 Daşkəsən SMSİİ. Bütün hüquqlar qorunur.</p>
-            <div class="dev-info">
-                <i class="fas fa-code"></i> Full-stack Developer: <strong style="color:var(--accent); margin-left:5px;">Qərib Səfərli</strong>
-            </div>
-        </div>
-    </footer>
+<!-- Struktur -->
+<section id="struktur">
+  <h2>Struktur</h2>
+  <!-- Buraya mətin əlavə et -->
+</section>
 
-    <script src="admin/supabase-config.js"></script>
-    <script>
-        // MOBİL MENYU İDARƏETMƏSİ
-        const menuToggle = document.getElementById('menuToggle');
-        const navMenu = document.getElementById('navMenu');
+<!-- Rəhbərlik -->
+<section id="rehberlik">
+  <h2>Rəhbərlik</h2>
+  <!-- Buraya mətin əlavə et -->
+</section>
 
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            menuToggle.innerHTML = navMenu.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-        });
+<!-- Elektron Müraciət -->
+<section id="elektronmuraciet">
+  <h2>Elektron Müraciət</h2>
+  <!-- Buraya form əlavə edə bilərsən -->
+</section>
 
-        // DAŞKƏSƏN HAVA DURUMU (API)
-        async function fetchWeather() {
-            const lat = 40.5202;
-            const lon = 46.0779;
-            const apiKey = "eb39d1b0d2d38e0787a7b8e1f5c62181"; // OpenWeatherMap API key
-            
-            try {
-                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=az&appid=${apiKey}`);
-                const data = await response = await res.json();
-                
-                document.getElementById('tempDisplay').innerText = Math.round(data.main.temp) + "°C";
-                const condition = data.weather[0].description;
-                document.getElementById('conditionDisplay').innerText = condition.charAt(0).toUpperCase() + condition.slice(1);
-                
-                // Hava durumuna görə ikon təyini
-                const iconCode = data.weather[0].icon;
-                let iconHtml = "";
-                if(iconCode.includes('01')) iconHtml = iconCode.includes('d') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-                else if(iconCode.includes('02')) iconHtml = iconCode.includes('d') ? '<i class="fas fa-cloud-sun"></i>' : '<i class="fas fa-cloud-moon"></i>';
-                else if(iconCode.includes('03') || iconCode.includes('04')) iconHtml = '<i class="fas fa-cloud"></i>';
-                else if(iconCode.includes('09') || iconCode.includes('10')) iconHtml = '<i class="fas fa-cloud-showers-heavy"></i>';
-                else iconHtml = '<i class="fas fa-cloud-sun"></i>';
-                
-                document.getElementById('weatherIcon').innerHTML = iconHtml;
-            } catch (err) {
-                console.error("Hava məlumatı alınmadı");
-                document.getElementById('conditionDisplay').innerText = "Məlumat yoxdur";
-            }
-        }
+<!-- Onlayn Ödəniş -->
+<section id="onlaynode">
+  <h2>Onlayn Ödəniş</h2>
+  <!-- Buraya ödəniş sistemləri yerləşdirilə bilər -->
+</section>
 
-        // SUPABASE-DƏN XƏBƏRLƏRİ ÇƏKMƏK
-        async function loadNews() {
-            try {
-                const { data, error } = await _supabase
-                    .from('xeberler')
-                    .select('*')
-                    .order('id', { ascending: false })
-                    .limit(6);
+<!-- Faydalı Keçidlər -->
+<section id="faydalikecidler">
+  <h2>Faydalı Keçidlər</h2>
+  <!-- Buraya keçidlər əlavə et -->
+</section>
 
-                if (error) throw error;
+<!-- Dövlət Qurumları -->
+<section id="dovletqurumlari">
+  <h2>Dövlət Qurumları</h2>
+  <!-- Buraya keçidlər əlavə et -->
+</section>
 
-                const container = document.getElementById('newsContainer');
-                if (data.length === 0) {
-                    container.innerHTML = "<p>Hazırda aktiv xəbər yoxdur.</p>";
-                    return;
-                }
+<!-- Elektron Xidmətlər və Portallar -->
+<section id="elektronxidmetler">
+  <h2>Elektron Xidmətlər və Portallar</h2>
+  <!-- Buraya keçidlər əlavə et -->
+</section>
 
-                container.innerHTML = data.map(news => `
-                    <div class="news-card">
-                        <img src="${news.sekiller ? news.sekiller[0] : 'https://via.placeholder.com/400x250?text=Foto+Yoxdur'}" class="news-img" alt="Xəbər">
-                        <div class="news-content">
-                            <span class="news-date"><i class="far fa-calendar-alt"></i> ${news.tarix}</span>
-                            <h3>${news.basliq}</h3>
-                            <p>${news.aciqlama.length > 120 ? news.aciqlama.substring(0, 120) + "..." : news.aciqlama}</p>
-                            <a href="#" style="color:var(--accent); text-decoration:none; font-weight:bold; margin-top:15px; display:inline-block;">Ətraflı oxu <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (err) {
-                console.error("Xəbər yükləmə xətası:", err);
-            }
-        }
+<!-- Bizimlə Əlaqə -->
+<section id="bizimleelaqe">
+  <h2>Bizimlə Əlaqə</h2>
+  <!-- Buraya əlaqə məlumatları -->
+  <p>WhatsApp: +994517415706</p>
+  <p>Əlaqə: +994504620027</p>
+  <p>Əlaqə: +994519620298</p>
+</section>
 
-        // Başlat
-        window.onload = () => {
-            fetchWeather();
-            loadNews();
-        };
-    </script>
+<!-- MODAL -->
+<div id="newsModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeNewsModal()">&times;</span>
+    <img id="modalMainImg" src="" alt="Xəbər şəkil" style="display:none;">
+    <h2 id="modalTitle"></h2>
+    <p id="modalText"></p>
+    <div id="modalDate"></div>
+  </div>
+</div>
+
+<!-- Weather -->
+<div class="weather">
+  <span class="weather-icon">🌡️</span>
+  <span id="weatherText">Daşkəsən rayonu</span>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ===== Supabase =====
+const _supabaseUrl = "https://xbxraksptsqfpdvqtfyb.supabase.co";
+const _supabaseKey = "sb_publishable_WCZZZFpg-vBYKKbgVkSNPw_ivUiGs6O";
+const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
+let allNews = [];
+
+// Load News
+async function loadNews(){
+  try{
+    const { data, error } = await _supabase.from('xeberler').select('*').order('id',{ascending:false});
+    if(error) throw error;
+    allNews = data||[];
+    renderNewsSlider(allNews.slice(0,8));
+    renderTicker(allNews.slice(0,5));
+  }catch(e){ console.error('Xəbər xətası', e.message); }
+}
+
+function renderNewsSlider(items){
+  const slider = document.getElementById('newsSlider');
+  if(!slider) return;
+  slider.innerHTML='';
+  if(items.length===0){slider.innerHTML='<p>Hələ ki xəbər yoxdur.</p>'; return;}
+  items.forEach((item,i)=>{
+    const imgSrc = item.sekiller && item.sekiller.length>0 ? item.sekiller[0] : './fotolar/logo.jpg';
+    slider.innerHTML+=`<div class="news-card">
+      <img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" onerror="this.src='./fotolar/logo.jpg'">
+      <div class="news-card-body">
+        <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.tarix)}</div>
+        <div class="news-card-title">${item.basliq}</div>
+        <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax</button>
+      </div>
+    </div>`;
+  });
+}
+
+function renderTicker(items){
+  const ticker = document.getElementById('tickerContent');
+  if(!ticker || items.length===0) return;
+  const content = items.map(n=>`<span class="ticker-item"><i class="fas fa-circle"></i> ${n.basliq}</span>`).join('');
+  ticker.innerHTML = content+content;
+}
+
+// Modal
+function openNewsModal(idx){
+  const item = allNews[idx];
+  if(!item) return;
+  document.getElementById('modalTitle').textContent = item.basliq;
+  document.getElementById('modalText').textContent = item.aciqlama||'-';
+  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
+  const mainImg = document.getElementById('modalMainImg');
+  if(item.sekiller && item.sekiller.length>0){ mainImg.src=item.sekiller[0]; mainImg.style.display='block'; }
+  document.getElementById('newsModal').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeNewsModal(){ document.getElementById('newsModal').classList.remove('active'); document.body.style.overflow=''; }
+
+// Date format
+function formatDate(iso){ if(!iso) return '-'; const d=new Date(iso); return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`; }
+
+// Weather
+async function loadWeather(){
+  const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
+  const city = 'Dashkasan,AZ';
+  const url=`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric&lang=az`;
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Weather fetch failed');
+    const data = await res.json();
+    const temp=Math.round(data.main.temp);
+    const desc = data.weather[0].description;
+    const id = data.weather[0].id;
+    let icon = '🌤️';
+    if(id>=200 && id<300) icon='⛈️';
+    else if(id>=300 && id<400) icon='🌧️';
+    else if(id>=500 && id<600) icon='🌧️';
+    else if(id>=600 && id<700) icon='❄️';
+    else if(id>=700 && id<800) icon='🌫️';
+    else if(id===800){ const h=new Date().getHours(); icon=(h>=20||h<6)?'🌙':'☀️'; }
+    else if(id>=801 && id<=803) icon='⛅';
+    else if(id===804) icon='☁️';
+    document.querySelector('.weather-icon').textContent=icon;
+    const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+    document.getElementById('weatherText').textContent=`Daşkəsən: ${cap(desc)}, ${temp}°C`;
+  }catch(e){
+    document.querySelector('.weather-icon').textContent='🌡️';
+    document.getElementById('weatherText').textContent='Daşkəsən rayonu';
+  }
+}
+
+// Hamburger
+function toggleMenu(){document.getElementById('mainMenu').classList.toggle('active');}
+
+document.addEventListener('DOMContentLoaded',()=>{ loadNews(); loadWeather(); });
+</script>
+
 </body>
 </html>

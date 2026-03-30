@@ -1675,25 +1675,35 @@ function closeNewsModalOutside(e) {
 }
 
 // ==============================
-// ALL NEWS MODAL
+// ALL NEWS MODAL (Bütün Xəbərlər Pəncərəsi)
 // ==============================
 function openAllNews() {
   const grid = document.getElementById('allNewsGrid');
+  if(!grid) return;
   grid.innerHTML = '';
+
+  // allNews — Supabase-dən gələn real xəbərlər siyahısıdır
   allNews.forEach((item, i) => {
-    const imgSrc = item.images && item.images.length > 0 ? item.images[0] : null;
+    // 1. Şəkil üçün: images yox, sekiller
+    const imgSrc = item.sekiller && item.sekiller.length > 0 ? item.sekiller[0] : null;
+    
     grid.innerHTML += `
-      <div class="news-card" style="min-width:unset;width:100%;">
+      <div class="news-card" style="min-width:unset; width:100%;">
         ${imgSrc
-          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.title}" loading="lazy">`
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">`
           : `<div class="news-card-img-placeholder">📰</div>`}
         <div class="news-card-body">
-          <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.created_at)}</div>
-          <div class="news-card-title">${item.title}</div>
-          <button class="btn-detail" onclick="openNewsModal(${i}); closeAllNews();">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+          <div class="news-card-date">
+            <i class="far fa-calendar"></i> ${item.tarix}
+          </div>
+          <div class="news-card-title">${item.basliq}</div>
+          <button class="btn-detail" onclick="openNewsModal(${i}); closeAllNews();">
+            Ətraflı bax <i class="fas fa-arrow-right"></i>
+          </button>
         </div>
       </div>`;
   });
+
   document.getElementById('allNewsOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
 }

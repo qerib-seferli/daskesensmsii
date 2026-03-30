@@ -216,16 +216,40 @@
     }
 
     async function deleteNews(id, imgs) {
-        if (!confirm("Bu xəbəri silmək istədiyinizə əminsiniz?")) return;
-        try {
-            if(imgs && imgs.length > 0) {
-                const paths = imgs.map(u => u.split('xeber-media/')[1]);
+    if (!confirm("Bu xəbəri silmək istədiyinizə əminsiniz?")) return;
+    
+    try {
+        // 1. Şəkilləri Storage-dən silməyə çalışırıq
+        if(imgs && Array.isArray(imgs) && imgs.length > 0) {
+            const paths = imgs.map(u => {
+                if (typeof u !== 'string') return null;
+                const parts = u.split('/xeber-media/');
+                return parts.length > 1 ? parts[1] : null;
+            }).filter(p => p !== null);
+
+            if(paths.length > 0) {
+                // Şəkillər silinməsə belə bazadan silməyə davam etmək üçün 'await' istifadə edirik
                 await _supabase.storage.from('xeber-media').remove(paths);
             }
-            await _supabase.from('xeberler').delete().eq('id', id);             
-            loadNews();
-        } catch (err) { alert(err.message); }
+        }
+
+        // 2. Xəbəri bazadan silirik (Əsas mərhələ)
+        const { error } = await _supabase
+            .from('xeberler')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+
+        // 3. Səhifəni yeniləyirik
+        alert("Xəbər uğurla silindi!");
+        loadNews();
+
+    } catch (err) { 
+        alert("Xəta baş verdi: " + err.message); 
+        console.error("Detallı xəta:", err);
     }
+}
 
     loadNews(); // Səhifə açılanda xəbərləri yükləyir
 </script>

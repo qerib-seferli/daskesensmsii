@@ -1140,7 +1140,45 @@
     </div>
   </section>
 
-  
+  <!-- NEWS TICKER -->
+  <div class="news-ticker-wrap">
+    <div class="ticker-label"><i class="fas fa-bolt" style="margin-right:6px;"></i> XƏBƏRLƏr</div>
+    <div class="ticker-content" id="tickerContent">
+      <!-- Dynamically filled -->
+      <span class="ticker-item"><i class="fas fa-circle"></i> Xəbərlər yüklənir...</span>
+      <span class="ticker-item"><i class="fas fa-circle"></i> Xəbərlər yüklənir...</span>
+      <span class="ticker-item"><i class="fas fa-circle"></i> Xəbərlər yüklənir...</span>
+    </div>
+  </div>
+
+  <!-- NEWS SECTION -->
+  <section class="news-section" id="news">
+    <div class="container">
+      <div class="news-header">
+        <div>
+          <h2 class="section-title"><i class="fas fa-newspaper"></i> Son Xəbərlər</h2>
+          <p class="section-subtitle">Ən son fəaliyyət xəbərləri</p>
+        </div>
+        <button class="btn-all-news" onclick="openAllNews()">
+          <i class="fas fa-th-large"></i> Bütün Xəbərlər
+        </button>
+      </div>
+      <div class="news-slider-wrap" id="newsSliderWrap">
+        <div class="news-slider" id="newsSlider">
+          <!-- Dynamically filled -->
+          <div class="news-card" style="min-width:300px;">
+            <div class="news-card-img-placeholder">📰</div>
+            <div class="news-card-body">
+              <div class="news-card-date"><i class="far fa-calendar"></i> Xəbərlər yüklənir...</div>
+              <div class="news-card-title">Admin paneldən xəbər əlavə edin</div>
+              <button class="btn-detail" disabled>Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slider-controls" id="sliderDots"></div>
+    </div>
+  </section>
 
   <!-- PAYMENT SECTION -->
   <section class="payment-section" id="payment">
@@ -1333,6 +1371,40 @@
   </div>
 </footer>
 
+<!-- ===== NEWS MODAL ===== -->
+<div class="modal-overlay" id="newsModal" onclick="closeNewsModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-img-wrap" style="position:relative;">
+      <div id="modalImgPlaceholder" class="modal-img-placeholder">📰</div>
+      <img id="modalMainImg" class="modal-img-main" src="" alt="" style="display:none;">
+      <button class="modal-close" onclick="closeNewsModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="modalGallery" class="modal-gallery"></div>
+    <div class="modal-body">
+      <div class="modal-date" id="modalDate"><i class="far fa-calendar"></i> -</div>
+      <h2 class="modal-title" id="modalTitle">-</h2>
+      <p class="modal-text" id="modalText">-</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALL NEWS MODAL ===== -->
+<div class="all-news-overlay" id="allNewsOverlay" onclick="closeAllNewsOutside(event)">
+  <div class="all-news-box">
+    <div class="all-news-header">
+      <h2 class="all-news-title"><i class="fas fa-newspaper" style="margin-right:8px;color:var(--primary)"></i>Bütün Xəbərlər</h2>
+      <button class="modal-close" style="position:static;width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;" onclick="closeAllNews()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="all-news-grid" id="allNewsGrid">
+      <!-- Dynamically filled -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Yuxarı qayıt">
+  <i class="fas fa-chevron-up"></i>
+</button>
 
 <!-- ===== PWA INSTALL BANNER ===== -->
 <div class="pwa-banner" id="pwaBanner">
@@ -1350,6 +1422,15 @@
 </div>
 
 <script>
+// ==============================
+// SUPABASE CONFIG
+// ==============================
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+let supabase;
+try {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch(e) { console.warn('Supabase not configured yet'); }
 
 // ==============================
 // WEATHER (OpenWeatherMap API)
@@ -1389,150 +1470,235 @@ loadWeather();
 
 
 
-
-
   
 
-
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin/supabase-config.js"></script>
 
   <script>
-    let allNews = [];
-    let sliderPos = 0;
-    let autoSlideTimer;
+    
+// ==============================
+// NEWS FROM SUPABASE (REWRITTEN BY GEMINI)
+// ==============================
+let allNews = [];
 
-    // Səhifə yüklənəndə işə düşən funksiya
-    async function loadNews() {
-      if (typeof _supabase === 'undefined') {
-        console.error('Supabase tapılmadı! admin/supabase-config.js yolunu yoxlayın.');
-        return;
-      }
+async function loadNews() {
+  // Sənin admin panelində işlətdiyin dəyişən "_supabase" adlanır
+  if(typeof _supabase === 'undefined') {
+    console.error('Supabase tapılmadı! admin/supabase-config.js yolunu yoxlayın.');
+    return;
+  }
 
-      try {
-        const { data, error } = await _supabase
-          .from('xeberler')
-          .select('*')
-          .order('id', { ascending: false });
+  try {
+    const { data, error } = await _supabase
+      .from('xeberler') // Sənin cədvəlinin adı
+      .select('*')
+      .order('id', { ascending: false });
 
-        if (error) throw error;
+    if(error) throw error;
 
-        if (data && data.length > 0) {
-          allNews = data;
-          renderNewsSlider(allNews.slice(0, 8));
-          renderTicker(allNews.slice(0, 5));
-        }
-      } catch (e) {
-        console.error('Məlumat çəkilərkən xəta:', e.message);
-      }
-    }
+    allNews = data || [];
+    renderNewsSlider(allNews.slice(0, 8));
+    renderTicker(allNews.slice(0, 5));
+  } catch(e) {
+    console.warn('Xəbər yükləmə xətası:', e.message);
+    // Xəta olarsa boş göstərməsin deyə nümunə:
+    allNews = [];
+    renderNewsSlider([]);
+  }
+}
 
-    function renderNewsSlider(items) {
-      const slider = document.getElementById('newsSlider');
-      if (!slider) return;
-      slider.innerHTML = '';
-      
-      items.forEach((item, i) => {
-        const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : 'fotolar/logo.jpg';
-        slider.innerHTML += `
-          <div class="news-card">
-            <img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" onerror="this.src='fotolar/logo.jpg'">
-            <div class="news-card-body">
-              <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>
-              <div class="news-card-title">${item.basliq}</div>
-              <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax</button>
-            </div>
-          </div>`;
-      });
-      setupSlider();
-    }
+function formatDate(iso) {
+  if(!iso) return '-';
+  const d = new Date(iso);
+  return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
+}
 
-    function renderTicker(items) {
-      const ticker = document.getElementById('tickerContent');
-      if (!ticker) return;
-      const html = items.map((n, i) =>
-        `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
-      ).join('');
-      ticker.innerHTML = html + html;
-    }
+function renderNewsSlider(items) {
+  const slider = document.getElementById('newsSlider');
+  if(!slider) return;
+  slider.innerHTML = '';
 
-    function setupSlider() {
-      const wrap = document.getElementById('newsSliderWrap');
-      const dots = document.getElementById('sliderDots');
-      if (!dots || !wrap) return;
-      
-      dots.innerHTML = '';
-      const cardWidth = 318;
-      const visCount = Math.floor(wrap.offsetWidth / cardWidth) || 1;
-      const maxSlide = Math.max(0, Math.min(allNews.length, 8) - visCount);
+  if(!items || items.length === 0) {
+    slider.innerHTML = '<div class="news-card"><div class="news-card-img-placeholder">📰</div><div class="news-card-body"><div class="news-card-date">Xəbər yoxdur</div><div class="news-card-title">Hələ ki xəbər əlavə edilməyib</div></div></div>';
+    return;
+  }
 
-      for (let i = 0; i <= maxSlide; i++) {
-        const d = document.createElement('button');
-        d.className = 'slider-dot' + (i === 0 ? ' active' : '');
-        d.onclick = () => goToSlide(i);
-        dots.appendChild(d);
-      }
-      startAutoSlide(maxSlide);
-    }
+  items.forEach((item, i) => {
+    // Sənin bazanda "sekiller" sütunudur
+    const imgSrc = item.sekiller && item.sekiller.length > 0 ? item.sekiller[0] : null;
+    
+    slider.innerHTML += `
+      <div class="news-card">
+        ${imgSrc
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy" onerror="this.src='fotolar/logo.jpg'">`
+          : `<div class="news-card-img-placeholder">📰</div>`}
+        <div class="news-card-body">
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.tarix)}</div>
+          <div class="news-card-title">${item.basliq}</div>
+          <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>`;
+  });
+  setupSlider();
+}
 
-    function goToSlide(i) {
-      const wrap = document.getElementById('newsSliderWrap');
-      if (wrap) wrap.scrollTo({ left: i * 318, behavior: 'smooth' });
-      
-      const allDots = document.querySelectorAll('.slider-dot');
-      allDots.forEach((d, j) => d.classList.toggle('active', i === j));
-      sliderPos = i;
-    }
+function renderTicker(items) {
+  const ticker = document.getElementById('tickerContent');
+  if(!ticker || !items || items.length === 0) return;
+  
+  const html = items.map((n,i) =>
+    `<span class="ticker-item" onclick="openNewsModal(${i})"><i class="fas fa-circle"></i> ${n.basliq}</span>`
+  ).join('');
+  ticker.innerHTML = html + html;
+}
 
-    function startAutoSlide(maxSlide) {
-      clearInterval(autoSlideTimer);
-      if (maxSlide > 0) {
-        autoSlideTimer = setInterval(() => {
-          sliderPos = (sliderPos >= maxSlide) ? 0 : sliderPos + 1;
-          goToSlide(sliderPos);
-        }, 4000);
-      }
-    }
+// ==============================
+// SLIDER (touch + auto)
+// ==============================
+let sliderPos = 0;
+let autoSlideTimer;
 
-    function openNewsModal(idx) {
-      const item = allNews[idx];
-      if (!item) return;
+function setupSlider() {
+  const wrap = document.getElementById('newsSliderWrap');
+  const slider = document.getElementById('newsSlider');
+  const dots = document.getElementById('sliderDots');
+  if(!wrap || !slider || !dots) return;
 
-      const modal = document.getElementById('newsModal');
-      document.getElementById('modalTitle').textContent = item.basliq;
-      document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
-      document.getElementById('modalText').textContent = item.aciqlama;
+  dots.innerHTML = '';
+  const cardW = 318;
+  const visCount = Math.floor(wrap.offsetWidth / cardW) || 1;
+  const maxSlide = Math.max(0, Math.min(allNews.length, 8) - visCount);
 
-      const mainImg = document.getElementById('modalMainImg');
-      if (item.sekiller && item.sekiller.length > 0) {
-        mainImg.src = item.sekiller[0];
-        mainImg.style.display = 'block';
-      } else {
-        mainImg.style.display = 'none';
-      }
+  for(let i=0; i<=maxSlide; i++) {
+    const d = document.createElement('button');
+    d.className = 'slider-dot' + (i===0?' active':'');
+    d.onclick = ()=> goToSlide(i);
+    dots.appendChild(d);
+  }
 
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
+  startAutoSlide(maxSlide);
+}
 
-    function closeNewsModal() {
-      document.getElementById('newsModal').classList.remove('active');
-      document.body.style.overflow = '';
-    }
+function goToSlide(i) {
+  const wrap = document.getElementById('newsSliderWrap');
+  if(wrap) wrap.scrollTo({ left: i * 318, behavior: 'smooth' });
+  
+  document.querySelectorAll('.slider-dot').forEach((d,j) => d.classList.toggle('active', i===j));
+  sliderPos = i;
+}
 
-    function toggleMobileNav() {
-      const nav = document.getElementById('mobileNav');
-      if (!nav) return;
-      const isOpen = nav.style.display === 'flex';
-      nav.style.display = isOpen ? 'none' : 'flex';
-    }
+function startAutoSlide(maxSlide) {
+  clearInterval(autoSlideTimer);
+  if(maxSlide > 0) {
+    autoSlideTimer = setInterval(() => {
+      sliderPos = (sliderPos >= maxSlide) ? 0 : sliderPos + 1;
+      goToSlide(sliderPos);
+    }, 4000);
+  }
+}
 
-    window.addEventListener('scroll', () => {
-      const btn = document.getElementById('backToTop');
-      if (btn) btn.classList.toggle('visible', window.scrollY > 350);
+// ==============================
+// NEWS MODAL
+// ==============================
+function openNewsModal(idx) {
+  const item = allNews[idx];
+  if(!item) return;
+
+  const modal = document.getElementById('newsModal');
+  document.getElementById('modalTitle').textContent = item.basliq;
+  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
+  document.getElementById('modalText').textContent = item.aciqlama || '-';
+
+  const mainImg = document.getElementById('modalMainImg');
+  const placeholder = document.getElementById('modalImgPlaceholder');
+  const gallery = document.getElementById('modalGallery');
+  
+  if(gallery) gallery.innerHTML = '';
+
+  if(item.sekiller && item.sekiller.length > 0) {
+    mainImg.src = item.sekiller[0];
+    mainImg.style.display = 'block';
+    if(placeholder) placeholder.style.display = 'none';
+    
+    item.sekiller.forEach((src, i) => {
+      const t = document.createElement('img');
+      t.src = src;
+      t.className = i===0 ? 'active' : '';
+      t.onclick = () => {
+        mainImg.src = src;
+        gallery.querySelectorAll('img').forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+      };
+      gallery.appendChild(t);
     });
+  } else {
+    mainImg.style.display = 'none';
+    if(placeholder) placeholder.style.display = 'flex';
+  }
 
-    document.addEventListener('DOMContentLoaded', loadNews);
-  </script>
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+  document.getElementById('newsModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ==============================
+// ALL NEWS MODAL
+// ==============================
+function openAllNews() {
+  const grid = document.getElementById('allNewsGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+
+  allNews.forEach((item, i) => {
+    const imgSrc = item.sekiller && item.sekiller.length > 0 ? item.sekiller[0] : null;
+    grid.innerHTML += `
+      <div class="news-card" style="min-width:unset;width:100%;">
+        ${imgSrc
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy">`
+          : `<div class="news-card-img-placeholder">📰</div>`}
+        <div class="news-card-body">
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.tarix)}</div>
+          <div class="news-card-title">${item.basliq}</div>
+          <button class="btn-detail" onclick="openNewsModal(${i}); closeAllNews();">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>`;
+  });
+  document.getElementById('allNewsOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAllNews() {
+  document.getElementById('allNewsOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ==============================
+// MOBILE NAV & OTHERS
+// ==============================
+function toggleMobileNav() {
+  const nav = document.getElementById('mobileNav');
+  if(!nav) return;
+  nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
+}
+
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('backToTop');
+  if(btn) btn.classList.toggle('visible', window.scrollY > 350);
+});
+
+// ==============================
+// INIT
+// ==============================
+document.addEventListener('DOMContentLoaded', loadNews);
+    
+</script>
+
+  
 </body>
 </html>

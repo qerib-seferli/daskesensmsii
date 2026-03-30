@@ -1435,20 +1435,37 @@
 
   <!-- ===== Xəbərlər stili ===== -->
 <style>
-.news-slider { display:flex; overflow-x:auto; gap:16px; scroll-behavior:smooth; }
-.news-card { flex:0 0 800px; height:600px; border:1px solid #ccc; border-radius:8px; overflow:hidden; position:relative; }
-.news-card-img { width:100%; height:60%; object-fit:cover; }
-.news-card-body { padding:10px; }
-.modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; }
-.modal-overlay.active { display:flex; }
-.modal-box { background:#fff; padding:20px; border-radius:8px; max-width:90%; max-height:90%; overflow:auto; position:relative; }
-.modal-img-wrap { position:relative; text-align:center; }
-.modal-img-wrap img { max-width:100%; max-height:400px; }
-.modal-prev, .modal-next, .modal-close { position:absolute; top:50%; transform:translateY(-50%); background:#fff; border:none; padding:10px; font-size:18px; cursor:pointer; }
-.modal-prev { left:10px; }
-.modal-next { right:10px; }
-.modal-close { top:10px; right:10px; transform:none; }
+.news-slider {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* mobil sürüşdürmə üçün */
+}
+
+.news-card {
+  flex: 0 0 auto;
+  width: 90%;        /* ekran ölçüsünə görə genişlik */
+  max-width: 400px;  /* böyük ekranlarda maksimum ölçü */
+  height: auto;      /* hündürlük şəkilə görə avtomatik */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.news-card-img {
+  width: 100%;
+  height: 200px;     /* responsive hündürlük */
+  object-fit: cover;
+}
+
+.news-card-body {
+  padding: 10px;
+  font-size: 14px;
+}
 </style>
+
   
 </head>
 

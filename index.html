@@ -1425,15 +1425,6 @@
 </div>
 
 <script>
-// ==============================
-// SUPABASE CONFIG
-// ==============================
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-let supabase;
-try {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} catch(e) { console.warn('Supabase not configured yet'); }
 
 // ==============================
 // WEATHER (OpenWeatherMap API)
@@ -1477,26 +1468,25 @@ loadWeather();
 let allNews = [];
 
 async function loadNews() {
-  if(!supabase || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
-    allNews = getSampleNews();
-    renderNewsSlider(allNews.slice(0,5));
-    renderTicker(allNews.slice(0,5));
-    return;
-  }
+  // Əgər supabase-config.js-də dəyişən adı _supabase-dirsə, onu istifadə et
+  const client = typeof _supabase !== 'undefined' ? _supabase : supabase;
+  
   try {
-    const { data, error } = await supabase
-      .from('news')
+    const { data, error } = await client
+      .from('xeberler') // Cədvəl adın
       .select('*')
-      .order('created_at', { ascending: false });
-    if(error) throw error;
+      .order('id', { ascending: false });
+
+    if (error) throw error;
+    
     allNews = data || [];
-    renderNewsSlider(allNews.slice(0,5));
-    renderTicker(allNews.slice(0,5));
-  } catch(e) {
-    console.warn('News load error:', e);
-    allNews = getSampleNews();
-    renderNewsSlider(allNews.slice(0,5));
-    renderTicker(allNews.slice(0,5));
+    renderNewsSlider(allNews.slice(0, 5));
+    renderTicker(allNews.slice(0, 5));
+  } catch (e) {
+    console.warn('Xəbərlər yüklənərkən xəta:', e);
+    allNews = getSampleNews(); // Xəta olarsa nümunə xəbər göstər
+    renderNewsSlider(allNews);
+    renderTicker(allNews);
   }
 }
 
@@ -1521,20 +1511,19 @@ function formatDate(iso) {
 function renderNewsSlider(items) {
   const slider = document.getElementById('newsSlider');
   slider.innerHTML = '';
-  if(!items || items.length === 0) {
-    slider.innerHTML = '<div class="news-card"><div class="news-card-img-placeholder">📰</div><div class="news-card-body"><div class="news-card-date">Xəbər yoxdur</div><div class="news-card-title">Hələ ki xəbər əlavə edilməyib</div></div></div>';
-    return;
-  }
+  
   items.forEach((item, i) => {
-    const imgSrc = item.images && item.images.length > 0 ? item.images[0] : null;
+    // Şəkillər "sekiller" massivindədir
+    const imgSrc = item.sekiller && item.sekiller.length > 0 ? item.sekiller[0] : null;
+    
     slider.innerHTML += `
       <div class="news-card">
         ${imgSrc
-          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.title}" loading="lazy">`
+          ? `<img class="news-card-img" src="${imgSrc}" alt="${item.basliq}" loading="lazy">`
           : `<div class="news-card-img-placeholder">📰</div>`}
         <div class="news-card-body">
-          <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.created_at)}</div>
-          <div class="news-card-title">${item.title}</div>
+          <div class="news-card-date"><i class="far fa-calendar"></i> ${item.tarix}</div>
+          <div class="news-card-title">${item.basliq}</div>
           <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>`;
@@ -1636,24 +1625,24 @@ function startAutoSlide(maxSlide) {
 function openNewsModal(idx) {
   const item = allNews[idx];
   if(!item) return;
+  
   const modal = document.getElementById('newsModal');
-  document.getElementById('modalTitle').textContent = item.title;
-  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.created_at)}`;
-  document.getElementById('modalText').textContent = item.content || '-';
+  document.getElementById('modalTitle').textContent = item.basliq; // title -> basliq
+  document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${item.tarix}`;
+  document.getElementById('modalText').textContent = item.metn || item.content || '-'; // metn -> admin panelə görə
 
   const mainImg = document.getElementById('modalMainImg');
   const placeholder = document.getElementById('modalImgPlaceholder');
   const gallery = document.getElementById('modalGallery');
   gallery.innerHTML = '';
 
-  if(item.images && item.images.length > 0) {
-    mainImg.src = item.images[0];
+  if(item.sekiller && item.sekiller.length > 0) {
+    mainImg.src = item.sekiller[0];
     mainImg.style.display = 'block';
     placeholder.style.display = 'none';
-    item.images.forEach((src, i) => {
+    item.sekiller.forEach((src, i) => {
       const t = document.createElement('img');
       t.src = src;
-      t.alt = `Şəkil ${i+1}`;
       t.className = i===0 ? 'active' : '';
       t.onclick = () => {
         mainImg.src = src;

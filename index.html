@@ -1427,6 +1427,121 @@
 
 <script>
 
+
+
+
+
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// 1. DÜZGÜN BAĞLANTI (Bura səninkidir, dəyişmə)
+const _supabaseUrl = "https://xbxraksptsqfpdvqtfyb.supabase.co";
+const _supabaseKey = "sb_publishable_WCZZZFpg-vBYKKbgVkSNPw_ivUiGs6O";
+const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
+
+let allNews = [];
+
+// 2. XƏBƏRLƏRİ ÇƏKMƏK
+async function loadNews() {
+    try {
+        console.log("Bazaya qoşuluruq...");
+        const { data, error } = await _supabase
+            .from('xeberler')
+            .select('*')
+            .order('id', { ascending: false });
+
+        if (error) throw error;
+
+        allNews = data || [];
+        console.log("Xəbərlər gəldi:", allNews.length);
+
+        renderNewsSlider(allNews.slice(0, 8));
+        renderTicker(allNews.slice(0, 5));
+    } catch (err) {
+        console.error("Xəta baş verdi:", err.message);
+    }
+}
+
+// 3. EKRANDA GÖSTƏRMƏK (Formatlama)
+function formatDate(iso) {
+    if (!iso) return '-';
+    const d = new Date(iso);
+    return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}.${d.getFullYear()}`;
+}
+
+function renderNewsSlider(items) {
+    const slider = document.getElementById('newsSlider');
+    if (!slider) return;
+    slider.innerHTML = '';
+
+    if (items.length === 0) {
+        slider.innerHTML = '<p style="padding:20px;">Xəbər tapılmadı.</p>';
+        return;
+    }
+
+    items.forEach((item, i) => {
+        const imgSrc = (item.sekiller && item.sekiller.length > 0) ? item.sekiller[0] : './fotolar/logo.jpg';
+        slider.innerHTML += `
+            <div class="news-card">
+                <img class="news-card-img" src="${imgSrc}" onerror="this.src='./fotolar/logo.jpg'">
+                <div class="news-card-body">
+                    <div class="news-card-date"><i class="far fa-calendar"></i> ${formatDate(item.tarix)}</div>
+                    <div class="news-card-title">${item.basliq}</div>
+                    <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax</button>
+                </div>
+            </div>`;
+    });
+    if (typeof setupSlider === 'function') setupSlider();
+}
+
+function renderTicker(items) {
+    const ticker = document.getElementById('tickerContent');
+    if (!ticker) return;
+    const content = items.map(n => `<span class="ticker-item"><i class="fas fa-circle"></i> ${n.basliq}</span>`).join('');
+    ticker.innerHTML = content + content;
+}
+
+// 4. PƏNCƏRƏNİ (MODAL) AÇMAQ
+function openNewsModal(idx) {
+    const item = allNews[idx];
+    if (!item) return;
+
+    document.getElementById('modalTitle').textContent = item.basliq;
+    document.getElementById('modalText').textContent = item.aciqlama;
+    document.getElementById('modalDate').innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
+
+    const mainImg = document.getElementById('modalMainImg');
+    if (item.sekiller && item.sekiller.length > 0) {
+        mainImg.src = item.sekiller[0];
+        mainImg.style.display = 'block';
+        if(document.getElementById('modalImgPlaceholder')) document.getElementById('modalImgPlaceholder').style.display = 'none';
+    }
+
+    document.getElementById('newsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+    document.getElementById('newsModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// BAŞLAT
+document.addEventListener('DOMContentLoaded', loadNews);
+</script>
+
+
+
+
+  
+
+
+
+
+  
 // ==============================
 // WEATHER (OpenWeatherMap API)
 // ==============================

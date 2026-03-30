@@ -1433,6 +1433,8 @@
     }
   </style>
 
+
+  
   <!-- ===== Xəbərlər stili ===== -->
 <style>
 .news-slider {
@@ -1463,6 +1465,44 @@
 .news-card-body {
   padding: 10px;
   font-size: 14px;
+}
+  .all-news-overlay {
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  z-index: 9999;
+}
+
+.all-news-overlay.active {
+  display: flex;
+}
+
+.all-news-box {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 90%;
+  max-height: 90%;
+  padding: 20px;
+  width: 100%;
+}
+
+.all-news-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.all-news-grid .news-card {
+  flex: 0 0 300px;
+  height: auto;
 }
 </style>
 
@@ -1798,18 +1838,18 @@
     </div>
   </div>
 
-  <!-- ===== ALL NEWS MODAL ===== -->
-  <div class="all-news-overlay" id="allNewsOverlay" onclick="closeAllNewsOutside(event)">
-    <div class="all-news-box">
-      <div class="all-news-header">
-        <h2 class="all-news-title"><i class="fas fa-newspaper" style="margin-right:8px;color:var(--primary)"></i>Bütün Xəbərlər</h2>
-        <button class="modal-close" style="position:static;width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;" onclick="closeAllNews()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="all-news-grid" id="allNewsGrid">
-        <!-- Dynamically filled -->
-      </div>
+  <!-- ALL NEWS MODAL -->
+<div class="all-news-overlay" id="allNewsOverlay" onclick="closeAllNews(event)">
+  <div class="all-news-box" onclick="event.stopPropagation()">
+    <div class="all-news-header">
+      <h2><i class="fas fa-newspaper"></i> Bütün Xəbərlər</h2>
+      <button class="modal-close" onclick="closeAllNews(event)"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="all-news-grid" id="allNewsGrid">
+      <!-- Dinamik doldurulacaq -->
     </div>
   </div>
+</div>
 
   <!-- ===== BACK TO TOP ===== -->
   <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Yuxarı qayıt">
@@ -1877,10 +1917,6 @@ function renderNewsSlider(items){
             </div>`;
         slider.appendChild(card);
     });
-    if(autoSlideInterval) clearInterval(autoSlideInterval);
-    autoSlideInterval = setInterval(()=>{
-        slider.scrollBy({left:800, behavior:'smooth'});
-    },2000);
 }
 
 function showAllNews(){

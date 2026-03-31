@@ -1103,6 +1103,8 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.25);
       position: relative;
       animation: modalIn 0.25s ease;
+      max-height: 90vh;                                       /* ekranı keçməsin */
+      overflow-y: auto;                                       /* içi scroll olsun */
     }
 
     @keyframes modalIn {

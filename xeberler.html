@@ -65,6 +65,10 @@
       overflow-x: hidden;
     }
 
+    body.mobile-menu-open {
+      overflow: hidden;
+    }
+
     a {
       text-decoration: none;
       color: inherit;
@@ -79,6 +83,12 @@
       list-style: none;
     }
 
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
     header {
       position: fixed;
       top: 0;
@@ -100,6 +110,7 @@
       gap: 12px;
       cursor: pointer;
       text-decoration: none;
+      min-width: 0;
     }
 
     .header-logo {
@@ -133,6 +144,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0;
     }
 
     .header-contact-btn {
@@ -160,6 +172,10 @@
       font-size: 1rem;
     }
 
+    .header-contact-btn .btn-label {
+      display: inline;
+    }
+
     .hamburger {
       display: none;
       flex-direction: column;
@@ -177,6 +193,19 @@
       transition: 0.3s;
     }
 
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    /* ===== NAV ===== */
     nav {
       position: fixed;
       top: var(--header-h);
@@ -192,6 +221,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 0;
       max-width: 1100px;
       margin: 0 auto;
       overflow-x: auto;
@@ -228,23 +258,44 @@
       font-size: 0.9rem;
     }
 
+    /* ===== MOBILE NAV ===== */
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 30, 60, 0.35);
+      z-index: 997;
+    }
+
+    .mobile-nav-overlay.active {
+      display: block;
+    }
+
     .mobile-nav {
       display: none;
       position: fixed;
       top: var(--header-h);
-      left: 0;
       right: 0;
+      width: min(88vw, 340px);
+      height: calc(100vh - var(--header-h));
       background: var(--white);
       z-index: 998;
-      padding: 10px 0 16px;
-      box-shadow: 0 8px 24px rgba(3,105,161,0.15);
-      flex-direction: column;
+      box-shadow: -10px 0 28px rgba(3,105,161,0.14);
+      padding: 10px 0 18px;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+    }
+
+    .mobile-nav.active {
+      display: block;
+      transform: translateX(0);
     }
 
     .mobile-nav a {
-      padding: 13px 24px;
+      padding: 14px 22px;
       font-family: var(--font-main);
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--primary-dark);
       display: flex;
@@ -253,17 +304,15 @@
       border-bottom: 1px solid var(--bg2);
     }
 
-    .mobile-nav a:hover {
+    .mobile-nav a:hover,
+    .mobile-nav a.active {
       background: var(--bg2);
+      color: var(--primary);
     }
 
+    /* ===== MAIN ===== */
     main {
       padding-top: calc(var(--header-h) + 46px);
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
     }
 
     .section-title {
@@ -291,14 +340,66 @@
       margin-bottom: 28px;
     }
 
+    /* ===== PAGE ===== */
     .news-archive-page {
-      background: var(--white);
+      background: var(--bg);
       padding: 48px 20px;
       min-height: 420px;
     }
 
     .news-archive-header {
-      margin-bottom: 24px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .news-page-title {
+      color: var(--primary-dark);
+      font-family: var(--font-main);
+      font-size: 2.15rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    .page-line {
+      width: 84px;
+      height: 5px;
+      background: var(--accent);
+      margin: 0 auto 18px;
+      border-radius: 6px;
+    }
+
+    .news-page-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .news-archive-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border-top: 6px solid var(--primary);
+      padding: 28px;
+    }
+
+    .archive-heading {
+      color: var(--primary-dark);
+      font-family: var(--font-main);
+      font-size: 1.25rem;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .archive-heading i {
+      color: var(--primary);
+      font-size: 1.35rem;
     }
 
     .xeberler-grid {
@@ -436,6 +537,7 @@
       grid-column: 1 / -1;
     }
 
+    /* ===== CONTACT ===== */
     .contact-section {
       background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
       color: #fff;
@@ -513,6 +615,7 @@
       display: block;
     }
 
+    /* ===== FOOTER ===== */
     footer {
       background: var(--primary-dark);
       color: rgba(255,255,255,0.85);
@@ -645,6 +748,7 @@
       color: var(--accent);
     }
 
+    /* ===== MODAL ===== */
     .news-detail-overlay {
       display: none;
       position: fixed;
@@ -784,16 +888,24 @@
     }
 
     @media (max-width: 768px) {
-      .header-contact-btn .btn-label {
+      nav {
         display: none;
       }
 
-      .nav-inner {
-        display: none;
+      main {
+        padding-top: calc(var(--header-h) + 0px);
       }
 
       .hamburger {
         display: flex;
+      }
+
+      .header-contact-btn .btn-label {
+        display: none;
+      }
+
+      .header-contact-btn {
+        padding: 7px 10px;
       }
 
       .xeberler-grid,
@@ -809,6 +921,22 @@
         padding-right: 14px;
       }
 
+      .news-page-title {
+        font-size: 1.6rem;
+      }
+
+      .news-page-desc {
+        font-size: 0.94rem;
+      }
+
+      .news-archive-box {
+        padding: 22px 16px;
+      }
+
+      .archive-heading {
+        font-size: 1.12rem;
+      }
+
       .news-detail-main-image {
         height: 260px;
       }
@@ -821,12 +949,43 @@
         font-size: 0.62rem;
       }
     }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 0 12px;
+      }
+
+      .header-left {
+        gap: 8px;
+      }
+
+      .header-logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .header-title {
+        font-size: 0.9rem;
+      }
+
+      .header-title span {
+        font-size: 0.58rem;
+      }
+
+      .news-page-title {
+        font-size: 1.35rem;
+      }
+
+      .mobile-nav {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="header-left">
+  <header id="top">
+    <a href="index.html" class="header-left" aria-label="Ana Səhifə">
       <img src="fotolar/logo.jpg" alt="Logo" class="header-logo" />
       <div class="header-title">
         Daşkəsən
@@ -835,17 +994,17 @@
     </a>
 
     <div class="header-right">
-      <a class="header-contact-btn" href="https://wa.me/994505459085" target="_blank">
+      <a class="header-contact-btn" href="https://wa.me/994505459085" target="_blank" aria-label="WhatsApp">
         <i class="fab fa-whatsapp"></i>
         <span class="btn-label">WhatsApp</span>
       </a>
 
-      <a class="header-contact-btn" href="tel:+994222155049">
-        <i class="fas fa-phone"></i>
+      <a class="header-contact-btn" href="tel:+994222155049" aria-label="Telefon">
+        <i class="fas fa-phone-alt"></i>
         <span class="btn-label">(022) 215 50 49</span>
       </a>
 
-      <div class="hamburger" onclick="toggleMobileNav()">
+      <div class="hamburger" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menyu">
         <span></span>
         <span></span>
         <span></span>
@@ -865,26 +1024,38 @@
     </div>
   </nav>
 
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
+
   <div class="mobile-nav" id="mobileNav">
-    <a href="index.html"><i class="fas fa-home"></i> Ana Səhifə</a>
-    <a href="haqqimizda.html"><i class="fas fa-info-circle"></i> Haqqımızda</a>
-    <a href="struktur.html"><i class="fas fa-sitemap"></i> Struktur</a>
-    <a href="rehberlik.html"><i class="fas fa-user-tie"></i> Rəhbərlik</a>
-    <a href="elektron-muraciet.html"><i class="fas fa-envelope"></i> Elektron Müraciət</a>
-    <a href="istifade-sertleri.html"><i class="fas fa-file-contract"></i> İstifadə Şərtləri</a>
-    <a href="xeberler.html"><i class="fas fa-newspaper"></i> Xəbərlər</a>
+    <a href="index.html" onclick="closeMobileNav()"><i class="fas fa-home"></i> Ana Səhifə</a>
+    <a href="haqqimizda.html" onclick="closeMobileNav()"><i class="fas fa-info-circle"></i> Haqqımızda</a>
+    <a href="struktur.html" onclick="closeMobileNav()"><i class="fas fa-sitemap"></i> Struktur</a>
+    <a href="rehberlik.html" onclick="closeMobileNav()"><i class="fas fa-user-tie"></i> Rəhbərlik</a>
+    <a href="elektron-muraciet.html" onclick="closeMobileNav()"><i class="fas fa-envelope"></i> Elektron Müraciət</a>
+    <a href="istifade-sertleri.html" onclick="closeMobileNav()"><i class="fas fa-file-contract"></i> İstifadə Şərtləri</a>
+    <a href="xeberler.html" class="active" onclick="closeMobileNav()"><i class="fas fa-newspaper"></i> Xəbərlər</a>
   </div>
 
   <main>
     <section class="news-archive-page">
       <div class="container">
         <div class="news-archive-header">
-          <h1 class="section-title"><i class="fas fa-newspaper"></i> Bütün Xəbərlər</h1>
-          <p class="section-subtitle">İdarənin bütün xəbərləri bu səhifədə təqdim olunur</p>
+          <h1 class="news-page-title">Bütün Xəbərlər</h1>
+          <div class="page-line"></div>
+          <p class="news-page-desc">
+            Daşkəsən Su Meliorasiya Sistemlərinin İstismarı İdarəsinin bütün xəbərləri bu səhifədə təqdim olunur.
+          </p>
         </div>
 
-        <div id="xeberlerGrid" class="xeberler-grid"></div>
-        <div id="pagination" class="pagination"></div>
+        <div class="news-archive-box">
+          <h2 class="archive-heading">
+            <i class="fas fa-newspaper"></i>
+            Xəbərlər Arxivi
+          </h2>
+
+          <div id="xeberlerGrid" class="xeberler-grid"></div>
+          <div id="pagination" class="pagination"></div>
+        </div>
       </div>
     </section>
 
@@ -950,24 +1121,24 @@
             Daşkəsən rayonunda su meliorasiya sistemlərinin idarə edilməsi, saxlanılması və inkişafı sahəsində xidmət göstərən dövlət idarəsi.
           </p>
           <div class="footer-social">
-            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-            <a href="https://wa.me/994505459085" class="social-icon"><i class="fab fa-whatsapp"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-telegram-plane"></i></a>
+            <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/994505459085" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="social-icon" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
           </div>
         </div>
 
         <div class="footer-col">
           <h4>Səhifələr</h4>
           <ul>
-            <li><a href="index.html"><i class="fas fa-angle-right"></i> Ana Səhifə</a></li>
-            <li><a href="haqqimizda.html"><i class="fas fa-angle-right"></i> Haqqımızda</a></li>
-            <li><a href="struktur.html"><i class="fas fa-angle-right"></i> Struktur</a></li>
-            <li><a href="rehberlik.html"><i class="fas fa-angle-right"></i> Rəhbərlik</a></li>
-            <li><a href="elektron-muraciet.html"><i class="fas fa-angle-right"></i> Elektron Müraciət</a></li>
-            <li><a href="istifade-sertleri.html"><i class="fas fa-angle-right"></i> İstifadə Şərtləri</a></li>
-            <li><a href="xeberler.html"><i class="fas fa-angle-right"></i> Xəbərlər</a></li>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Ana Səhifə</a></li>
+            <li><a href="haqqimizda.html"><i class="fas fa-chevron-right"></i> Haqqımızda</a></li>
+            <li><a href="struktur.html"><i class="fas fa-chevron-right"></i> Struktur</a></li>
+            <li><a href="rehberlik.html"><i class="fas fa-chevron-right"></i> Rəhbərlik</a></li>
+            <li><a href="elektron-muraciet.html"><i class="fas fa-chevron-right"></i> Elektron Müraciət</a></li>
+            <li><a href="istifade-sertleri.html"><i class="fas fa-chevron-right"></i> İstifadə Şərtləri</a></li>
+            <li><a href="xeberler.html"><i class="fas fa-chevron-right"></i> Xəbərlər</a></li>
           </ul>
         </div>
 
@@ -1014,204 +1185,236 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = "https://xbxraksptsqfpdvqtfyb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_WCZZZFpg-vBYKKbgVkSNPw_ivUiGs6O";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <script>
+    const SUPABASE_URL = "https://xbxraksptsqfpdvqtfyb.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_WCZZZFpg-vBYKKbgVkSNPw_ivUiGs6O";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let butunXeberler = [];
-let cariSehife = 1;
-const birSehifede = 10;
+    let butunXeberler = [];
+    let cariSehife = 1;
+    const birSehifede = 10;
 
-let detailImages = [];
-let detailCurrentIndex = 0;
+    let detailImages = [];
+    let detailCurrentIndex = 0;
 
-function toggleMobileNav() {
-  const nav = document.getElementById("mobileNav");
-  nav.style.display = nav.style.display === "flex" ? "none" : "flex";
-}
+    function toggleMobileNav() {
+      const mobileNav = document.getElementById("mobileNav");
+      const overlay = document.getElementById("mobileNavOverlay");
+      const burger = document.getElementById("hamburgerBtn");
+      const isActive = mobileNav.classList.contains("active");
 
-function formatDate(iso) {
-  if (!iso) return "-";
-  const d = new Date(iso);
-  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
-}
+      if (isActive) {
+        mobileNav.classList.remove("active");
+        overlay.classList.remove("active");
+        burger.classList.remove("active");
+        document.body.classList.remove("mobile-menu-open");
+      } else {
+        mobileNav.classList.add("active");
+        overlay.classList.add("active");
+        burger.classList.add("active");
+        document.body.classList.add("mobile-menu-open");
+      }
+    }
 
-function parseImages(sekiller) {
-  if (Array.isArray(sekiller)) return sekiller;
-  if (!sekiller) return [];
-  try {
-    const arr = JSON.parse(sekiller);
-    return Array.isArray(arr) ? arr : [];
-  } catch {
-    return [];
-  }
-}
+    function closeMobileNav() {
+      const mobileNav = document.getElementById("mobileNav");
+      const overlay = document.getElementById("mobileNavOverlay");
+      const burger = document.getElementById("hamburgerBtn");
 
-async function xeberleriYukle() {
-  const { data, error } = await supabaseClient
-    .from("xeberler")
-    .select("*")
-    .order("id", { ascending: false });
+      mobileNav.classList.remove("active");
+      overlay.classList.remove("active");
+      burger.classList.remove("active");
+      document.body.classList.remove("mobile-menu-open");
+    }
 
-  const grid = document.getElementById("xeberlerGrid");
-  const pagination = document.getElementById("pagination");
+    function formatDate(iso) {
+      if (!iso) return "-";
+      const d = new Date(iso);
+      return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+    }
 
-  if (error) {
-    console.error("Xəbərlər yüklənmədi:", error);
-    grid.innerHTML = '<div class="empty-news">Xəbərlər yüklənmədi.</div>';
-    pagination.innerHTML = "";
-    return;
-  }
+    function parseImages(sekiller) {
+      if (Array.isArray(sekiller)) return sekiller;
+      if (!sekiller) return [];
+      try {
+        const arr = JSON.parse(sekiller);
+        return Array.isArray(arr) ? arr : [];
+      } catch {
+        return [];
+      }
+    }
 
-  butunXeberler = data || [];
-  renderSehife(cariSehife);
-}
+    async function xeberleriYukle() {
+      const { data, error } = await supabaseClient
+        .from("xeberler")
+        .select("*")
+        .order("id", { ascending: false });
 
-function renderSehife(sehife) {
-  const grid = document.getElementById("xeberlerGrid");
-  const pagination = document.getElementById("pagination");
+      const grid = document.getElementById("xeberlerGrid");
+      const pagination = document.getElementById("pagination");
 
-  const start = (sehife - 1) * birSehifede;
-  const end = start + birSehifede;
-  const thisPage = butunXeberler.slice(start, end);
+      if (error) {
+        console.error("Xəbərlər yüklənmədi:", error);
+        grid.innerHTML = '<div class="empty-news">Xəbərlər yüklənmədi.</div>';
+        pagination.innerHTML = "";
+        return;
+      }
 
-  grid.innerHTML = "";
+      butunXeberler = data || [];
+      renderSehife(cariSehife);
+    }
 
-  if (thisPage.length === 0) {
-    grid.innerHTML = '<div class="empty-news">Xəbər tapılmadı.</div>';
-    pagination.innerHTML = "";
-    return;
-  }
+    function renderSehife(sehife) {
+      const grid = document.getElementById("xeberlerGrid");
+      const pagination = document.getElementById("pagination");
 
-  thisPage.forEach(item => {
-    const imgs = parseImages(item.sekiller);
-    const imgSrc = imgs.length ? imgs[0] : "fotolar/logo.jpg";
-    const metn = (item.aciqlama || "").length > 160
-      ? item.aciqlama.slice(0, 160) + "..."
-      : (item.aciqlama || "");
+      const start = (sehife - 1) * birSehifede;
+      const end = start + birSehifede;
+      const thisPage = butunXeberler.slice(start, end);
 
-    const card = document.createElement("div");
-    card.className = "xeber-card";
-    card.innerHTML = `
-      <img src="${imgSrc}" alt="${item.basliq || "Xəbər"}" onerror="this.src='fotolar/logo.jpg'">
-      <div class="xeber-card-body">
-        <div class="xeber-card-date">
-          <i class="far fa-calendar"></i> ${formatDate(item.tarix)}
-        </div>
-        <div class="xeber-card-title">${item.basliq || ""}</div>
-        <div class="xeber-card-text">${metn}</div>
-        <button class="xeber-card-btn">
-          <i class="fas fa-eye"></i> Ətraflı bax
-        </button>
-      </div>
-    `;
+      grid.innerHTML = "";
 
-    card.querySelector(".xeber-card-btn").addEventListener("click", () => {
-      openNewsDetail(item);
-    });
+      if (thisPage.length === 0) {
+        grid.innerHTML = '<div class="empty-news">Xəbər tapılmadı.</div>';
+        pagination.innerHTML = "";
+        return;
+      }
 
-    grid.appendChild(card);
-  });
+      thisPage.forEach(item => {
+        const imgs = parseImages(item.sekiller);
+        const imgSrc = imgs.length ? imgs[0] : "fotolar/logo.jpg";
+        const metn = (item.aciqlama || "").length > 160
+          ? item.aciqlama.slice(0, 160) + "..."
+          : (item.aciqlama || "");
 
-  renderPagination();
-}
+        const card = document.createElement("div");
+        card.className = "xeber-card";
+        card.innerHTML = `
+          <img src="${imgSrc}" alt="${item.basliq || "Xəbər"}" onerror="this.src='fotolar/logo.jpg'">
+          <div class="xeber-card-body">
+            <div class="xeber-card-date">
+              <i class="far fa-calendar"></i> ${formatDate(item.tarix)}
+            </div>
+            <div class="xeber-card-title">${item.basliq || ""}</div>
+            <div class="xeber-card-text">${metn}</div>
+            <button class="xeber-card-btn">
+              <i class="fas fa-eye"></i> Ətraflı bax
+            </button>
+          </div>
+        `;
 
-function renderPagination() {
-  const pagination = document.getElementById("pagination");
-  const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
+        card.querySelector(".xeber-card-btn").addEventListener("click", () => {
+          openNewsDetail(item);
+        });
 
-  if (toplamSehife <= 1) {
-    pagination.innerHTML = "";
-    return;
-  }
+        grid.appendChild(card);
+      });
 
-  pagination.innerHTML = `
-    <button class="page-btn" ${cariSehife === 1 ? "disabled" : ""} onclick="oncekiSehife()">← Geri</button>
-    <span class="page-info">${cariSehife} / ${toplamSehife}</span>
-    <button class="page-btn" ${cariSehife === toplamSehife ? "disabled" : ""} onclick="sonrakiSehife()">İrəli →</button>
-  `;
-}
+      renderPagination();
+    }
 
-function oncekiSehife() {
-  if (cariSehife > 1) {
-    cariSehife--;
-    renderSehife(cariSehife);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-}
+    function renderPagination() {
+      const pagination = document.getElementById("pagination");
+      const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
 
-function sonrakiSehife() {
-  const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
-  if (cariSehife < toplamSehife) {
-    cariSehife++;
-    renderSehife(cariSehife);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-}
+      if (toplamSehife <= 1) {
+        pagination.innerHTML = "";
+        return;
+      }
 
-function openNewsDetail(item) {
-  detailImages = parseImages(item.sekiller);
-  if (detailImages.length === 0) detailImages = ["fotolar/logo.jpg"];
-  detailCurrentIndex = 0;
+      pagination.innerHTML = `
+        <button class="page-btn" ${cariSehife === 1 ? "disabled" : ""} onclick="oncekiSehife()">← Geri</button>
+        <span class="page-info">${cariSehife} / ${toplamSehife}</span>
+        <button class="page-btn" ${cariSehife === toplamSehife ? "disabled" : ""} onclick="sonrakiSehife()">İrəli →</button>
+      `;
+    }
 
-  document.getElementById("newsDetailTitle").textContent = item.basliq || "";
-  document.getElementById("newsDetailText").textContent = item.aciqlama || "";
-  document.getElementById("newsDetailDate").innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
+    function oncekiSehife() {
+      if (cariSehife > 1) {
+        cariSehife--;
+        renderSehife(cariSehife);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
 
-  renderDetailGallery();
-  updateDetailMainImage();
+    function sonrakiSehife() {
+      const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
+      if (cariSehife < toplamSehife) {
+        cariSehife++;
+        renderSehife(cariSehife);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
 
-  document.getElementById("newsDetailOverlay").classList.add("active");
-  document.body.style.overflow = "hidden";
-}
+    function openNewsDetail(item) {
+      detailImages = parseImages(item.sekiller);
+      if (detailImages.length === 0) detailImages = ["fotolar/logo.jpg"];
+      detailCurrentIndex = 0;
 
-function closeNewsDetail(event) {
-  if (event) event.stopPropagation();
-  document.getElementById("newsDetailOverlay").classList.remove("active");
-  document.body.style.overflow = "";
-}
+      document.getElementById("newsDetailTitle").textContent = item.basliq || "";
+      document.getElementById("newsDetailText").textContent = item.aciqlama || "";
+      document.getElementById("newsDetailDate").innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
 
-function updateDetailMainImage() {
-  const mainImg = document.getElementById("newsDetailMainImage");
-  mainImg.src = detailImages[detailCurrentIndex] || "fotolar/logo.jpg";
-
-  document.querySelectorAll("#newsDetailGallery img").forEach((img, index) => {
-    img.classList.toggle("active", index === detailCurrentIndex);
-  });
-}
-
-function renderDetailGallery() {
-  const gallery = document.getElementById("newsDetailGallery");
-  gallery.innerHTML = "";
-
-  if (detailImages.length <= 1) {
-    gallery.style.display = "none";
-    return;
-  }
-
-  gallery.style.display = "flex";
-
-  detailImages.forEach((src, index) => {
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = `Şəkil ${index + 1}`;
-    img.className = index === 0 ? "active" : "";
-    img.addEventListener("click", () => {
-      detailCurrentIndex = index;
+      renderDetailGallery();
       updateDetailMainImage();
+
+      document.getElementById("newsDetailOverlay").classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeNewsDetail(event) {
+      if (event) event.stopPropagation();
+      document.getElementById("newsDetailOverlay").classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    function updateDetailMainImage() {
+      const mainImg = document.getElementById("newsDetailMainImage");
+      mainImg.src = detailImages[detailCurrentIndex] || "fotolar/logo.jpg";
+
+      document.querySelectorAll("#newsDetailGallery img").forEach((img, index) => {
+        img.classList.toggle("active", index === detailCurrentIndex);
+      });
+    }
+
+    function renderDetailGallery() {
+      const gallery = document.getElementById("newsDetailGallery");
+      gallery.innerHTML = "";
+
+      if (detailImages.length <= 1) {
+        gallery.style.display = "none";
+        return;
+      }
+
+      gallery.style.display = "flex";
+
+      detailImages.forEach((src, index) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = `Şəkil ${index + 1}`;
+        img.className = index === 0 ? "active" : "";
+        img.addEventListener("click", () => {
+          detailCurrentIndex = index;
+          updateDetailMainImage();
+        });
+        gallery.appendChild(img);
+      });
+    }
+
+    window.addEventListener("resize", function() {
+      if (window.innerWidth > 768) {
+        closeMobileNav();
+      }
     });
-    gallery.appendChild(img);
-  });
-}
 
-document.addEventListener("keydown", function(e) {
-  if (e.key === "Escape") {
-    closeNewsDetail();
-  }
-});
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closeNewsDetail();
+        closeMobileNav();
+      }
+    });
 
-document.addEventListener("DOMContentLoaded", xeberleriYukle);
-</script>
+    document.addEventListener("DOMContentLoaded", xeberleriYukle);
+  </script>
 </body>
 </html>

@@ -1044,7 +1044,7 @@
 
     .modal-overlay.active {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
     }
 
@@ -1186,6 +1186,8 @@
 
     .all-news-overlay.active {
       display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .all-news-box {
@@ -1193,6 +1195,8 @@
       border-radius: 18px;
       max-width: 1000px;
       width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
       margin: auto;
       padding: 28px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
@@ -1679,11 +1683,6 @@
   </div>
 </section>
 
-<!-- ALL NEWS CONTAINER (Modal və ya ayrılmış bölmə) -->
-<div id="allNewsContainer" style="display:none;">
-  <div id="allNewsGrid" class="all-news-grid"></div>
-  <button onclick="closeAllNews()">Geri</button>
-</div>
 
 
 
@@ -1952,93 +1951,304 @@ const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
 let allNews = [];
 let currentModalImg = 0;
+let currentModalImages = [];
 let autoSlideInterval = null;
+let cardSlideIntervals = [];
 
 async function loadNews() {
-    const { data, error } = await _supabase.from('xeberler').select('*').order('id', { ascending:false });
-    if(error){ console.error(error); return; }
+    const { data, error } = await _supabase
+        .from('xeberler')
+        .select('*')
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
     allNews = data || [];
-    renderNewsSlider(allNews.slice(0,4));
+    renderNewsSlider(allNews.slice(0, 4));
+    renderTicker(allNews);
 }
 
-function formatDate(iso){ if(!iso) return '-'; const d=new Date(iso); return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`; }
-
-function renderNewsSlider(items){
-    const slider = document.getElementById('newsSlider');
-    slider.innerHTML='';
-    items.forEach((item,i)=>{
-        let imgs = [];
-        try{ imgs = JSON.parse(item.sekiller||'[]'); } catch(e){}
-        const src = imgs[0] || './fotolar/logo.jpg';
-        const card = document.createElement('div');
-        card.className='news-card';
-        card.innerHTML=`
-            <img class="news-card-img" src="${src}" onerror="this.src='./fotolar/logo.jpg'">
-            <div class="news-card-body">
-                <div>${formatDate(item.tarix)}</div>
-                <div>${item.basliq}</div>
-                <button onclick="openNewsModal(${i})">Ətraflı bax</button>
-            </div>`;
-        slider.appendChild(card);
-    });
+function formatDate(iso) {
+    if (!iso) return '-';
+    const d = new Date(iso);
+    return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`;
 }
 
-function showAllNews(){
-    const grid = document.getElementById('allNewsGrid');
-    grid.innerHTML='';
-    allNews.forEach((item,i)=>{
-        let imgs=[];
-        try{ imgs=JSON.parse(item.sekiller||'[]'); }catch(e){}
-        const src = imgs[0]||'./fotolar/logo.jpg';
-        const card=document.createElement('div');
-        card.className='news-card';
-        card.innerHTML=`
-            <img src="${src}">
-            <div>${formatDate(item.tarix)}</div>
-            <div>${item.basliq}</div>
-            <button onclick="openNewsModal(${i})">Ətraflı bax</button>`;
-        grid.appendChild(card);
-    });
-    document.getElementById('allNewsContainer').style.display='block';
-}
-function closeAllNews(){ document.getElementById('allNewsContainer').style.display='none'; }
-
-function openNewsModal(idx){
-    currentModalImg=0;
-    const item=allNews[idx]; if(!item) return;
-    document.getElementById('modalTitle').textContent=item.basliq;
-    document.getElementById('modalText').textContent=item.aciqlama||'-';
-    document.getElementById('modalDate').textContent=formatDate(item.tarix);
-    document.getElementById('newsModal').classList.add('active');
-    document.body.style.overflow='hidden';
-    updateModalImg(item);
-}
-function closeNewsModal(){ document.getElementById('newsModal').classList.remove('active'); document.body.style.overflow=''; }
-
-function updateModalImg(item){
-    let imgs=[];
-    try{ imgs=JSON.parse(item.sekiller||'[]'); }catch(e){}
-    if(imgs.length>0){
-        document.getElementById('modalMainImg').src=imgs[currentModalImg];
-    } else {
-        document.getElementById('modalMainImg').src='./fotolar/logo.jpg';
+function parseImages(sekillerField) {
+    try {
+        const parsed = JSON.parse(sekillerField || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+        return [];
     }
 }
 
-function nextModalImg(){
-    const title=document.getElementById('modalTitle').textContent;
-    const item=allNews.find(n=>n.basliq===title);
-    if(!item) return;
-    let imgs=[]; try{ imgs=JSON.parse(item.sekiller||'[]'); }catch(e){}
-    if(imgs.length>1){ currentModalImg=(currentModalImg+1)%imgs.length; updateModalImg(item); }
+function renderNewsSlider(items) {
+    const slider = document.getElementById('newsSlider');
+    if (!slider) return;
+
+    clearCardImageIntervals();
+    slider.innerHTML = '';
+
+    if (items.length === 0) {
+        slider.innerHTML = '<p style="padding:20px;">Xəbər yoxdur</p>';
+        return;
+    }
+
+    items.forEach((item, i) => {
+        const imgs = parseImages(item.sekiller);
+        const imgSrc = imgs.length > 0 ? imgs[0] : './fotolar/logo.jpg';
+
+        slider.innerHTML += `
+            <div class="news-card">
+                <img 
+                    class="news-card-img news-auto-img" 
+                    src="${imgSrc}" 
+                    data-images='${JSON.stringify(imgs)}'
+                    data-index="0"
+                    onerror="this.src='./fotolar/logo.jpg'"
+                >
+                <div class="news-card-body">
+                    <div class="news-card-date">
+                        <i class="far fa-calendar"></i> ${formatDate(item.tarix)}
+                    </div>
+                    <div class="news-card-title">${item.basliq || ''}</div>
+                    <button class="btn-detail" onclick="openNewsModal(${i})">
+                        Ətraflı bax
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    startCardImageRotation();
 }
-function prevModalImg(){
-    const title=document.getElementById('modalTitle').textContent;
-    const item=allNews.find(n=>n.basliq===title);
-    if(!item) return;
-    let imgs=[]; try{ imgs=JSON.parse(item.sekiller||'[]'); }catch(e){}
-    if(imgs.length>1){ currentModalImg=(currentModalImg-1+imgs.length)%imgs.length; updateModalImg(item); }
+
+function startCardImageRotation() {
+    const allCardImages = document.querySelectorAll('.news-auto-img');
+
+    allCardImages.forEach(imgEl => {
+        let imgs = [];
+        try {
+            imgs = JSON.parse(imgEl.dataset.images || '[]');
+        } catch (e) {
+            imgs = [];
+        }
+
+        if (!Array.isArray(imgs) || imgs.length <= 1) return;
+
+        const interval = setInterval(() => {
+            let currentIndex = parseInt(imgEl.dataset.index || '0', 10);
+            currentIndex = (currentIndex + 1) % imgs.length;
+            imgEl.dataset.index = currentIndex;
+            imgEl.src = imgs[currentIndex] || './fotolar/logo.jpg';
+        }, 2000);
+
+        cardSlideIntervals.push(interval);
+    });
 }
+
+function clearCardImageIntervals() {
+    cardSlideIntervals.forEach(interval => clearInterval(interval));
+    cardSlideIntervals = [];
+}
+
+function renderTicker(items) {
+    const ticker = document.getElementById('tickerContent');
+    if (!ticker) return;
+
+    if (!items || items.length === 0) {
+        ticker.innerHTML = `
+            <span class="ticker-item"><i class="fas fa-circle"></i> Xəbər yoxdur</span>
+            <span class="ticker-item"><i class="fas fa-circle"></i> Xəbər yoxdur</span>
+        `;
+        return;
+    }
+
+    const content = items.map(n =>
+        `<span class="ticker-item"><i class="fas fa-circle"></i> ${n.basliq || ''}</span>`
+    ).join('');
+
+    ticker.innerHTML = content + content;
+}
+
+function showAllNews() {
+    const grid = document.getElementById('allNewsGrid');
+    const overlay = document.getElementById('allNewsOverlay');
+
+    if (!grid || !overlay) return;
+
+    grid.innerHTML = '';
+
+    allNews.forEach((item, i) => {
+        const imgs = parseImages(item.sekiller);
+        const src = imgs[0] || './fotolar/logo.jpg';
+
+        const card = document.createElement('div');
+        card.className = 'news-card';
+        card.innerHTML = `
+            <img class="news-card-img" src="${src}" onerror="this.src='./fotolar/logo.jpg'">
+            <div class="news-card-body">
+                <div class="news-card-date">
+                    <i class="far fa-calendar"></i> ${formatDate(item.tarix)}
+                </div>
+                <div class="news-card-title">${item.basliq || ''}</div>
+                <button class="btn-detail" onclick="openNewsModal(${i})">Ətraflı bax</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAllNews(event) {
+    if (event) event.stopPropagation();
+    const overlay = document.getElementById('allNewsOverlay');
+    if (overlay) overlay.classList.remove('active');
+
+    if (!document.getElementById('newsModal')?.classList.contains('active')) {
+        document.body.style.overflow = '';
+    }
+}
+
+function openNewsModal(idx) {
+    const item = allNews[idx];
+    if (!item) return;
+
+    currentModalImg = 0;
+    currentModalImages = parseImages(item.sekiller);
+
+    document.getElementById('modalTitle').textContent = item.basliq || '';
+    document.getElementById('modalText').textContent = item.aciqlama || '-';
+    document.getElementById('modalDate').innerHTML =
+        `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
+
+    renderModalGallery();
+    updateModalImg();
+
+    document.getElementById('newsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    startModalAutoSlide();
+}
+
+function closeNewsModal() {
+    document.getElementById('newsModal').classList.remove('active');
+    stopModalAutoSlide();
+
+    if (!document.getElementById('allNewsOverlay')?.classList.contains('active')) {
+        document.body.style.overflow = '';
+    }
+}
+
+function updateModalImg() {
+    const mainImg = document.getElementById('modalMainImg');
+    const placeholder = document.getElementById('modalImgPlaceholder');
+    const gallery = document.getElementById('modalGallery');
+
+    if (currentModalImages.length > 0) {
+        mainImg.src = currentModalImages[currentModalImg];
+        mainImg.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+    } else {
+        mainImg.src = './fotolar/logo.jpg';
+        mainImg.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+    }
+
+    if (gallery) {
+        [...gallery.querySelectorAll('img')].forEach((img, index) => {
+            img.classList.toggle('active', index === currentModalImg);
+        });
+    }
+}
+
+function renderModalGallery() {
+    const gallery = document.getElementById('modalGallery');
+    if (!gallery) return;
+
+    gallery.innerHTML = '';
+
+    if (currentModalImages.length <= 1) {
+        gallery.style.display = 'none';
+        return;
+    }
+
+    gallery.style.display = 'flex';
+
+    currentModalImages.forEach((src, index) => {
+        const thumb = document.createElement('img');
+        thumb.src = src;
+        thumb.alt = `Xəbər şəkli ${index + 1}`;
+        thumb.className = index === currentModalImg ? 'active' : '';
+        thumb.onclick = () => {
+            currentModalImg = index;
+            updateModalImg();
+            restartModalAutoSlide();
+        };
+        gallery.appendChild(thumb);
+    });
+}
+
+function nextModalImg() {
+    if (currentModalImages.length <= 1) return;
+    currentModalImg = (currentModalImg + 1) % currentModalImages.length;
+    updateModalImg();
+}
+
+function prevModalImg() {
+    if (currentModalImages.length <= 1) return;
+    currentModalImg = (currentModalImg - 1 + currentModalImages.length) % currentModalImages.length;
+    updateModalImg();
+}
+
+function startModalAutoSlide() {
+    stopModalAutoSlide();
+
+    if (currentModalImages.length <= 1) return;
+
+    autoSlideInterval = setInterval(() => {
+        nextModalImg();
+    }, 2000);
+}
+
+function stopModalAutoSlide() {
+    if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+    }
+}
+
+function restartModalAutoSlide() {
+    stopModalAutoSlide();
+    startModalAutoSlide();
+}
+
+document.addEventListener('keydown', function(e) {
+    const newsModal = document.getElementById('newsModal');
+    const allNewsOverlay = document.getElementById('allNewsOverlay');
+
+    if (e.key === 'Escape') {
+        if (newsModal?.classList.contains('active')) closeNewsModal();
+        else if (allNewsOverlay?.classList.contains('active')) closeAllNews();
+    }
+
+    if (newsModal?.classList.contains('active')) {
+        if (e.key === 'ArrowRight') {
+            nextModalImg();
+            restartModalAutoSlide();
+        }
+        if (e.key === 'ArrowLeft') {
+            prevModalImg();
+            restartModalAutoSlide();
+        }
+    }
+});
 
 document.addEventListener('DOMContentLoaded', loadNews);
 </script>

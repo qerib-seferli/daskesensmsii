@@ -177,17 +177,22 @@
                         <div class="news-footer">
                             <small><i class="far fa-calendar-alt"></i> ${n.tarix}</small>
                             <div class="actions">
-                                <button class="btn-edit" onclick='setEdit(${JSON.stringify(n).replace(/'/g, "&apos;")})'>Düzəlt</button>
-                                <button class="btn-delete" onclick="deleteNews(${n.id}, ${JSON.stringify(n.sekiller)})">Sil</button>
+                                <button class="btn-edit" data-news='${encodeURIComponent(JSON.stringify(n))}'>Düzəlt</button>
+                                
+                                <button class="btn-delete" onclick='deleteNews(${n.id}, ${JSON.stringify(n.sekiller || [])})'>Sil</button>
                             </div>
                         </div>
                     </div>
                 `;
                 list.appendChild(div);
+                    div.querySelector('.btn-edit').addEventListener('click', (e) => {
+                    const data = JSON.parse(decodeURIComponent(e.target.getAttribute('data-news')));
+                    setEdit(data);
+                    });
             });
         } catch (err) { console.log(err); }
     }
-
+                        
     window.changeImg = (id, imgs, dir) => {
         const imgTag = document.getElementById(`img-${id}`);
         const box = imgTag.parentElement;
@@ -247,7 +252,10 @@
 
         // 3. Siyahını yeniləyirik
         alert("Xəbər uğurla silindi!");
-        loadNews();
+        (async () => {
+            await checkAuth();
+            loadNews();
+        })();
 
     } catch (err) { 
         alert("Silmə zamanı xəta: " + err.message); 
@@ -255,7 +263,11 @@
     }
 }
 
-    loadNews(); // Səhifə açılanda xəbərləri yükləyir
+    (async () => {
+        await checkAuth();
+        loadNews();
+    })();
+    
 </script>
 </body>
 </html>

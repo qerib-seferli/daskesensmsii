@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Struktur | Daşkəsən SMSİİ</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+--primary:#0369a1;
+--primary-dark:#024f7c;
+--primary-light:#0ea5e9;
+--accent:#06b6d4;
+--bg:#f0f9ff;
+--white:#fff;
+--text:#0f172a;
+--muted:#475569;
+--radius:14px;
+--shadow:0 4px 24px rgba(3,105,161,.10);
+--header-h:68px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Noto Sans',sans-serif;
+background:var(--bg);
+overflow-x:hidden;
+}
+a{text-decoration:none;color:inherit}
+
+header{
+position:fixed;
+top:0;left:0;right:0;
+height:68px;
+background:linear-gradient(90deg,#024f7c 0%,#0369a1 60%,#0891b2 100%);
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 20px;
+z-index:1000;
+}
+
+.header-left{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.header-logo{
+width:46px;
+height:46px;
+border-radius:50%;
+object-fit:cover;
+border:2px solid rgba(255,255,255,.7);
+}
+
+.header-title{
+color:#fff;
+font-family:Montserrat;
+font-weight:700;
+font-size:1rem;
+}
+
+.header-title span{
+display:block;
+font-size:.65rem;
+font-weight:400;
+opacity:.8;
+}
+
+.header-right{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.header-contact-btn{
+padding:8px 14px;
+border-radius:50px;
+background:rgba(255,255,255,.12);
+color:#fff;
+font-size:.8rem;
+display:flex;
+gap:8px;
+align-items:center;
+border:1px solid rgba(255,255,255,.2);
+}
+
+.hamburger{
+display:none;
+flex-direction:column;
+gap:4px;
+cursor:pointer;
+}
+
+.hamburger span{
+width:24px;
+height:2px;
+background:#fff;
+}
+
+nav{
+position:fixed;
+top:68px;
+left:0;
+right:0;
+background:#fff;
+z-index:999;
+border-bottom:2px solid #bae6fd;
+}
+
+.nav-inner{
+display:flex;
+justify-content:center;
+overflow-x:auto;
+}
+
+.nav-inner a{
+padding:13px 16px;
+font-size:.78rem;
+font-family:Montserrat;
+font-weight:600;
+color:#024f7c;
+border-bottom:3px solid transparent;
+}
+
+.nav-inner a.active{
+color:#0ea5e9;
+border-bottom-color:#0ea5e9;
+}
+
+.mobile-nav{
+display:none;
+position:fixed;
+top:68px;
+right:0;
+width:320px;
+max-width:100%;
+height:calc(100vh - 68px);
+background:#fff;
+z-index:998;
+box-shadow:-10px 0 30px rgba(0,0,0,.08);
+padding:12px 0;
+}
+
+.mobile-nav.active{
+display:block;
+}
+
+.mobile-nav a{
+display:block;
+padding:14px 22px;
+font-family:Montserrat;
+font-weight:600;
+border-bottom:1px solid #e0f2fe;
+}
+
+main{
+padding-top:115px;
+}
+
+.page-section{
+padding:50px 20px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+}
+
+.page-title{
+text-align:center;
+font-family:Montserrat;
+font-size:2rem;
+font-weight:800;
+color:#024f7c;
+margin-bottom:16px;
+}
+
+.page-line{
+width:80px;
+height:5px;
+background:#06b6d4;
+margin:auto;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.page-subtitle{
+text-align:center;
+color:#475569;
+margin-bottom:40px;
+line-height:1.8;
+}
+
+.structure-card{
+background:#fff;
+border-radius:14px;
+padding:35px;
+box-shadow:var(--shadow);
+margin-bottom:25px;
+}
+
+.structure-title{
+font-family:Montserrat;
+font-weight:800;
+font-size:1.3rem;
+color:#024f7c;
+margin-bottom:20px;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.structure-box{
+background:#f8fcff;
+border:2px dashed #0ea5e9;
+border-radius:14px;
+padding:30px;
+text-align:center;
+}
+
+.structure-box h3{
+font-family:Montserrat;
+font-size:1.1rem;
+color:#0369a1;
+margin-bottom:12px;
+}
+
+.structure-box p{
+color:#475569;
+line-height:1.8;
+}
+
+.note-box{
+margin-top:20px;
+background:#e0f2fe;
+padding:18px;
+border-left:4px solid #06b6d4;
+border-radius:10px;
+line-height:1.8;
+color:#024f7c;
+}
+
+.contact-section{
+background:linear-gradient(135deg,#024f7c 0%,#0369a1 100%);
+color:#fff;
+padding:48px 20px;
+}
+
+.contact-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+}
+
+.contact-card{
+background:rgba(255,255,255,.1);
+padding:22px;
+border-radius:14px;
+}
+
+footer{
+background:#024f7c;
+padding:30px 20px;
+color:#fff;
+}
+
+@media(max-width:768px){
+nav{display:none}
+.hamburger{display:flex}
+.header-contact-btn span{display:none}
+.mobile-nav{width:100%}
+.contact-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+<a href="index.html" class="header-left">
+<img src="fotolar/logo.jpg" class="header-logo">
+<div class="header-title">
+Daşkəsən
+<span>Su Meliorasiya Sistemlərinin İstismarı İdarəsi</span>
+</div>
+</a>
+
+<div class="header-right">
+<a href="https://wa.me/994505459085" class="header-contact-btn">
+<i class="fab fa-whatsapp"></i><span>WhatsApp</span>
+</a>
+
+<a href="tel:+994222155049" class="header-contact-btn">
+<i class="fas fa-phone"></i><span>(022) 215 50 49</span>
+</a>
+
+<div class="hamburger" onclick="toggleMenu()">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+</header>
+
+<nav>
+<div class="nav-inner">
+<a href="index.html">Ana Səhifə</a>
+<a href="haqqimizda.html">Haqqımızda</a>
+<a href="sturuktur.html" class="active">Struktur</a>
+<a href="rehberlik.html">Rəhbərlik</a>
+<a href="elektron-muraciet.html">Elektron Müraciət</a>
+<a href="istifade-sertleri.html">İstifadə Şərtləri</a>
+<a href="xeberler.html">Xəbərlər</a>
+</div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+<a href="index.html">Ana Səhifə</a>
+<a href="haqqimizda.html">Haqqımızda</a>
+<a href="sturuktur.html">Struktur</a>
+<a href="rehberlik.html">Rəhbərlik</a>
+<a href="elektron-muraciet.html">Elektron Müraciət</a>
+<a href="istifade-sertleri.html">İstifadə Şərtləri</a>
+<a href="xeberler.html">Xəbərlər</a>
+</div>
+
+<main>
+<section class="page-section">
+<div class="container">
+
+<h1 class="page-title">Struktur</h1>
+<div class="page-line"></div>
+<p class="page-subtitle">
+İdarənin struktur bölmələri və idarəetmə sxemi
+</p>
+
+<div class="structure-card">
+<h2 class="structure-title">
+<i class="fas fa-sitemap"></i>
+İdarəetmə strukturu
+</h2>
+
+<div class="structure-box">
+
+<!-- BURADA STRUKTUR ƏLAVƏ EDƏCƏKSƏN -->
+
+<h3>Struktur sxemi üçün yer</h3>
+<p>
+Buraya idarə rəisi, müavinlər, şöbələr və sektorlar əlavə olunacaq.
+</p>
+
+</div>
+
+<div class="note-box">
+<strong>QEYD:</strong><br><br>
+
+Buraya aşağıdakı formatda əlavə edə bilərsən:
+
+<br><br>
+
+İdarə rəisi<br>
+↓<br>
+Baş mühəndis<br>
+↓<br>
+Şöbələr<br>
+↓<br>
+Sektorlar
+
+<br><br>
+
+və ya qutu-qutu kart görnüşündə.
+</div>
+</div>
+
+<div class="structure-card">
+<h2 class="structure-title">
+<i class="fas fa-pen"></i>
+Sonradan əlavə etmək üçün
+</h2>
+
+<div class="note-box">
+Mən sənə sonrakı mərhələdə bunu
+vizual blok şəklində
+qutu-qutu
+professional org-chart görnüşündə də yığa bilərəm.
+</div>
+</div>
+
+</div>
+</section>
+</main>
+
+<section class="contact-section">
+<div class="container">
+<div class="contact-grid">
+<div class="contact-card">Ünvan: Daşkəsən şəhəri</div>
+<div class="contact-card">Telefon: (022) 215 50 49</div>
+<div class="contact-card">Email: Daskesensmsii@rsmx.gov.az</div>
+</div>
+</div>
+</section>
+
+<div class="footer-bottom">
+        <p>© 2026 Daşkəsən SMSİİ. Bütün hüquqlar qorunur.</p>
+        <div class="footer-dev">
+          <i class="fas fa-code"></i>
+          <span>Full-stack Developer: Qərib Səfərli</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<script>
+function toggleMenu(){
+document.getElementById("mobileNav").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

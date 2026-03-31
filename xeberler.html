@@ -1014,202 +1014,204 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = "https://xbxraksptsqfpdvqtfyb.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_WCZZZFpg-vBYKKbgVkSNPw_ivUiGs6O";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script>
+const SUPABASE_URL = "https://xbxraksptsqfpdvqtfyb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_WCZZZFpg-vBYKKbgVkSNPw_ivUiGs6O";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let butunXeberler = [];
-    let cariSehife = 1;
-    const birSehifede = 10;
+let butunXeberler = [];
+let cariSehife = 1;
+const birSehifede = 10;
 
-    let detailImages = [];
-    let detailCurrentIndex = 0;
+let detailImages = [];
+let detailCurrentIndex = 0;
 
-    function toggleMobileNav() {
-      const nav = document.getElementById("mobileNav");
-      nav.style.display = nav.style.display === "flex" ? "none" : "flex";
-    }
+function toggleMobileNav() {
+  const nav = document.getElementById("mobileNav");
+  nav.style.display = nav.style.display === "flex" ? "none" : "flex";
+}
 
-    function formatDate(iso) {
-      if (!iso) return "-";
-      const d = new Date(iso);
-      return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
-    }
+function formatDate(iso) {
+  if (!iso) return "-";
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+}
 
-    function parseImages(sekiller) {
-      try {
-        const arr = JSON.parse(sekiller || "[]");
-        return Array.isArray(arr) ? arr : [];
-      } catch {
-        return [];
-      }
-    }
+function parseImages(sekiller) {
+  if (Array.isArray(sekiller)) return sekiller;
+  if (!sekiller) return [];
+  try {
+    const arr = JSON.parse(sekiller);
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
 
-    async function xeberleriYukle() {
-      const { data, error } = await supabaseClient
-        .from("xeberler")
-        .select("*")
-        .order("id", { ascending: false });
+async function xeberleriYukle() {
+  const { data, error } = await supabaseClient
+    .from("xeberler")
+    .select("*")
+    .order("id", { ascending: false });
 
-      const grid = document.getElementById("xeberlerGrid");
-      const pagination = document.getElementById("pagination");
+  const grid = document.getElementById("xeberlerGrid");
+  const pagination = document.getElementById("pagination");
 
-      if (error) {
-        console.error("Xəbərlər yüklənmədi:", error);
-        grid.innerHTML = '<div class="empty-news">Xəbərlər yüklənmədi.</div>';
-        pagination.innerHTML = "";
-        return;
-      }
+  if (error) {
+    console.error("Xəbərlər yüklənmədi:", error);
+    grid.innerHTML = '<div class="empty-news">Xəbərlər yüklənmədi.</div>';
+    pagination.innerHTML = "";
+    return;
+  }
 
-      butunXeberler = data || [];
-      renderSehife(cariSehife);
-    }
+  butunXeberler = data || [];
+  renderSehife(cariSehife);
+}
 
-    function renderSehife(sehife) {
-      const grid = document.getElementById("xeberlerGrid");
-      const pagination = document.getElementById("pagination");
+function renderSehife(sehife) {
+  const grid = document.getElementById("xeberlerGrid");
+  const pagination = document.getElementById("pagination");
 
-      const start = (sehife - 1) * birSehifede;
-      const end = start + birSehifede;
-      const thisPage = butunXeberler.slice(start, end);
+  const start = (sehife - 1) * birSehifede;
+  const end = start + birSehifede;
+  const thisPage = butunXeberler.slice(start, end);
 
-      grid.innerHTML = "";
+  grid.innerHTML = "";
 
-      if (thisPage.length === 0) {
-        grid.innerHTML = '<div class="empty-news">Xəbər tapılmadı.</div>';
-        pagination.innerHTML = "";
-        return;
-      }
+  if (thisPage.length === 0) {
+    grid.innerHTML = '<div class="empty-news">Xəbər tapılmadı.</div>';
+    pagination.innerHTML = "";
+    return;
+  }
 
-      thisPage.forEach(item => {
-        const imgs = parseImages(item.sekiller);
-        const imgSrc = imgs.length ? imgs[0] : "fotolar/logo.jpg";
-        const metn = (item.aciqlama || "").length > 160
-          ? item.aciqlama.slice(0, 160) + "..."
-          : (item.aciqlama || "");
+  thisPage.forEach(item => {
+    const imgs = parseImages(item.sekiller);
+    const imgSrc = imgs.length ? imgs[0] : "fotolar/logo.jpg";
+    const metn = (item.aciqlama || "").length > 160
+      ? item.aciqlama.slice(0, 160) + "..."
+      : (item.aciqlama || "");
 
-        const card = document.createElement("div");
-        card.className = "xeber-card";
-        card.innerHTML = `
-          <img src="${imgSrc}" alt="${item.basliq || "Xəbər"}" onerror="this.src='fotolar/logo.jpg'">
-          <div class="xeber-card-body">
-            <div class="xeber-card-date">
-              <i class="far fa-calendar"></i> ${formatDate(item.tarix)}
-            </div>
-            <div class="xeber-card-title">${item.basliq || ""}</div>
-            <div class="xeber-card-text">${metn}</div>
-            <button class="xeber-card-btn">
-              <i class="fas fa-eye"></i> Ətraflı bax
-            </button>
-          </div>
-        `;
+    const card = document.createElement("div");
+    card.className = "xeber-card";
+    card.innerHTML = `
+      <img src="${imgSrc}" alt="${item.basliq || "Xəbər"}" onerror="this.src='fotolar/logo.jpg'">
+      <div class="xeber-card-body">
+        <div class="xeber-card-date">
+          <i class="far fa-calendar"></i> ${formatDate(item.tarix)}
+        </div>
+        <div class="xeber-card-title">${item.basliq || ""}</div>
+        <div class="xeber-card-text">${metn}</div>
+        <button class="xeber-card-btn">
+          <i class="fas fa-eye"></i> Ətraflı bax
+        </button>
+      </div>
+    `;
 
-        card.querySelector(".xeber-card-btn").addEventListener("click", () => {
-          openNewsDetail(item);
-        });
-
-        grid.appendChild(card);
-      });
-
-      renderPagination();
-    }
-
-    function renderPagination() {
-      const pagination = document.getElementById("pagination");
-      const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
-
-      if (toplamSehife <= 1) {
-        pagination.innerHTML = "";
-        return;
-      }
-
-      pagination.innerHTML = `
-        <button class="page-btn" ${cariSehife === 1 ? "disabled" : ""} onclick="oncekiSehife()">← Geri</button>
-        <span class="page-info">${cariSehife} / ${toplamSehife}</span>
-        <button class="page-btn" ${cariSehife === toplamSehife ? "disabled" : ""} onclick="sonrakiSehife()">İrəli →</button>
-      `;
-    }
-
-    function oncekiSehife() {
-      if (cariSehife > 1) {
-        cariSehife--;
-        renderSehife(cariSehife);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }
-
-    function sonrakiSehife() {
-      const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
-      if (cariSehife < toplamSehife) {
-        cariSehife++;
-        renderSehife(cariSehife);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }
-
-    function openNewsDetail(item) {
-      detailImages = parseImages(item.sekiller);
-      if (detailImages.length === 0) detailImages = ["fotolar/logo.jpg"];
-      detailCurrentIndex = 0;
-
-      document.getElementById("newsDetailTitle").textContent = item.basliq || "";
-      document.getElementById("newsDetailText").textContent = item.aciqlama || "";
-      document.getElementById("newsDetailDate").innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
-
-      renderDetailGallery();
-      updateDetailMainImage();
-
-      document.getElementById("newsDetailOverlay").classList.add("active");
-      document.body.style.overflow = "hidden";
-    }
-
-    function closeNewsDetail(event) {
-      if (event) event.stopPropagation();
-      document.getElementById("newsDetailOverlay").classList.remove("active");
-      document.body.style.overflow = "";
-    }
-
-    function updateDetailMainImage() {
-      const mainImg = document.getElementById("newsDetailMainImage");
-      mainImg.src = detailImages[detailCurrentIndex] || "fotolar/logo.jpg";
-
-      document.querySelectorAll("#newsDetailGallery img").forEach((img, index) => {
-        img.classList.toggle("active", index === detailCurrentIndex);
-      });
-    }
-
-    function renderDetailGallery() {
-      const gallery = document.getElementById("newsDetailGallery");
-      gallery.innerHTML = "";
-
-      if (detailImages.length <= 1) {
-        gallery.style.display = "none";
-        return;
-      }
-
-      gallery.style.display = "flex";
-
-      detailImages.forEach((src, index) => {
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = `Şəkil ${index + 1}`;
-        img.className = index === 0 ? "active" : "";
-        img.addEventListener("click", () => {
-          detailCurrentIndex = index;
-          updateDetailMainImage();
-        });
-        gallery.appendChild(img);
-      });
-    }
-
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "Escape") {
-        closeNewsDetail();
-      }
+    card.querySelector(".xeber-card-btn").addEventListener("click", () => {
+      openNewsDetail(item);
     });
 
-    document.addEventListener("DOMContentLoaded", xeberleriYukle);
-  </script>
+    grid.appendChild(card);
+  });
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const pagination = document.getElementById("pagination");
+  const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
+
+  if (toplamSehife <= 1) {
+    pagination.innerHTML = "";
+    return;
+  }
+
+  pagination.innerHTML = `
+    <button class="page-btn" ${cariSehife === 1 ? "disabled" : ""} onclick="oncekiSehife()">← Geri</button>
+    <span class="page-info">${cariSehife} / ${toplamSehife}</span>
+    <button class="page-btn" ${cariSehife === toplamSehife ? "disabled" : ""} onclick="sonrakiSehife()">İrəli →</button>
+  `;
+}
+
+function oncekiSehife() {
+  if (cariSehife > 1) {
+    cariSehife--;
+    renderSehife(cariSehife);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function sonrakiSehife() {
+  const toplamSehife = Math.ceil(butunXeberler.length / birSehifede);
+  if (cariSehife < toplamSehife) {
+    cariSehife++;
+    renderSehife(cariSehife);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function openNewsDetail(item) {
+  detailImages = parseImages(item.sekiller);
+  if (detailImages.length === 0) detailImages = ["fotolar/logo.jpg"];
+  detailCurrentIndex = 0;
+
+  document.getElementById("newsDetailTitle").textContent = item.basliq || "";
+  document.getElementById("newsDetailText").textContent = item.aciqlama || "";
+  document.getElementById("newsDetailDate").innerHTML = `<i class="far fa-calendar"></i> ${formatDate(item.tarix)}`;
+
+  renderDetailGallery();
+  updateDetailMainImage();
+
+  document.getElementById("newsDetailOverlay").classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeNewsDetail(event) {
+  if (event) event.stopPropagation();
+  document.getElementById("newsDetailOverlay").classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+function updateDetailMainImage() {
+  const mainImg = document.getElementById("newsDetailMainImage");
+  mainImg.src = detailImages[detailCurrentIndex] || "fotolar/logo.jpg";
+
+  document.querySelectorAll("#newsDetailGallery img").forEach((img, index) => {
+    img.classList.toggle("active", index === detailCurrentIndex);
+  });
+}
+
+function renderDetailGallery() {
+  const gallery = document.getElementById("newsDetailGallery");
+  gallery.innerHTML = "";
+
+  if (detailImages.length <= 1) {
+    gallery.style.display = "none";
+    return;
+  }
+
+  gallery.style.display = "flex";
+
+  detailImages.forEach((src, index) => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = `Şəkil ${index + 1}`;
+    img.className = index === 0 ? "active" : "";
+    img.addEventListener("click", () => {
+      detailCurrentIndex = index;
+      updateDetailMainImage();
+    });
+    gallery.appendChild(img);
+  });
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") {
+    closeNewsDetail();
+  }
+});
+
+document.addEventListener("DOMContentLoaded", xeberleriYukle);
+</script>
 </body>
 </html>

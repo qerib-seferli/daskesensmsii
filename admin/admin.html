@@ -91,7 +91,11 @@
 
 <script src="supabase-config.js"></script>
 <script>
-    checkAuth();
+    
+    (async () => {
+    await checkAuth();
+    loadNews();
+})();
 
     async function saveNews() {
         const btn = document.getElementById('save-btn');

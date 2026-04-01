@@ -24,9 +24,7 @@
             --shadow: 0 10px 28px rgba(0,0,0,0.08);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -134,14 +132,8 @@
             font-size: 16px;
         }
 
-        .btn-save:hover {
-            opacity: 0.92;
-        }
-
-        .btn-save:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+        .btn-save:hover { opacity: 0.92; }
+        .btn-save:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .btn-clear {
             background: var(--gray);
@@ -156,9 +148,7 @@
             transition: 0.25s;
         }
 
-        .btn-clear:hover {
-            opacity: 0.92;
-        }
+        .btn-clear:hover { opacity: 0.92; }
 
         .logout-btn {
             margin-top: 50px;
@@ -172,9 +162,7 @@
             font-weight: 700;
         }
 
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.15);
-        }
+        .logout-btn:hover { background: rgba(255,255,255,0.15); }
 
         .helper-text {
             font-size: 12px;
@@ -233,10 +221,7 @@
             justify-content: center;
         }
 
-        .nav-btn:hover {
-            background: rgba(0,0,0,0.7);
-        }
-
+        .nav-btn:hover { background: rgba(0,0,0,0.7); }
         .prev-btn { left: 8px; }
         .next-btn { right: 8px; }
 
@@ -268,6 +253,7 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            white-space: pre-line;
         }
 
         .news-footer {
@@ -333,7 +319,6 @@
             font-weight: 600;
         }
 
-        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -345,9 +330,7 @@
             padding: 20px;
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-box {
             width: 100%;
@@ -401,11 +384,8 @@
             color: white;
         }
 
-        .modal-btn:hover {
-            opacity: 0.92;
-        }
+        .modal-btn:hover { opacity: 0.92; }
 
-        /* Toast */
         .toast {
             position: fixed;
             right: 20px;
@@ -422,18 +402,13 @@
             max-width: 340px;
         }
 
-        .toast.show {
-            display: block;
-        }
-
+        .toast.show { display: block; }
         .toast.success { background: #15803d; }
         .toast.error { background: #b91c1c; }
         .toast.info { background: #0f172a; }
 
         @media (max-width: 900px) {
-            body {
-                display: block;
-            }
+            body { display: block; }
 
             .sidebar {
                 position: static;
@@ -593,27 +568,27 @@
         }
 
         function clearForm() {
-            document.getElementById('edit-id').value = "";
-            document.getElementById('title').value = "";
-            document.getElementById('desc').value = "";
-            document.getElementById('news-date').value = "";
-            document.getElementById('news-files').value = "";
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Xəbər Əlavə Et';
-            document.getElementById('save-btn').innerText = "SİSTEMƏ YADDA SAXLA";
+            document.getElementById("edit-id").value = "";
+            document.getElementById("title").value = "";
+            document.getElementById("desc").value = "";
+            document.getElementById("news-date").value = "";
+            document.getElementById("news-files").value = "";
+            document.getElementById("form-title").innerHTML = '<i class="fas fa-plus-circle"></i> Xəbər Əlavə Et';
+            document.getElementById("save-btn").innerText = "SİSTEMƏ YADDA SAXLA";
         }
 
-        window.setEdit = (n) => {
-            document.getElementById('edit-id').value = n.id || "";
-            document.getElementById('title').value = n.basliq || "";
-            document.getElementById('desc').value = n.aciqlama || "";
-            document.getElementById('news-date').value = n.tarix || "";
-            document.getElementById('news-files').value = "";
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit"></i> Xəbəri Redaktə Et';
-            document.getElementById('save-btn').innerText = "DƏYİŞİKLİKLƏRİ YADDA SAXLA";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+        function setEdit(n) {
+            document.getElementById("edit-id").value = n.id || "";
+            document.getElementById("title").value = n.basliq || "";
+            document.getElementById("desc").value = n.aciqlama || "";
+            document.getElementById("news-date").value = n.tarix || "";
+            document.getElementById("news-files").value = "";
+            document.getElementById("form-title").innerHTML = '<i class="fas fa-edit"></i> Xəbəri Redaktə Et';
+            document.getElementById("save-btn").innerText = "DƏYİŞİKLİKLƏRİ YADDA SAXLA";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
 
-        window.changeImg = (id, imgs, dir) => {
+        function changeImg(id, imgs, dir) {
             const imageList = normalizeImages(imgs);
             if (imageList.length === 0) return;
 
@@ -621,23 +596,23 @@
             if (!imgTag) return;
 
             const box = imgTag.parentElement;
-            let currentIndex = parseInt(box.getAttribute('data-index') || "0", 10);
+            let currentIndex = parseInt(box.getAttribute("data-index") || "0", 10);
 
             currentIndex += dir;
             if (currentIndex >= imageList.length) currentIndex = 0;
             if (currentIndex < 0) currentIndex = imageList.length - 1;
 
             imgTag.src = imageList[currentIndex];
-            box.setAttribute('data-index', currentIndex);
-        };
+            box.setAttribute("data-index", currentIndex);
+        }
 
         async function saveNews() {
-            const btn = document.getElementById('save-btn');
-            const id = document.getElementById('edit-id').value;
-            const titleInput = document.getElementById('title');
-            const descInput = document.getElementById('desc');
-            const dateInput = document.getElementById('news-date');
-            const fileInput = document.getElementById('news-files');
+            const btn = document.getElementById("save-btn");
+            const id = document.getElementById("edit-id").value;
+            const titleInput = document.getElementById("title");
+            const descInput = document.getElementById("desc");
+            const dateInput = document.getElementById("news-date");
+            const fileInput = document.getElementById("news-files");
 
             if (!titleInput.value.trim() || !descInput.value.trim()) {
                 showToast("Başlıq və mətn doldurulmalıdır!", "error");
@@ -652,19 +627,19 @@
 
                 if (fileInput.files.length > 0) {
                     for (const file of fileInput.files) {
-                        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}_${file.name}`;
+                        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2,10)}_${file.name}`;
                         const filePath = `uploads/${fileName}`;
 
                         const { error: uploadError } = await _supabase
                             .storage
-                            .from('xeber-media')
+                            .from("xeber-media")
                             .upload(filePath, file);
 
                         if (uploadError) throw uploadError;
 
                         const { data } = _supabase
                             .storage
-                            .from('xeber-media')
+                            .from("xeber-media")
                             .getPublicUrl(filePath);
 
                         imageUrls.push(data.publicUrl);
@@ -674,7 +649,7 @@
                 const newsData = {
                     basliq: titleInput.value.trim(),
                     aciqlama: descInput.value.trim(),
-                    tarix: dateInput.value || new Date().toISOString().split('T')[0]
+                    tarix: dateInput.value || new Date().toISOString().split("T")[0]
                 };
 
                 if (imageUrls.length > 0) {
@@ -682,8 +657,8 @@
                 }
 
                 const { error } = id
-                    ? await _supabase.from('xeberler').update(newsData).eq('id', id)
-                    : await _supabase.from('xeberler').insert([newsData]);
+                    ? await _supabase.from("xeberler").update(newsData).eq("id", id)
+                    : await _supabase.from("xeberler").insert([newsData]);
 
                 if (error) throw error;
 
@@ -695,14 +670,104 @@
                 showToast("Xəta: " + err.message, "error");
             } finally {
                 btn.disabled = false;
-                btn.innerText = document.getElementById('edit-id').value
+                btn.innerText = document.getElementById("edit-id").value
                     ? "DƏYİŞİKLİKLƏRİ YADDA SAXLA"
                     : "SİSTEMƏ YADDA SAXLA";
             }
         }
 
+        function createNewsRow(n) {
+            const images = normalizeImages(n.sekiller);
+
+            const row = document.createElement("div");
+            row.className = "news-row";
+
+            const imgBox = document.createElement("div");
+            imgBox.className = "img-box";
+            imgBox.setAttribute("data-index", "0");
+
+            const img = document.createElement("img");
+            img.id = `img-${n.id}`;
+            img.alt = "Xəbər şəkli";
+            img.src = images[0] || "https://via.placeholder.com/190x160?text=Yoxdur";
+            imgBox.appendChild(img);
+
+            if (images.length > 1) {
+                const prevBtn = document.createElement("button");
+                prevBtn.className = "nav-btn prev-btn";
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    changeImg(n.id, images, -1);
+                });
+
+                const nextBtn = document.createElement("button");
+                nextBtn.className = "nav-btn next-btn";
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    changeImg(n.id, images, 1);
+                });
+
+                imgBox.appendChild(prevBtn);
+                imgBox.appendChild(nextBtn);
+            }
+
+            const info = document.createElement("div");
+            info.className = "news-info";
+
+            const topPart = document.createElement("div");
+
+            const title = document.createElement("h4");
+            title.textContent = n.basliq || "";
+
+            const desc = document.createElement("p");
+            desc.textContent = n.aciqlama || "";
+
+            topPart.appendChild(title);
+            topPart.appendChild(desc);
+
+            const footer = document.createElement("div");
+            footer.className = "news-footer";
+
+            const small = document.createElement("small");
+            small.innerHTML = `<i class="far fa-calendar-alt"></i> ${n.tarix || ""}`;
+
+            const actions = document.createElement("div");
+            actions.className = "actions";
+
+            const editBtn = document.createElement("button");
+            editBtn.className = "btn-edit";
+            editBtn.textContent = "Düzəlt";
+            editBtn.addEventListener("click", () => setEdit({
+                ...n,
+                sekiller: images
+            }));
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "btn-delete";
+            deleteBtn.textContent = "Sil";
+            deleteBtn.addEventListener("click", () => {
+                openDeleteModal(n.id, images, n.basliq || "Bu xəbər", deleteBtn);
+            });
+
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+
+            footer.appendChild(small);
+            footer.appendChild(actions);
+
+            info.appendChild(topPart);
+            info.appendChild(footer);
+
+            row.appendChild(imgBox);
+            row.appendChild(info);
+
+            return row;
+        }
+
         async function loadNews() {
-            const list = document.getElementById('news-list');
+            const list = document.getElementById("news-list");
             list.innerHTML = `<div class="empty-state">Yüklənir...</div>`;
 
             try {
@@ -710,9 +775,9 @@
                 if (!session) return;
 
                 const { data, error } = await _supabase
-                    .from('xeberler')
-                    .select('*')
-                    .order('id', { ascending: false });
+                    .from("xeberler")
+                    .select("*")
+                    .order("id", { ascending: false });
 
                 if (error) throw error;
 
@@ -723,57 +788,9 @@
                     return;
                 }
 
-                data.forEach(n => {
-                    const images = normalizeImages(n.sekiller);
-                    const safeNews = { ...n, sekiller: images };
-
-                    const div = document.createElement('div');
-                    div.className = 'news-row';
-
-                    let imgHtml = `<img src="${images[0] || 'https://via.placeholder.com/190x160?text=Yoxdur'}" id="img-${n.id}" alt="Xəbər şəkli">`;
-
-                    if (images.length > 1) {
-                        imgHtml += `
-                            <button class="nav-btn prev-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, -1)'>
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="nav-btn next-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, 1)'>
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        `;
-                    }
-
-                    div.innerHTML = `
-                        <div class="img-box" data-index="0">${imgHtml}</div>
-                        <div class="news-info">
-                            <div>
-                                <h4>${n.basliq || ""}</h4>
-                                <p>${n.aciqlama || ""}</p>
-                            </div>
-                            <div class="news-footer">
-                                <small><i class="far fa-calendar-alt"></i> ${n.tarix || ""}</small>
-                                <div class="actions">
-                                    <button class="btn-edit" data-news='${encodeURIComponent(JSON.stringify(safeNews))}'>Düzəlt</button>
-                                    <button class="btn-delete" data-id="${n.id}" data-imgs='${encodeURIComponent(JSON.stringify(images))}' data-title="${(n.basliq || '').replace(/"/g, '&quot;')}'>Sil</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    list.appendChild(div);
-
-                    div.querySelector('.btn-edit').addEventListener('click', (e) => {
-                        const data = JSON.parse(decodeURIComponent(e.target.getAttribute('data-news')));
-                        setEdit(data);
-                    });
-
-                    div.querySelector('.btn-delete').addEventListener('click', (e) => {
-                        const btn = e.currentTarget;
-                        const id = Number(btn.getAttribute('data-id'));
-                        const imgs = JSON.parse(decodeURIComponent(btn.getAttribute('data-imgs') || '[]'));
-                        const title = btn.getAttribute('data-title') || 'Bu xəbər';
-                        openDeleteModal(id, imgs, title, btn);
-                    });
+                data.forEach((n) => {
+                    const row = createNewsRow(n);
+                    list.appendChild(row);
                 });
             } catch (err) {
                 console.error("loadNews xətası:", err);
@@ -784,14 +801,14 @@
 
         function openDeleteModal(id, imgs, title, btnRef) {
             pendingDelete = { id, imgs, title, btnRef };
-            document.getElementById('deleteModalText').innerHTML =
+            document.getElementById("deleteModalText").innerHTML =
                 `<strong>${title}</strong> adlı xəbəri silmək istədiyinizə əminsiniz?<br><br>Bu əməliyyat geri qaytarılmır.`;
-            document.getElementById('deleteModal').classList.add('active');
+            document.getElementById("deleteModal").classList.add("active");
         }
 
         function closeDeleteModal() {
             pendingDelete = null;
-            document.getElementById('deleteModal').classList.remove('active');
+            document.getElementById("deleteModal").classList.remove("active");
         }
 
         async function confirmDeleteNews() {
@@ -811,7 +828,7 @@
                 if (paths.length > 0) {
                     const { error: storageError } = await _supabase
                         .storage
-                        .from('xeber-media')
+                        .from("xeber-media")
                         .remove(paths);
 
                     if (storageError) {
@@ -820,9 +837,9 @@
                 }
 
                 const { error: dbError } = await _supabase
-                    .from('xeberler')
+                    .from("xeberler")
                     .delete()
-                    .eq('id', id);
+                    .eq("id", id);
 
                 if (dbError) throw dbError;
 

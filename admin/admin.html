@@ -7,50 +7,258 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #003366; --bg: #f0f2f5; --danger: #dc3545; --success: #28a745; --gray: #6c757d; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; }
-        .sidebar { width: 260px; background: var(--main); color: white; min-height: 100vh; padding: 25px; position: fixed; }
-        .main { margin-left: 290px; padding: 40px; width: calc(100% - 310px); }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
-
-        .btn-save { background: var(--success); color: white; border: none; padding: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; transition: 0.3s; font-size: 16px; }
-        .btn-clear { background: var(--gray); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
-        .btn-save:hover, .btn-clear:hover { opacity: 0.9; }
-
-        .news-list-container { display: flex; flex-direction: column; gap: 15px; }
-        .news-row { 
-            display: flex; background: white; border-radius: 10px; overflow: hidden; border: 1px solid #eee; 
-            height: 150px; 
+        :root {
+            --main: #003366;
+            --bg: #f0f2f5;
+            --danger: #dc3545;
+            --success: #28a745;
+            --gray: #6c757d;
+            --warning: #ffc107;
         }
-        
-        /* Şəkil 5x4 nisbətində və bir az böyük */
-        .img-box { 
-            width: 180px; 
-            height: 100%; position: relative; flex-shrink: 0; background: #eee; 
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background: var(--bg);
+            display: flex;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--main);
+            color: white;
+            min-height: 100vh;
+            padding: 25px;
+            position: fixed;
+        }
+
+        .main {
+            margin-left: 290px;
+            padding: 40px;
+            width: calc(100% - 310px);
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-clear {
+            background: var(--gray);
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-save:hover,
+        .btn-clear:hover {
+            opacity: 0.9;
+        }
+
+        .news-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .news-row {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            height: 150px;
+        }
+
+        .img-box {
+            width: 180px;
+            height: 100%;
+            position: relative;
+            flex-shrink: 0;
+            background: #eee;
             aspect-ratio: 5 / 4;
         }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
         .nav-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.5); color: white; border: none; width: 25px; height: 25px;
-            cursor: pointer; font-size: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .prev-btn { left: 5px; }
         .next-btn { right: 5px; }
 
-        .news-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
-        .news-info h4 { margin: 0; font-size: 16px; color: var(--main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .news-info p { margin: 5px 0; font-size: 13px; color: #555; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .news-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-        .news-footer small { color: #888; font-size: 12px; }
+        .news-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+        }
 
-        .actions { display: flex; gap: 8px; }
-        .btn-edit { background: #ffc107; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
-        .btn-delete { background: var(--danger); color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .news-info h4 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .news-info p {
+            margin: 5px 0;
+            font-size: 13px;
+            color: #555;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            gap: 10px;
+        }
+
+        .news-footer small {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-edit {
+            background: var(--warning);
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .logout-btn {
+            margin-top: 50px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                display: block;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .news-row {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .img-box {
+                width: 100%;
+                height: 220px;
+            }
+
+            .news-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
@@ -58,27 +266,29 @@
 <div class="sidebar">
     <h2>Daşkəsən SMSİİ Admin</h2>
     <hr style="opacity: 0.2; margin: 20px 0;">
-    <p><i class="fas fa-newspaper"></i> Xəbər İdarəetmə</p>        
-    <button onclick="_supabase.auth.signOut().then(()=>location.reload())" style="margin-top:50px; background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); padding:10px; width:100%; cursor:pointer; border-radius:5px;">Çıxış</button>
+    <p><i class="fas fa-newspaper"></i> Xəbər İdarəetmə</p>
+    <button class="logout-btn" onclick="handleLogout()">Çıxış</button>
 </div>
 
 <div class="main">
     <div class="card">
         <h3 id="form-title"><i class="fas fa-plus-circle"></i> Xəbər Əlavə Et</h3>
+
         <input type="hidden" id="edit-id">
         <input type="text" id="title" placeholder="Xəbər başlığı">
         <textarea id="desc" placeholder="Xəbərin geniş mətni bura yazılır..."></textarea>
-        
-        <div style="display:flex; gap:15px; align-items:center;">
-            <div style="flex:1">
+
+        <div style="display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
+            <div style="flex:1; min-width:220px;">
                 <label>Tarix:</label>
                 <input type="date" id="news-date">
             </div>
-            <div style="flex:2">
+            <div style="flex:2; min-width:260px;">
                 <label>Şəkillər (5x4 tövsiyə edilir):</label>
                 <input type="file" id="news-files" multiple accept="image/*">
             </div>
         </div>
+
         <button class="btn-save" id="save-btn" onclick="saveNews()">SİSTEMƏ YADDA SAXLA</button>
         <button class="btn-clear" onclick="clearForm()"><i class="fas fa-eraser"></i> FORMU TƏMİZLƏ</button>
     </div>
@@ -91,11 +301,40 @@
 
 <script src="supabase-config.js"></script>
 <script>
-    
-    (async () => {
-    await checkAuth();
-    loadNews();
-})();
+    function normalizeImages(imgs) {
+        if (Array.isArray(imgs)) return imgs;
+        if (!imgs) return [];
+        if (typeof imgs === "string") {
+            try {
+                const parsed = JSON.parse(imgs);
+                return Array.isArray(parsed) ? parsed : (imgs ? [imgs] : []);
+            } catch {
+                return imgs ? [imgs] : [];
+            }
+        }
+        return [];
+    }
+
+    function extractStoragePath(url) {
+        if (!url || typeof url !== "string") return null;
+
+        const marker1 = "/storage/v1/object/public/xeber-media/";
+        if (url.includes(marker1)) {
+            return url.split(marker1)[1];
+        }
+
+        const marker2 = "/xeber-media/";
+        if (url.includes(marker2)) {
+            return url.split(marker2)[1];
+        }
+
+        return null;
+    }
+
+    async function handleLogout() {
+        await _supabase.auth.signOut();
+        location.reload();
+    }
 
     async function saveNews() {
         const btn = document.getElementById('save-btn');
@@ -105,65 +344,101 @@
         const dateInput = document.getElementById('news-date');
         const fileInput = document.getElementById('news-files');
 
-        if(!titleInput.value || !descInput.value) return alert("Başlıq və mətn doldurulmalıdır!");
+        if (!titleInput.value.trim() || !descInput.value.trim()) {
+            return alert("Başlıq və mətn doldurulmalıdır!");
+        }
 
         btn.disabled = true;
         btn.innerText = "Gözləyin...";
 
         try {
             let imageUrls = [];
+
             if (fileInput.files.length > 0) {
                 for (const file of fileInput.files) {
-                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}_${file.name}`;
                     const filePath = `uploads/${fileName}`;
-                    const { error: uploadError } = await _supabase.storage.from('xeber-media').upload(filePath, file);
+
+                    const { error: uploadError } = await _supabase
+                        .storage
+                        .from('xeber-media')
+                        .upload(filePath, file);
+
                     if (uploadError) throw uploadError;
-                    const { data } = _supabase.storage.from('xeber-media').getPublicUrl(filePath);
+
+                    const { data } = _supabase
+                        .storage
+                        .from('xeber-media')
+                        .getPublicUrl(filePath);
+
                     imageUrls.push(data.publicUrl);
                 }
             }
 
-            const newsData = { 
-                basliq: titleInput.value, 
-                aciqlama: descInput.value, 
-                tarix: dateInput.value || new Date().toISOString().split('T')[0] 
+            const newsData = {
+                basliq: titleInput.value.trim(),
+                aciqlama: descInput.value.trim(),
+                tarix: dateInput.value || new Date().toISOString().split('T')[0]
             };
-            if(imageUrls.length > 0) newsData.sekiller = imageUrls;
 
-            const { error } = id ? 
-                await _supabase.from('xeberler').update(newsData).eq('id', id) : 
-                await _supabase.from('xeberler').insert([newsData]);
+            if (imageUrls.length > 0) {
+                newsData.sekiller = imageUrls;
+            }
+
+            const { error } = id
+                ? await _supabase.from('xeberler').update(newsData).eq('id', id)
+                : await _supabase.from('xeberler').insert([newsData]);
 
             if (error) throw error;
 
             alert("Uğurla tamamlandı!");
-            clearForm(); // Formu təmizləyir
-            loadNews(); // Siyahını yeniləyir
-
+            clearForm();
+            await loadNews();
         } catch (err) {
             alert("Xəta: " + err.message);
+            console.error(err);
         } finally {
             btn.disabled = false;
+            btn.innerText = document.getElementById('edit-id').value
+                ? "DƏYİŞİKLİKLƏRİ YADDA SAXLA"
+                : "SİSTEMƏ YADDA SAXLA";
         }
     }
 
     async function loadNews() {
         try {
-            const { data, error } = await _supabase.from('xeberler').select('*').order('id', { ascending: false });
+            const { data, error } = await _supabase
+                .from('xeberler')
+                .select('*')
+                .order('id', { ascending: false });
+
             if (error) throw error;
+
             const list = document.getElementById('news-list');
             list.innerHTML = "";
-            
+
+            if (!data || data.length === 0) {
+                list.innerHTML = "<p>Hələ xəbər yoxdur.</p>";
+                return;
+            }
+
             data.forEach(n => {
-                const images = n.sekiller || [];
+                const images = normalizeImages(n.sekiller);
+                const safeNews = { ...n, sekiller: images };
+
                 const div = document.createElement('div');
                 div.className = 'news-row';
-                
+
                 let imgHtml = `<img src="${images[0] || 'https://via.placeholder.com/180x150?text=Yoxdur'}" id="img-${n.id}">`;
-                if(images.length > 1) {
+
+                if (images.length > 1) {
                     imgHtml += `
-                        <button class="nav-btn prev-btn" onclick="event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images).replace(/"/g, '&quot;')}, -1)"><i class="fas fa-chevron-left"></i></button>
-                        <button class="nav-btn next-btn" onclick="event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images).replace(/"/g, '&quot;')}, 1)"><i class="fas fa-chevron-right"></i></button>
+                        <button class="nav-btn prev-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, -1)'>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-btn next-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, 1)'>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     `;
                 }
 
@@ -171,47 +446,57 @@
                     <div class="img-box" data-index="0">${imgHtml}</div>
                     <div class="news-info">
                         <div>
-                            <h4>${n.basliq}</h4>
-                            <p>${n.aciqlama}</p>
+                            <h4>${n.basliq || ""}</h4>
+                            <p>${n.aciqlama || ""}</p>
                         </div>
                         <div class="news-footer">
-                            <small><i class="far fa-calendar-alt"></i> ${n.tarix}</small>
+                            <small><i class="far fa-calendar-alt"></i> ${n.tarix || ""}</small>
                             <div class="actions">
-                                <button class="btn-edit" data-news='${encodeURIComponent(JSON.stringify(n))}'>Düzəlt</button>
-                                
-                                <button class="btn-delete" onclick='deleteNews(${n.id}, ${JSON.stringify(n.sekiller || [])})'>Sil</button>
+                                <button class="btn-edit" data-news='${encodeURIComponent(JSON.stringify(safeNews))}'>Düzəlt</button>
+                                <button class="btn-delete" onclick='deleteNews(${n.id}, ${JSON.stringify(images)})'>Sil</button>
                             </div>
                         </div>
                     </div>
                 `;
+
                 list.appendChild(div);
-                    div.querySelector('.btn-edit').addEventListener('click', (e) => {
+
+                div.querySelector('.btn-edit').addEventListener('click', (e) => {
                     const data = JSON.parse(decodeURIComponent(e.target.getAttribute('data-news')));
                     setEdit(data);
-                    });
+                });
             });
-        } catch (err) { console.log(err); }
+        } catch (err) {
+            console.error("Xəbərlər yüklənmədi:", err);
+            document.getElementById('news-list').innerHTML = "<p>Xəbərləri yükləmək olmadı.</p>";
+        }
     }
-                        
+
     window.changeImg = (id, imgs, dir) => {
+        const imageList = normalizeImages(imgs);
+        if (imageList.length === 0) return;
+
         const imgTag = document.getElementById(`img-${id}`);
         const box = imgTag.parentElement;
-        let currentIndex = parseInt(box.getAttribute('data-index'));
+        let currentIndex = parseInt(box.getAttribute('data-index') || "0", 10);
+
         currentIndex += dir;
-        if(currentIndex >= imgs.length) currentIndex = 0;
-        if(currentIndex < 0) currentIndex = imgs.length - 1;
-        imgTag.src = imgs[currentIndex];
+        if (currentIndex >= imageList.length) currentIndex = 0;
+        if (currentIndex < 0) currentIndex = imageList.length - 1;
+
+        imgTag.src = imageList[currentIndex];
         box.setAttribute('data-index', currentIndex);
     };
 
     window.setEdit = (n) => {
-        document.getElementById('edit-id').value = n.id;
-        document.getElementById('title').value = n.basliq;
-        document.getElementById('desc').value = n.aciqlama;
-        document.getElementById('news-date').value = n.tarix;
+        document.getElementById('edit-id').value = n.id || "";
+        document.getElementById('title').value = n.basliq || "";
+        document.getElementById('desc').value = n.aciqlama || "";
+        document.getElementById('news-date').value = n.tarix || "";
+        document.getElementById('news-files').value = "";
         document.getElementById('form-title').innerHTML = '<i class="fas fa-edit"></i> Xəbəri Redaktə Et';
         document.getElementById('save-btn').innerText = "DƏYİŞİKLİKLƏRİ YADDA SAXLA";
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     function clearForm() {
@@ -225,49 +510,45 @@
     }
 
     async function deleteNews(id, imgs) {
-    if (!confirm("Bu xəbəri silmək istədiyinizə əminsiniz?")) return;
-    
-    try {
-        // 1. Şəkilləri Storage-dən silməyə çalışırıq
-        if(imgs && imgs.length > 0) {
-            // Şəkil linkindən təmiz fayl yolunu alırıq (uploads/filename.jpg kimi)
-            const paths = imgs.map(u => {
-                const parts = u.split('/xeber-media/');
-                return parts.length > 1 ? parts[1] : null;
-            }).filter(p => p !== null);
+        if (!confirm("Bu xəbəri silmək istədiyinizə əminsiniz?")) return;
 
-            if(paths.length > 0) {
-                // Şəkilləri silirik, amma xəta versə belə dayanmırıq (opsional)
-                await _supabase.storage.from('xeber-media').remove(paths);
+        try {
+            const images = normalizeImages(imgs);
+
+            const paths = images
+                .map(extractStoragePath)
+                .filter(Boolean);
+
+            if (paths.length > 0) {
+                const { error: storageError } = await _supabase
+                    .storage
+                    .from('xeber-media')
+                    .remove(paths);
+
+                if (storageError) {
+                    console.warn("Storage silmə xətası:", storageError.message);
+                }
             }
+
+            const { error: dbError } = await _supabase
+                .from('xeberler')
+                .delete()
+                .eq('id', id);
+
+            if (dbError) throw dbError;
+
+            alert("Xəbər uğurla silindi!");
+            await loadNews();
+        } catch (err) {
+            console.error("Silmə zamanı xəta:", err);
+            alert("Silmə zamanı xəta: " + err.message);
         }
-
-        // 2. Xəbəri bazadan silirik (Əsas hissə)
-        const { error } = await _supabase
-            .from('xeberler')
-            .delete()
-            .eq('id', id);
-
-        if (error) throw error;
-
-        // 3. Siyahını yeniləyirik
-        alert("Xəbər uğurla silindi!");
-        (async () => {
-            await checkAuth();
-            loadNews();
-        })();
-
-    } catch (err) { 
-        alert("Silmə zamanı xəta: " + err.message); 
-        console.error("Detallı xəta:", err);
     }
-}
 
     (async () => {
         await checkAuth();
-        loadNews();
+        await loadNews();
     })();
-    
 </script>
 </body>
 </html>

@@ -4,16 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | Daşkəsən SMSİİ</title>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
         :root {
             --main: #003366;
+            --main-light: #0b4d8a;
             --bg: #f0f2f5;
             --danger: #dc3545;
             --success: #28a745;
             --gray: #6c757d;
             --warning: #ffc107;
+            --white: #ffffff;
+            --text: #1e293b;
+            --border: #dbe2ea;
+            --shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
 
         * {
@@ -25,15 +32,28 @@
             margin: 0;
             background: var(--bg);
             display: flex;
+            color: var(--text);
         }
 
         .sidebar {
             width: 260px;
-            background: var(--main);
+            background: linear-gradient(180deg, var(--main) 0%, #01284d 100%);
             color: white;
             min-height: 100vh;
             padding: 25px;
             position: fixed;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.12);
+        }
+
+        .sidebar h2 {
+            margin: 0 0 18px;
+            font-size: 24px;
+        }
+
+        .sidebar p {
+            margin: 14px 0;
+            font-size: 15px;
+            opacity: 0.95;
         }
 
         .main {
@@ -45,25 +65,58 @@
         .card {
             background: white;
             padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
             margin-bottom: 30px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--main);
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            color: #334155;
         }
 
         input, textarea {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            margin: 8px 0 12px;
+            border: 1px solid #d6dde6;
+            border-radius: 10px;
             box-sizing: border-box;
             font-size: 14px;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--main-light);
+            box-shadow: 0 0 0 3px rgba(11,77,138,0.12);
         }
 
         textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 140px;
             line-height: 1.6;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 220px;
         }
 
         .btn-save {
@@ -72,11 +125,20 @@
             border: none;
             padding: 15px;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             width: 100%;
-            transition: 0.3s;
+            transition: 0.25s;
             font-size: 16px;
+        }
+
+        .btn-save:hover {
+            opacity: 0.92;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         .btn-clear {
@@ -85,40 +147,41 @@
             border: none;
             padding: 12px;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             width: 100%;
             margin-top: 10px;
-            transition: 0.3s;
+            transition: 0.25s;
         }
 
-        .btn-save:hover,
         .btn-clear:hover {
-            opacity: 0.9;
+            opacity: 0.92;
         }
 
         .news-list-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
         }
 
         .news-row {
             display: flex;
             background: white;
-            border-radius: 10px;
+            border-radius: 14px;
             overflow: hidden;
-            border: 1px solid #eee;
-            height: 150px;
+            border: 1px solid #e8edf3;
+            min-height: 160px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
 
         .img-box {
-            width: 180px;
-            height: 100%;
+            width: 190px;
+            min-width: 190px;
+            height: 160px;
             position: relative;
             flex-shrink: 0;
-            background: #eee;
-            aspect-ratio: 5 / 4;
+            background: #eef3f8;
+            overflow: hidden;
         }
 
         .img-box img {
@@ -132,11 +195,11 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.55);
             color: white;
             border: none;
-            width: 25px;
-            height: 25px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
             font-size: 12px;
             border-radius: 50%;
@@ -145,21 +208,26 @@
             justify-content: center;
         }
 
-        .prev-btn { left: 5px; }
-        .next-btn { right: 5px; }
+        .nav-btn:hover {
+            background: rgba(0,0,0,0.7);
+        }
+
+        .prev-btn { left: 8px; }
+        .next-btn { right: 8px; }
 
         .news-info {
-            padding: 15px;
+            padding: 16px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             min-width: 0;
+            gap: 10px;
         }
 
         .news-info h4 {
             margin: 0;
-            font-size: 16px;
+            font-size: 17px;
             color: var(--main);
             white-space: nowrap;
             overflow: hidden;
@@ -167,11 +235,12 @@
         }
 
         .news-info p {
-            margin: 5px 0;
+            margin: 6px 0 0;
             font-size: 13px;
             color: #555;
+            line-height: 1.55;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -182,11 +251,13 @@
             align-items: center;
             margin-top: auto;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .news-footer small {
-            color: #888;
+            color: #64748b;
             font-size: 12px;
+            font-weight: 600;
         }
 
         .actions {
@@ -195,25 +266,36 @@
             flex-shrink: 0;
         }
 
-        .btn-edit {
-            background: var(--warning);
+        .btn-edit,
+        .btn-delete {
             border: none;
-            padding: 6px 12px;
+            padding: 8px 13px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 8px;
             font-weight: bold;
             font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .btn-edit {
+            background: var(--warning);
+            color: #222;
         }
 
         .btn-delete {
             background: var(--danger);
             color: white;
-            border: none;
-            padding: 6px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 12px;
+        }
+
+        .btn-edit:hover,
+        .btn-delete:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .logout-btn {
@@ -221,10 +303,137 @@
             background: rgba(255,255,255,0.1);
             color: white;
             border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px;
+            padding: 12px;
             width: 100%;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: -4px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state {
+            background: #fff;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 18px 20px 10px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--danger);
+            font-size: 20px;
+        }
+
+        .modal-body {
+            padding: 0 20px 20px;
+            color: #475569;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-btn-cancel {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .modal-btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-btn:hover {
+            opacity: 0.92;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #0f172a;
+            color: white;
+            padding: 14px 16px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            font-size: 14px;
+            z-index: 10000;
+            display: none;
+            min-width: 240px;
+            max-width: 340px;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            background: #15803d;
+        }
+
+        .toast.error {
+            background: #b91c1c;
+        }
+
+        .toast.info {
+            background: #0f172a;
         }
 
         @media (max-width: 900px) {
@@ -246,11 +455,12 @@
 
             .news-row {
                 flex-direction: column;
-                height: auto;
+                min-height: auto;
             }
 
             .img-box {
                 width: 100%;
+                min-width: 100%;
                 height: 220px;
             }
 
@@ -258,297 +468,401 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+
+            .actions {
+                width: 100%;
+            }
+
+            .btn-edit,
+            .btn-delete {
+                flex: 1;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>Daşkəsən SMSİİ Admin</h2>
-    <hr style="opacity: 0.2; margin: 20px 0;">
-    <p><i class="fas fa-newspaper"></i> Xəbər İdarəetmə</p>
-    <button class="logout-btn" onclick="handleLogout()">Çıxış</button>
-</div>
+    <div class="sidebar">
+        <h2>Daşkəsən SMSİİ Admin</h2>
+        <hr style="opacity: 0.2; margin: 20px 0;">
+        <p><i class="fas fa-newspaper"></i> Xəbər İdarəetmə</p>
+        <button class="logout-btn" onclick="handleLogout()">Çıxış</button>
+    </div>
 
-<div class="main">
-    <div class="card">
-        <h3 id="form-title"><i class="fas fa-plus-circle"></i> Xəbər Əlavə Et</h3>
+    <div class="main">
+        <div class="card">
+            <h3 id="form-title"><i class="fas fa-plus-circle"></i> Xəbər Əlavə Et</h3>
 
-        <input type="hidden" id="edit-id">
-        <input type="text" id="title" placeholder="Xəbər başlığı">
-        <textarea id="desc" placeholder="Xəbərin geniş mətni bura yazılır..."></textarea>
+            <input type="hidden" id="edit-id">
 
-        <div style="display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
-            <div style="flex:1; min-width:220px;">
-                <label>Tarix:</label>
-                <input type="date" id="news-date">
+            <label for="title">Başlıq</label>
+            <input type="text" id="title" placeholder="Xəbər başlığı">
+
+            <label for="desc">Mətn</label>
+            <textarea id="desc" placeholder="Xəbərin geniş mətni bura yazılır..."></textarea>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <label for="news-date">Tarix</label>
+                    <input type="date" id="news-date">
+                </div>
+
+                <div class="form-col" style="flex:2;">
+                    <label for="news-files">Şəkillər</label>
+                    <input type="file" id="news-files" multiple accept="image/*">
+                    <div class="helper-text">Yeni şəkil seçsən, redaktədə əvvəlki şəkillərin yerinə yeniləri yazılacaq.</div>
+                </div>
             </div>
-            <div style="flex:2; min-width:260px;">
-                <label>Şəkillər (5x4 tövsiyə edilir):</label>
-                <input type="file" id="news-files" multiple accept="image/*">
-            </div>
+
+            <button class="btn-save" id="save-btn" onclick="saveNews()">SİSTEMƏ YADDA SAXLA</button>
+            <button class="btn-clear" onclick="clearForm()"><i class="fas fa-eraser"></i> FORMU TƏMİZLƏ</button>
         </div>
 
-        <button class="btn-save" id="save-btn" onclick="saveNews()">SİSTEMƏ YADDA SAXLA</button>
-        <button class="btn-clear" onclick="clearForm()"><i class="fas fa-eraser"></i> FORMU TƏMİZLƏ</button>
+        <h3>Mövcud Xəbərlər</h3>
+        <div id="news-list" class="news-list-container">
+            <div class="empty-state">Yüklənir...</div>
+        </div>
     </div>
 
-    <h3>Mövcud Xəbərlər</h3>
-    <div id="news-list" class="news-list-container">
-        <p>Yüklənir...</p>
+    <!-- Custom delete modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-trash-alt"></i> Xəbəri sil</h3>
+            </div>
+            <div class="modal-body" id="deleteModalText">
+                Bu xəbəri silmək istədiyinizə əminsiniz?
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Ləğv et</button>
+                <button class="modal-btn modal-btn-delete" id="confirmDeleteBtn">Bəli, sil</button>
+            </div>
+        </div>
     </div>
-</div>
 
-<script src="supabase-config.js"></script>
-<script>
-    function normalizeImages(imgs) {
-        if (Array.isArray(imgs)) return imgs;
-        if (!imgs) return [];
-        if (typeof imgs === "string") {
-            try {
-                const parsed = JSON.parse(imgs);
-                return Array.isArray(parsed) ? parsed : (imgs ? [imgs] : []);
-            } catch {
-                return imgs ? [imgs] : [];
-            }
-        }
-        return [];
-    }
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
 
-    function extractStoragePath(url) {
-        if (!url || typeof url !== "string") return null;
+    <script src="supabase-config.js"></script>
+    <script>
+        let pendingDelete = null;
 
-        const marker1 = "/storage/v1/object/public/xeber-media/";
-        if (url.includes(marker1)) {
-            return url.split(marker1)[1];
+        function showToast(message, type = "info") {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = `toast show ${type}`;
+
+            clearTimeout(showToast._timer);
+            showToast._timer = setTimeout(() => {
+                toast.className = "toast";
+            }, 3200);
         }
 
-        const marker2 = "/xeber-media/";
-        if (url.includes(marker2)) {
-            return url.split(marker2)[1];
-        }
+        function normalizeImages(imgs) {
+            if (Array.isArray(imgs)) return imgs;
+            if (!imgs) return [];
 
-        return null;
-    }
-
-    async function handleLogout() {
-        await _supabase.auth.signOut();
-        location.reload();
-    }
-
-    async function saveNews() {
-        const btn = document.getElementById('save-btn');
-        const id = document.getElementById('edit-id').value;
-        const titleInput = document.getElementById('title');
-        const descInput = document.getElementById('desc');
-        const dateInput = document.getElementById('news-date');
-        const fileInput = document.getElementById('news-files');
-
-        if (!titleInput.value.trim() || !descInput.value.trim()) {
-            return alert("Başlıq və mətn doldurulmalıdır!");
-        }
-
-        btn.disabled = true;
-        btn.innerText = "Gözləyin...";
-
-        try {
-            let imageUrls = [];
-
-            if (fileInput.files.length > 0) {
-                for (const file of fileInput.files) {
-                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}_${file.name}`;
-                    const filePath = `uploads/${fileName}`;
-
-                    const { error: uploadError } = await _supabase
-                        .storage
-                        .from('xeber-media')
-                        .upload(filePath, file);
-
-                    if (uploadError) throw uploadError;
-
-                    const { data } = _supabase
-                        .storage
-                        .from('xeber-media')
-                        .getPublicUrl(filePath);
-
-                    imageUrls.push(data.publicUrl);
+            if (typeof imgs === "string") {
+                try {
+                    const parsed = JSON.parse(imgs);
+                    return Array.isArray(parsed) ? parsed : (imgs ? [imgs] : []);
+                } catch {
+                    return imgs ? [imgs] : [];
                 }
             }
 
-            const newsData = {
-                basliq: titleInput.value.trim(),
-                aciqlama: descInput.value.trim(),
-                tarix: dateInput.value || new Date().toISOString().split('T')[0]
-            };
+            return [];
+        }
 
-            if (imageUrls.length > 0) {
-                newsData.sekiller = imageUrls;
+        function extractStoragePath(url) {
+            if (!url || typeof url !== "string") return null;
+
+            const marker1 = "/storage/v1/object/public/xeber-media/";
+            if (url.includes(marker1)) {
+                return url.split(marker1)[1];
             }
 
-            const { error } = id
-                ? await _supabase.from('xeberler').update(newsData).eq('id', id)
-                : await _supabase.from('xeberler').insert([newsData]);
+            const marker2 = "/xeber-media/";
+            if (url.includes(marker2)) {
+                return url.split(marker2)[1];
+            }
 
-            if (error) throw error;
-
-            alert("Uğurla tamamlandı!");
-            clearForm();
-            await loadNews();
-        } catch (err) {
-            alert("Xəta: " + err.message);
-            console.error(err);
-        } finally {
-            btn.disabled = false;
-            btn.innerText = document.getElementById('edit-id').value
-                ? "DƏYİŞİKLİKLƏRİ YADDA SAXLA"
-                : "SİSTEMƏ YADDA SAXLA";
+            return null;
         }
-    }
 
-    async function loadNews() {
-        try {
-            const { data, error } = await _supabase
-                .from('xeberler')
-                .select('*')
-                .order('id', { ascending: false });
+        async function handleLogout() {
+            try {
+                await _supabase.auth.signOut();
+                location.reload();
+            } catch (err) {
+                console.error(err);
+                showToast("Çıxış zamanı xəta baş verdi.", "error");
+            }
+        }
 
-            if (error) throw error;
+        function clearForm() {
+            document.getElementById('edit-id').value = "";
+            document.getElementById('title').value = "";
+            document.getElementById('desc').value = "";
+            document.getElementById('news-date').value = "";
+            document.getElementById('news-files').value = "";
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Xəbər Əlavə Et';
+            document.getElementById('save-btn').innerText = "SİSTEMƏ YADDA SAXLA";
+        }
 
-            const list = document.getElementById('news-list');
-            list.innerHTML = "";
+        window.setEdit = (n) => {
+            document.getElementById('edit-id').value = n.id || "";
+            document.getElementById('title').value = n.basliq || "";
+            document.getElementById('desc').value = n.aciqlama || "";
+            document.getElementById('news-date').value = n.tarix || "";
+            document.getElementById('news-files').value = "";
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit"></i> Xəbəri Redaktə Et';
+            document.getElementById('save-btn').innerText = "DƏYİŞİKLİKLƏRİ YADDA SAXLA";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
 
-            if (!data || data.length === 0) {
-                list.innerHTML = "<p>Hələ xəbər yoxdur.</p>";
+        window.changeImg = (id, imgs, dir) => {
+            const imageList = normalizeImages(imgs);
+            if (imageList.length === 0) return;
+
+            const imgTag = document.getElementById(`img-${id}`);
+            if (!imgTag) return;
+
+            const box = imgTag.parentElement;
+            let currentIndex = parseInt(box.getAttribute('data-index') || "0", 10);
+
+            currentIndex += dir;
+            if (currentIndex >= imageList.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = imageList.length - 1;
+
+            imgTag.src = imageList[currentIndex];
+            box.setAttribute('data-index', currentIndex);
+        };
+
+        async function saveNews() {
+            const btn = document.getElementById('save-btn');
+            const id = document.getElementById('edit-id').value;
+            const titleInput = document.getElementById('title');
+            const descInput = document.getElementById('desc');
+            const dateInput = document.getElementById('news-date');
+            const fileInput = document.getElementById('news-files');
+
+            if (!titleInput.value.trim() || !descInput.value.trim()) {
+                showToast("Başlıq və mətn doldurulmalıdır!", "error");
                 return;
             }
 
-            data.forEach(n => {
-                const images = normalizeImages(n.sekiller);
-                const safeNews = { ...n, sekiller: images };
+            btn.disabled = true;
+            btn.innerText = "Gözləyin...";
 
-                const div = document.createElement('div');
-                div.className = 'news-row';
+            try {
+                let imageUrls = [];
 
-                let imgHtml = `<img src="${images[0] || 'https://via.placeholder.com/180x150?text=Yoxdur'}" id="img-${n.id}">`;
+                if (fileInput.files.length > 0) {
+                    for (const file of fileInput.files) {
+                        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}_${file.name}`;
+                        const filePath = `uploads/${fileName}`;
 
-                if (images.length > 1) {
-                    imgHtml += `
-                        <button class="nav-btn prev-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, -1)'>
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="nav-btn next-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, 1)'>
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    `;
+                        const { error: uploadError } = await _supabase
+                            .storage
+                            .from('xeber-media')
+                            .upload(filePath, file);
+
+                        if (uploadError) throw uploadError;
+
+                        const { data } = _supabase
+                            .storage
+                            .from('xeber-media')
+                            .getPublicUrl(filePath);
+
+                        imageUrls.push(data.publicUrl);
+                    }
                 }
 
-                div.innerHTML = `
-                    <div class="img-box" data-index="0">${imgHtml}</div>
-                    <div class="news-info">
-                        <div>
-                            <h4>${n.basliq || ""}</h4>
-                            <p>${n.aciqlama || ""}</p>
-                        </div>
-                        <div class="news-footer">
-                            <small><i class="far fa-calendar-alt"></i> ${n.tarix || ""}</small>
-                            <div class="actions">
-                                <button class="btn-edit" data-news='${encodeURIComponent(JSON.stringify(safeNews))}'>Düzəlt</button>
-                                <button class="btn-delete" onclick='deleteNews(${n.id}, ${JSON.stringify(images)})'>Sil</button>
+                const newsData = {
+                    basliq: titleInput.value.trim(),
+                    aciqlama: descInput.value.trim(),
+                    tarix: dateInput.value || new Date().toISOString().split('T')[0]
+                };
+
+                if (imageUrls.length > 0) {
+                    newsData.sekiller = imageUrls;
+                }
+
+                const { error } = id
+                    ? await _supabase.from('xeberler').update(newsData).eq('id', id)
+                    : await _supabase.from('xeberler').insert([newsData]);
+
+                if (error) throw error;
+
+                showToast("Uğurla tamamlandı!", "success");
+                clearForm();
+                await loadNews();
+            } catch (err) {
+                console.error(err);
+                showToast("Xəta: " + err.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = document.getElementById('edit-id').value
+                    ? "DƏYİŞİKLİKLƏRİ YADDA SAXLA"
+                    : "SİSTEMƏ YADDA SAXLA";
+            }
+        }
+
+        async function loadNews() {
+            try {
+                const { data, error } = await _supabase
+                    .from('xeberler')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+
+                const list = document.getElementById('news-list');
+                list.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    list.innerHTML = `<div class="empty-state">Hələ xəbər yoxdur.</div>`;
+                    return;
+                }
+
+                data.forEach(n => {
+                    const images = normalizeImages(n.sekiller);
+                    const safeNews = { ...n, sekiller: images };
+
+                    const div = document.createElement('div');
+                    div.className = 'news-row';
+
+                    let imgHtml = `<img src="${images[0] || 'https://via.placeholder.com/190x160?text=Yoxdur'}" id="img-${n.id}" alt="Xəbər şəkli">`;
+
+                    if (images.length > 1) {
+                        imgHtml += `
+                            <button class="nav-btn prev-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, -1)'>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="nav-btn next-btn" onclick='event.stopPropagation(); changeImg(${n.id}, ${JSON.stringify(images)}, 1)'>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        `;
+                    }
+
+                    div.innerHTML = `
+                        <div class="img-box" data-index="0">${imgHtml}</div>
+                        <div class="news-info">
+                            <div>
+                                <h4>${n.basliq || ""}</h4>
+                                <p>${n.aciqlama || ""}</p>
+                            </div>
+                            <div class="news-footer">
+                                <small><i class="far fa-calendar-alt"></i> ${n.tarix || ""}</small>
+                                <div class="actions">
+                                    <button class="btn-edit" data-news='${encodeURIComponent(JSON.stringify(safeNews))}'>Düzəlt</button>
+                                    <button class="btn-delete" data-id="${n.id}" data-imgs='${encodeURIComponent(JSON.stringify(images))}' data-title="${(n.basliq || '').replace(/"/g, '&quot;')}'>Sil</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                list.appendChild(div);
+                    list.appendChild(div);
 
-                div.querySelector('.btn-edit').addEventListener('click', (e) => {
-                    const data = JSON.parse(decodeURIComponent(e.target.getAttribute('data-news')));
-                    setEdit(data);
+                    div.querySelector('.btn-edit').addEventListener('click', (e) => {
+                        const data = JSON.parse(decodeURIComponent(e.target.getAttribute('data-news')));
+                        setEdit(data);
+                    });
+
+                    div.querySelector('.btn-delete').addEventListener('click', (e) => {
+                        const btn = e.currentTarget;
+                        const id = Number(btn.getAttribute('data-id'));
+                        const imgs = JSON.parse(decodeURIComponent(btn.getAttribute('data-imgs') || '[]'));
+                        const title = btn.getAttribute('data-title') || 'Bu xəbər';
+                        openDeleteModal(id, imgs, title, btn);
+                    });
                 });
-            });
-        } catch (err) {
-            console.error("Xəbərlər yüklənmədi:", err);
-            document.getElementById('news-list').innerHTML = "<p>Xəbərləri yükləmək olmadı.</p>";
-        }
-    }
-
-    window.changeImg = (id, imgs, dir) => {
-        const imageList = normalizeImages(imgs);
-        if (imageList.length === 0) return;
-
-        const imgTag = document.getElementById(`img-${id}`);
-        const box = imgTag.parentElement;
-        let currentIndex = parseInt(box.getAttribute('data-index') || "0", 10);
-
-        currentIndex += dir;
-        if (currentIndex >= imageList.length) currentIndex = 0;
-        if (currentIndex < 0) currentIndex = imageList.length - 1;
-
-        imgTag.src = imageList[currentIndex];
-        box.setAttribute('data-index', currentIndex);
-    };
-
-    window.setEdit = (n) => {
-        document.getElementById('edit-id').value = n.id || "";
-        document.getElementById('title').value = n.basliq || "";
-        document.getElementById('desc').value = n.aciqlama || "";
-        document.getElementById('news-date').value = n.tarix || "";
-        document.getElementById('news-files').value = "";
-        document.getElementById('form-title').innerHTML = '<i class="fas fa-edit"></i> Xəbəri Redaktə Et';
-        document.getElementById('save-btn').innerText = "DƏYİŞİKLİKLƏRİ YADDA SAXLA";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    function clearForm() {
-        document.getElementById('edit-id').value = "";
-        document.getElementById('title').value = "";
-        document.getElementById('desc').value = "";
-        document.getElementById('news-date').value = "";
-        document.getElementById('news-files').value = "";
-        document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Xəbər Əlavə Et';
-        document.getElementById('save-btn').innerText = "SİSTEMƏ YADDA SAXLA";
-    }
-
-    async function deleteNews(id, imgs) {
-        if (!confirm("Bu xəbəri silmək istədiyinizə əminsiniz?")) return;
-
-        try {
-            const images = normalizeImages(imgs);
-
-            const paths = images
-                .map(extractStoragePath)
-                .filter(Boolean);
-
-            if (paths.length > 0) {
-                const { error: storageError } = await _supabase
-                    .storage
-                    .from('xeber-media')
-                    .remove(paths);
-
-                if (storageError) {
-                    console.warn("Storage silmə xətası:", storageError.message);
-                }
+            } catch (err) {
+                console.error("Xəbərlər yüklənmədi:", err);
+                document.getElementById('news-list').innerHTML = `<div class="empty-state">Xəbərləri yükləmək olmadı.</div>`;
+                showToast("Xəbərləri yükləmək olmadı.", "error");
             }
-
-            const { error: dbError } = await _supabase
-                .from('xeberler')
-                .delete()
-                .eq('id', id);
-
-            if (dbError) throw dbError;
-
-            alert("Xəbər uğurla silindi!");
-            await loadNews();
-        } catch (err) {
-            console.error("Silmə zamanı xəta:", err);
-            alert("Silmə zamanı xəta: " + err.message);
         }
-    }
 
-    (async () => {
-        await checkAuth();
-        await loadNews();
-    })();
-</script>
+        function openDeleteModal(id, imgs, title, btnRef) {
+            pendingDelete = { id, imgs, title, btnRef };
+            document.getElementById('deleteModalText').innerHTML =
+                `<strong>${title}</strong> adlı xəbəri silmək istədiyinizə əminsiniz?<br><br>Bu əməliyyat geri qaytarılmır.`;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            pendingDelete = null;
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        async function confirmDeleteNews() {
+            if (!pendingDelete) return;
+
+            const { id, imgs, btnRef } = pendingDelete;
+
+            try {
+                if (btnRef) {
+                    btnRef.disabled = true;
+                    btnRef.textContent = "Silinir...";
+                }
+
+                const images = normalizeImages(imgs);
+                const paths = images.map(extractStoragePath).filter(Boolean);
+
+                if (paths.length > 0) {
+                    const { error: storageError } = await _supabase
+                        .storage
+                        .from('xeber-media')
+                        .remove(paths);
+
+                    if (storageError) {
+                        console.warn("Storage silmə xətası:", storageError.message);
+                    }
+                }
+
+                const { error: dbError } = await _supabase
+                    .from('xeberler')
+                    .delete()
+                    .eq('id', id);
+
+                if (dbError) throw dbError;
+
+                closeDeleteModal();
+                showToast("Xəbər uğurla silindi!", "success");
+                await loadNews();
+            } catch (err) {
+                console.error("Silmə zamanı xəta:", err);
+                showToast("Silmə zamanı xəta: " + err.message, "error");
+
+                if (btnRef) {
+                    btnRef.disabled = false;
+                    btnRef.textContent = "Sil";
+                }
+
+                closeDeleteModal();
+            }
+        }
+
+        document.getElementById("confirmDeleteBtn").addEventListener("click", confirmDeleteNews);
+
+        document.getElementById("deleteModal").addEventListener("click", function(e) {
+            if (e.target.id === "deleteModal") {
+                closeDeleteModal();
+            }
+        });
+
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") {
+                closeDeleteModal();
+            }
+        });
+
+        (async () => {
+            await checkAuth();
+            await loadNews();
+        })();
+    </script>
 </body>
 </html>
